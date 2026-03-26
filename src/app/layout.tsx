@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import './globals.css';
 import { clsx } from 'clsx';
+import { Toaster } from 'sonner';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -24,6 +24,7 @@ export default function RootLayout({
         )}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );
