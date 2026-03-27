@@ -1,3 +1,4 @@
+import React, { Suspense } from 'react';
 import Link from "next/link";
 import { LoginForm } from "@/features/auth/components/form-login";
 
@@ -14,7 +15,9 @@ export default function LoginPage() {
       </div>
       
       <div className="grid gap-6">
-        <LoginForm />
+        <Suspense fallback={<div className="h-[200px] w-full animate-pulse rounded-md bg-muted/50" />}>
+          <LoginForm />
+        </Suspense>
 
         <div className="relative">
           <div className="absolute inset-0 flex items-center">

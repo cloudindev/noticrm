@@ -47,13 +47,13 @@ export function RegisterForm() {
     try {
       const result = await registerAction(formData);
       
-      if (result.error) {
+      if ("error" in result && result.error) {
         toast.error(result.error);
         setIsLoading(false);
         return;
       }
 
-      if (result.success) {
+      if ("success" in result && result.success) {
         toast.success("Workspace created successfully!");
         // Because they registered, they usually need to sign in next or get redirected to sign-in.
         // We redirect them to login with a success notice.
