@@ -49,7 +49,7 @@ export function LoginForm() {
       
       // Successfully authenticated
       toast.success("Welcome back!");
-      router.push("/"); // Middleware handles redirection to /tenant/home
+      window.location.href = "/app"; // Force full reload to /app so middleware guarantees redirect
     } catch (err) {
       toast.error("Something went wrong. Please try again.");
     } finally {

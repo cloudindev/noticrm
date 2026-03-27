@@ -21,7 +21,7 @@ export const authConfig: NextAuthConfig = {
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email as string },
-          include: { memberships: true },
+          include: { memberships: { include: { tenant: true } } },
         });
 
         if (!user || !user.passwordHash) return null;
@@ -36,8 +36,8 @@ export const authConfig: NextAuthConfig = {
             id: user.id,
             email: user.email,
             name: user.name,
-            // Attach tenantId to the JWT so it's globally available
-            tenantId: user.memberships[0]?.tenantId || null,
+            // Attach tenantSlug to the JWT so it's globally available
+            tenantSlug: user.memberships[0]?.tenant?.slug || null,
           };
         }
 
@@ -49,14 +49,14 @@ export const authConfig: NextAuthConfig = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.tenantId = (user as any).tenantId;
+        token.tenantSlug = (user as any).tenantSlug;
       }
       return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id as string;
-        (session.user as any).tenantId = token.tenantId as string;
+        (session.user as any).tenantSlug = token.tenantSlug as string;
       }
       return session;
     },
