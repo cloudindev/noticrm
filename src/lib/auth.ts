@@ -1,14 +1,15 @@
-import NextAuth, { type NextAuthConfig } from "next-auth";
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { authConfig } from "./auth.config";
 
 const prisma = new PrismaClient();
 
-export const authConfig: NextAuthConfig = {
+export const { handlers, signIn, signOut, auth } = NextAuth({
+  ...authConfig,
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt" },
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -38,32 +39,11 @@ export const authConfig: NextAuthConfig = {
             name: user.name,
             // Attach tenantSlug to the JWT so it's globally available
             tenantSlug: user.memberships[0]?.tenant?.slug || null,
-          };
+          } as any;
         }
 
         return null;
       },
     }),
   ],
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.tenantSlug = (user as any).tenantSlug;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (token && session.user) {
-        session.user.id = token.id as string;
-        (session.user as any).tenantSlug = token.tenantSlug as string;
-      }
-      return session;
-    },
-  },
-  pages: {
-    signIn: "/login",
-  },
-};
-
-export const { handlers, signIn, signOut, auth } = NextAuth(authConfig);
+});

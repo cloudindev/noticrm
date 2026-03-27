@@ -1,13 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { NextResponse } from "next/server";
+import NextAuth from "next-auth";
+import { authConfig } from "@/lib/auth.config";
 
-export async function middleware(req: NextRequest) {
+const { auth } = NextAuth(authConfig);
+
+export default auth((req) => {
   const { pathname } = req.nextUrl;
   const url = req.nextUrl.clone();
-
-  // Protect all /[tenantSlug] routes
-  // Assume generic logic: if the path has more than 1 segment and doesn't match public routes,
-  // we treat it as a tenant route that needs protection.
 
   // Bypass logic for public static paths and auth routes
   if (
@@ -21,32 +20,25 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // Get Auth Context
-  const secret = process.env.AUTH_SECRET;
-  const token = await getToken({ req, secret });
+  // Auth is provided by the wrapper
+  const isAuthenticated = !!req.auth;
 
-  if (!token) {
-    // If user is trying to access a private route and is NOT logged in, redirect to login
+  if (!isAuthenticated) {
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
-  // If we have a token, we could potentially verify if `token.tenantSlug` matches
-  // the current slug they are hitting, but NextAuth.js JWT returns the primary tenant.
-  // For basic protection, just knowing they are logged in is a step forward.
-  // The backend database queries will enforce tenant-level isolation anyway.
+  const token = req.auth?.user as any;
 
-  // Basic check: if hitting /app without a specific tenant slug (assuming they didn't manually type one),
-  // we could theoretically redirect to `/${token.tenantSlug}/home`.
   if (pathname === "/app") {
-     url.pathname = `/${token.tenantSlug}/home`;
+     const slug = token?.tenantSlug || "app";
+     url.pathname = `/${slug}/home`;
      return NextResponse.redirect(url);
   }
 
   return NextResponse.next();
-}
+});
 
-// Config to specify which paths this middleware applies to
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
