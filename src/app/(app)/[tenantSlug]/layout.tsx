@@ -121,6 +121,10 @@ export default async function AppLayout({
                   Account
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer">
+                  <Settings size={16} className="mr-2" />
+                  Configuration
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">
                   <CreditCard size={16} className="mr-2" />
                   Billing
                 </DropdownMenuItem>
