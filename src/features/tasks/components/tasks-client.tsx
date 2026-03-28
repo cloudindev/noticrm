@@ -161,9 +161,9 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
           <div></div>
         </div>
 
-        {/* Inline Task Creation Overlay */}
+        {/* Inline Task Creation */}
         {isCreating && (
-          <div className="absolute top-12 left-0 right-0 z-10 px-4 py-2 bg-background/50 backdrop-blur-[2px]">
+          <div className="px-4 py-3 bg-muted/10 border-b border-border/40">
             <InlineTaskCreator 
               onClose={() => setIsCreating(false)} 
               onSave={handleCreateTask} 

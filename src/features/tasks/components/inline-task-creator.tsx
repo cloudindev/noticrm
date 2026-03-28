@@ -12,8 +12,13 @@ import {
   Calendar as CalendarIcon, 
   User as UserIcon, 
   ArrowUpRight,
-  Check
+  Check,
+  Clock,
+  Sun,
+  Coffee,
+  CalendarDays
 } from 'lucide-react';
+import { addDays, nextMonday, nextFriday, isToday, isTomorrow } from 'date-fns';
 
 interface InlineTaskCreatorProps {
   onClose: () => void;
@@ -119,12 +124,67 @@ export function InlineTaskCreator({ onClose, onSave }: InlineTaskCreatorProps) {
               </div>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={setDate}
-                initialFocus
-              />
+              <div className="flex bg-background rounded-md shadow-sm border border-border/40 overflow-hidden">
+                <div className="w-[140px] border-r border-border/40 bg-muted/10 p-2 flex flex-col gap-1">
+                  <div className="text-xs font-semibold text-muted-foreground uppercase px-2 py-1.5 flex items-center gap-1.5"><Clock size={12}/> Suggestions</div>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="justify-start gap-2 h-8 text-xs font-medium px-2 hover:bg-muted/50" 
+                    onClick={() => { setDate(new Date()); /* Optionally close popover here if wanted */ }}
+                  >
+                    <div className="text-[#2f6bff]"><Sun size={14}/></div>
+                    Today
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="justify-start gap-2 h-8 text-xs font-medium px-2 hover:bg-muted/50" 
+                    onClick={() => setDate(addDays(new Date(), 1))}
+                  >
+                    <div className="text-[#ff9800]"><Coffee size={14}/></div>
+                    Tomorrow
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="justify-start gap-2 h-8 text-xs font-medium px-2 hover:bg-muted/50" 
+                    onClick={() => setDate(nextFriday(new Date()))}
+                  >
+                    <div className="text-muted-foreground"><Clock size={14}/></div>
+                    This weekend
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="justify-start gap-2 h-8 text-xs font-medium px-2 hover:bg-muted/50" 
+                    onClick={() => setDate(nextMonday(new Date()))}
+                  >
+                    <div className="text-muted-foreground"><CalendarDays size={14}/></div>
+                    Next week
+                  </Button>
+                  
+                  <div className="mt-auto pt-2 border-t border-border/40">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="justify-start w-full h-8 text-xs font-medium px-2 text-red-500 hover:text-red-600 hover:bg-red-50" 
+                      onClick={() => setDate(undefined)}
+                    >
+                      Clear priority
+                    </Button>
+                  </div>
+                </div>
+                <div className="p-2">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    initialFocus
+                    className="bg-transparent"
+                  />
+                </div>
+              </div>
             </PopoverContent>
           </Popover>
 

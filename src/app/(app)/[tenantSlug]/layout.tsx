@@ -61,6 +61,14 @@ export default async function AppLayout({
   const userEmail = session.user.email || "user@example.com";
   const initials = userName.charAt(0).toUpperCase();
 
+  // Get uncompleted tasks count
+  const uncompletedTasksCount = await prisma.task.count({
+    where: {
+      tenantId: membership.tenantId,
+      status: { not: "COMPLETED" },
+    }
+  });
+
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background">
       {/* Sidebar */}
@@ -80,7 +88,12 @@ export default async function AppLayout({
               Workspace
             </div>
             <SidebarNavItem icon={<Home size={18} />} label="Home" href={`/${tenantSlug}/home`} />
-            <SidebarNavItem icon={<CheckSquare size={18} />} label="Tasks" href={`/${tenantSlug}/tasks`} />
+            <SidebarNavItem 
+              icon={<CheckSquare size={18} />} 
+              label="Tasks" 
+              href={`/${tenantSlug}/tasks`} 
+              badge={uncompletedTasksCount > 0 ? uncompletedTasksCount : undefined} 
+            />
             <SidebarNavItem icon={<Mail size={18} />} label="Emails" href={`/${tenantSlug}/emails`} />
             
             <div className="mb-2 mt-4 px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">

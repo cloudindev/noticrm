@@ -7,11 +7,13 @@ import { usePathname } from 'next/navigation';
 export function SidebarNavItem({ 
   icon, 
   label, 
-  href 
+  href,
+  badge
 }: { 
   icon: React.ReactNode;
   label: string;
   href: string;
+  badge?: React.ReactNode;
 }) {
   const pathname = usePathname();
   // Ensure the trailing slash or exact match logic to avoid partial matches
@@ -29,7 +31,12 @@ export function SidebarNavItem({
     >
       {icon}
       <span>{label}</span>
-      {isActive && <div className="ml-auto h-2 w-2 rounded-full bg-primary" />}
+      {badge && (
+        <span className="ml-auto inline-flex h-5 items-center justify-center rounded-sm bg-[#2f6bff] px-1.5 text-[11px] font-medium text-white">
+          {badge}
+        </span>
+      )}
+      {isActive && !badge && <div className="ml-auto h-2 w-2 rounded-full bg-primary" />}
     </Link>
   );
 }
