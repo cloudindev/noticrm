@@ -33,7 +33,15 @@ export default async function MembersSettingsPage({
   if (!tenant || !session?.user?.id) return notFound();
 
   return (
-    <div className="mx-auto max-w-5xl py-10 px-8">
+    <div className="flex flex-col h-full w-full">
+      {/* Top Header */}
+      <div className="flex h-14 items-center px-6 border-b border-border/40 gap-2 shrink-0 bg-background z-10 sticky top-0">
+        <User size={16} className="text-muted-foreground" />
+        <span className="text-sm font-semibold">Members</span>
+      </div>
+
+      <div className="flex-1 overflow-y-auto w-full">
+        <div className="mx-auto max-w-5xl py-10 px-8">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-semibold mb-1">Members</h1>
@@ -80,7 +88,7 @@ export default async function MembersSettingsPage({
 
         {/* Table Body */}
         <div className="divide-y divide-border/40">
-          {tenant.members.map((membership) => {
+          {tenant.members.map((membership: any) => {
             const isYou = membership.userId === session.user?.id;
             const initials = membership.user.name?.charAt(0).toUpperCase() || "U";
             const roleBadgeClass = membership.role === 'OWNER' || membership.role === 'ADMIN' 
@@ -129,6 +137,8 @@ export default async function MembersSettingsPage({
         </div>
       </div>
 
+        </div>
+      </div>
     </div>
   );
 }

@@ -3,10 +3,19 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { User } from 'lucide-react';
 
 export default function ProfileSettingsPage() {
   return (
-    <div className="mx-auto max-w-4xl py-10 px-8">
+    <div className="flex flex-col h-full w-full">
+      {/* Top Header */}
+      <div className="flex h-14 items-center px-6 border-b border-border/40 gap-2 shrink-0 bg-background z-10 sticky top-0">
+        <User size={16} className="text-muted-foreground" />
+        <span className="text-sm font-semibold">Profile</span>
+      </div>
+
+      <div className="flex-1 overflow-y-auto w-full">
+        <div className="mx-auto max-w-4xl py-10 px-8">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-semibold mb-1">Profile</h1>
@@ -97,6 +106,8 @@ export default function ProfileSettingsPage() {
               </SelectContent>
             </Select>
           </div>
+        </div>
+      </div>
         </div>
       </div>
     </div>

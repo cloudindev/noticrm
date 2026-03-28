@@ -1,10 +1,19 @@
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { Mail } from 'lucide-react';
 
 export default function EmailSettingsPage() {
   return (
-    <div className="mx-auto max-w-4xl py-10 px-8">
+    <div className="flex flex-col h-full w-full">
+      {/* Top Header */}
+      <div className="flex h-14 items-center px-6 border-b border-border/40 gap-2 shrink-0 bg-background z-10 sticky top-0">
+        <Mail size={16} className="text-muted-foreground" />
+        <span className="text-sm font-semibold">Email and calendar accounts</span>
+      </div>
+
+      <div className="flex-1 overflow-y-auto w-full">
+        <div className="mx-auto max-w-4xl py-10 px-8">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-semibold mb-1">Email and calendar accounts</h1>
@@ -45,6 +54,8 @@ export default function EmailSettingsPage() {
           </svg>
           Connect Microsoft Account
         </Button>
+      </div>
+        </div>
       </div>
     </div>
   );

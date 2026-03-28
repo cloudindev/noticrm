@@ -2,7 +2,7 @@ import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Camera, Copy, Download, LayoutGrid, Calendar, Trash2 } from 'lucide-react';
+import { Camera, Copy, Download, LayoutGrid, Calendar, Trash2, Building } from 'lucide-react';
 
 import { PrismaClient } from "@prisma/client";
 import { notFound } from "next/navigation";
@@ -25,7 +25,15 @@ export default async function GeneralSettingsPage({
   const workspaceName = tenant.name;
 
   return (
-    <div className="mx-auto max-w-4xl py-10 px-8">
+    <div className="flex flex-col h-full w-full">
+      {/* Top Header */}
+      <div className="flex h-14 items-center px-6 border-b border-border/40 gap-2 shrink-0 bg-background z-10 sticky top-0">
+        <Building size={16} className="text-muted-foreground" />
+        <span className="text-sm font-semibold">General</span>
+      </div>
+
+      <div className="flex-1 overflow-y-auto w-full">
+        <div className="mx-auto max-w-4xl py-10 px-8">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-semibold mb-1">General</h1>
@@ -118,6 +126,8 @@ export default async function GeneralSettingsPage({
             <Trash2 size={16} />
             Delete workspace
           </Button>
+        </div>
+      </div>
         </div>
       </div>
     </div>
