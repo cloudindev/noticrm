@@ -16,6 +16,10 @@ import {
 import { SidebarNavItem } from "@/components/app/sidebar-nav-item";
 import { UserProfileDropdown } from "@/components/app/user-profile-dropdown";
 import { auth } from "@/lib/auth";
+import { redirect, notFound } from "next/navigation";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export default async function AppLayout({
   children,
@@ -26,8 +30,35 @@ export default async function AppLayout({
 }) {
   const { tenantSlug } = await params;
   const session = await auth();
-  const userName = session?.user?.name || "User Name";
-  const userEmail = session?.user?.email || "user@example.com";
+
+  if (!session?.user?.id) {
+    redirect('/login');
+  }
+
+  // Cross-check if user actually belongs to this workspace
+  const membership = await prisma.membership.findFirst({
+    where: {
+      userId: session.user.id,
+      tenant: { slug: tenantSlug }
+    }
+  });
+
+  if (!membership) {
+    // Attempt rescue to their valid workspace
+    const validMembership = await prisma.membership.findFirst({
+      where: { userId: session.user.id },
+      include: { tenant: true }
+    });
+    
+    if (validMembership) {
+      redirect(`/${validMembership.tenant.slug}/home`);
+    }
+    
+    notFound();
+  }
+
+  const userName = session.user.name || "User Name";
+  const userEmail = session.user.email || "user@example.com";
   const initials = userName.charAt(0).toUpperCase();
 
   return (
