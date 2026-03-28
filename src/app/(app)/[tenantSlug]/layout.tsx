@@ -16,9 +16,11 @@ import {
   Sparkles,
   User as UserIcon,
   CreditCard,
-  Bell
+  Bell,
+  Blocks
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { SidebarNavItem } from "@/components/app/sidebar-nav-item";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -61,24 +63,28 @@ export default async function AppLayout({
             <div className="mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
               Workspace
             </div>
-            <SidebarItem icon={<Home size={18} />} label="Home" href={`/${tenantSlug}/home`} active />
-            <SidebarItem icon={<CheckSquare size={18} />} label="Tasks" href={`/${tenantSlug}/tasks`} />
-            <SidebarItem icon={<Mail size={18} />} label="Emails" href={`/${tenantSlug}/emails`} />
+            <SidebarNavItem icon={<Home size={18} />} label="Home" href={`/${tenantSlug}/home`} />
+            <SidebarNavItem icon={<CheckSquare size={18} />} label="Tasks" href={`/${tenantSlug}/tasks`} />
+            <SidebarNavItem icon={<Mail size={18} />} label="Emails" href={`/${tenantSlug}/emails`} />
             
             <div className="mb-2 mt-4 px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
               Records
             </div>
-            <SidebarItem icon={<Building2 size={18} />} label="Companies" href={`/${tenantSlug}/companies`} />
-            <SidebarItem icon={<Users size={18} />} label="People" href={`/${tenantSlug}/people`} />
-            <SidebarItem icon={<Target size={18} />} label="Leads" href={`/${tenantSlug}/leads`} />
+            <SidebarNavItem icon={<Building2 size={18} />} label="Companies" href={`/${tenantSlug}/companies`} />
+            <SidebarNavItem icon={<Users size={18} />} label="People" href={`/${tenantSlug}/people`} />
+            <SidebarNavItem icon={<Target size={18} />} label="Leads" href={`/${tenantSlug}/leads`} />
             
             <div className="mb-2 mt-4 px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
               Analytics
             </div>
-            <SidebarItem icon={<BarChart2 size={18} />} label="Reports" href={`/${tenantSlug}/reports`} />
+            <SidebarNavItem icon={<BarChart2 size={18} />} label="Reports" href={`/${tenantSlug}/reports`} />
           </nav>
         </div>
         
+        <div className="px-2 mb-2">
+          <SidebarNavItem icon={<Blocks size={18} />} label="Marketplace" href={`/${tenantSlug}/marketplace`} />
+        </div>
+
         <div className="mt-auto border-t border-border/40 p-2">
           <DropdownMenu>
             <DropdownMenuTrigger className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-md p-2 hover:bg-sidebar-accent/50 outline-none transition-colors border-0">
@@ -122,7 +128,7 @@ export default async function AppLayout({
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer">
                   <Settings size={16} className="mr-2" />
-                  Configuration
+                  Settings
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer">
                   <CreditCard size={16} className="mr-2" />
@@ -178,19 +184,3 @@ export default async function AppLayout({
   );
 }
 
-function SidebarItem({ icon, label, href, active }: { icon: React.ReactNode, label: string, href: string, active?: boolean }) {
-  return (
-    <Link
-      href={href}
-      className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
-        active 
-          ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium' 
-          : 'text-sidebar-foreground hover:bg-sidebar-accent/50'
-      }`}
-    >
-      {icon}
-      <span>{label}</span>
-      {active && <div className="ml-auto h-2 w-2 rounded-full bg-primary" />}
-    </Link>
-  );
-}
