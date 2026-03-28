@@ -71,6 +71,13 @@ export default async function SettingsLayoutWrapper({
                 General
               </Link>
               <Link 
+                href={`/${tenantSlug}/settings/members`}
+                className="flex items-center gap-2.5 rounded-md px-3 py-1.5 text-sm outline-none hover:bg-black/5 dark:hover:bg-white/10 text-muted-foreground hover:text-foreground"
+              >
+                <User size={15} className="text-muted-foreground" />
+                Members
+              </Link>
+              <Link 
                 href={`/${tenantSlug}/settings/plans`}
                 className="flex items-center gap-2.5 rounded-md px-3 py-1.5 text-sm outline-none hover:bg-black/5 dark:hover:bg-white/10 text-muted-foreground hover:text-foreground"
               >
