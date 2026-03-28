@@ -2,6 +2,7 @@ import type { NextAuthConfig } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authConfig = {
+  secret: process.env.AUTH_SECRET || "noticrm-fallback-secret-for-production-12345",
   session: { strategy: "jwt" },
   trustHost: true,
   useSecureCookies: false,

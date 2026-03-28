@@ -43,8 +43,8 @@ export function LoginForm() {
         password: data.password,
       });
       
-      if (result?.error) {
-        toast.error("Invalid email or password");
+      if (result?.error || result?.url?.includes('error')) {
+        toast.error("Invalid email, password, or configuration error.");
         setIsLoading(false);
         return;
       }
