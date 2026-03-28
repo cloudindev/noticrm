@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authConfig = {
   session: { strategy: "jwt" },
+  trustHost: true,
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -18,16 +19,26 @@ export const authConfig = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id = user.id;
         token.tenantSlug = (user as any).tenantSlug;
+        token.email = user.email;
+        token.name = user.name;
       }
+      
+      // Update tenantSlug if we implement workspace switching in the future
+      if (trigger === "update" && session?.tenantSlug) {
+        token.tenantSlug = session.tenantSlug;
+      }
+      
       return token;
     },
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id as string;
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
         (session.user as any).tenantSlug = token.tenantSlug as string;
       }
       return session;
