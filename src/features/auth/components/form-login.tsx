@@ -9,9 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
 import { useRouter, useSearchParams } from 'next/navigation';
-// Since NextAuth v5 client handles sign in from outside app router well, but standard is Server Actions.
-// Let's create an action in 'actions.ts' for credentials sign-in, or use next-auth's signIn right away.
-import { signInAction } from '../actions'; 
+import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 
 const loginSchema = z.object({
@@ -39,7 +37,11 @@ export function LoginForm() {
     setIsLoading(true);
 
     try {
-      const result = await signInAction(data.email, data.password);
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+      });
       
       if (result?.error) {
         toast.error("Invalid email or password");
