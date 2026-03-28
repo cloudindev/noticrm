@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { signOut } from 'next-auth/react';
 import { 
   ChevronsUpDown,
   LogOut,
@@ -29,9 +30,9 @@ interface UserProfileDropdownProps {
 }
 
 export function UserProfileDropdown({ userName, userEmail, initials }: UserProfileDropdownProps) {
-  const handleLogout = (e: React.MouseEvent) => {
+  const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault();
-    window.location.href = "/api/auth/signout";
+    await signOut({ callbackUrl: '/login' });
   };
 
   return (
