@@ -18,9 +18,10 @@ interface UserProfileDropdownProps {
   userName: string;
   userEmail: string;
   initials: string;
+  tenantSlug: string;
 }
 
-export function UserProfileDropdown({ userName, userEmail, initials }: UserProfileDropdownProps) {
+export function UserProfileDropdown({ userName, userEmail, initials, tenantSlug }: UserProfileDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -78,31 +79,27 @@ export function UserProfileDropdown({ userName, userEmail, initials }: UserProfi
           </div>
 
           <div className="px-1">
-            <button className="w-full flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm outline-none hover:bg-muted text-left">
+            <Link href={`/${tenantSlug}/settings/plans`} onClick={() => setIsOpen(false)} className="w-full flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm outline-none hover:bg-muted text-left">
               <Sparkles size={16} className="text-muted-foreground" />
               Upgrade to Pro
-            </button>
+            </Link>
           </div>
           
           <div className="h-px bg-border/40 my-1.5 mx-0" />
           
           <div className="px-1">
-            <button className="w-full flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm outline-none hover:bg-muted text-left">
+            <Link href={`/${tenantSlug}/settings/profile`} onClick={() => setIsOpen(false)} className="w-full flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm outline-none hover:bg-muted text-left">
               <UserIcon size={16} className="text-muted-foreground" />
               Account
-            </button>
-            <button className="w-full flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm outline-none hover:bg-muted text-left">
+            </Link>
+            <Link href={`/${tenantSlug}/settings/general`} onClick={() => setIsOpen(false)} className="w-full flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm outline-none hover:bg-muted text-left">
               <Settings size={16} className="text-muted-foreground" />
               Settings
-            </button>
-            <button className="w-full flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm outline-none hover:bg-muted text-left">
+            </Link>
+            <Link href={`/${tenantSlug}/settings/billing`} onClick={() => setIsOpen(false)} className="w-full flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm outline-none hover:bg-muted text-left">
               <CreditCard size={16} className="text-muted-foreground" />
-              Billing
-            </button>
-            <button className="w-full flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm outline-none hover:bg-muted text-left">
-              <Bell size={16} className="text-muted-foreground" />
-              Notifications
-            </button>
+              Subscription
+            </Link>
           </div>
 
           <div className="h-px bg-border/40 my-1.5 mx-0" />

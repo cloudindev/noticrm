@@ -119,6 +119,7 @@ export default async function AppLayout({
             userName={userName} 
             userEmail={userEmail} 
             initials={initials} 
+            tenantSlug={tenantSlug}
           />
         </div>
       </aside>
