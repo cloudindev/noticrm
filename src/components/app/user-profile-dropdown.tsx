@@ -37,7 +37,8 @@ export function UserProfileDropdown({ userName, userEmail, initials, tenantSlug 
 
   const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault();
-    await signOut({ callbackUrl: '/login' });
+    // Using NextAuth's built-in signout endpoint for robust logout since signOut from next-auth/react can sometimes fail in certain v5 edge cases without SessionProvider
+    window.location.href = '/api/auth/signout?callbackUrl=/login';
   };
 
   return (
@@ -63,7 +64,7 @@ export function UserProfileDropdown({ userName, userEmail, initials, tenantSlug 
       </button>
 
       {isOpen && (
-        <div className="absolute bottom-full left-0 mb-2 w-64 rounded-xl border border-border/40 bg-popover text-popover-foreground shadow-lg ring-1 ring-black/5 p-1.5 z-50 animate-in fade-in zoom-in-95">
+        <div className="absolute bottom-1 left-[240px] w-[260px] rounded-xl border border-border/40 bg-popover text-popover-foreground shadow-xl ring-1 ring-black/5 p-1.5 z-50 animate-in fade-in zoom-in-95">
           {/* Header */}
           <div className="flex items-center gap-3 px-2 py-2.5 text-left text-sm border-b border-border/40 mb-1.5">
             <Avatar className="h-9 w-9 rounded-md border border-border/40">
@@ -96,7 +97,7 @@ export function UserProfileDropdown({ userName, userEmail, initials, tenantSlug 
               <Settings size={16} className="text-muted-foreground" />
               Settings
             </Link>
-            <Link href={`/${tenantSlug}/settings/billing`} onClick={() => setIsOpen(false)} className="w-full flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm outline-none hover:bg-muted text-left">
+            <Link href={`/${tenantSlug}/settings/plans`} onClick={() => setIsOpen(false)} className="w-full flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm outline-none hover:bg-muted text-left">
               <CreditCard size={16} className="text-muted-foreground" />
               Subscription
             </Link>
