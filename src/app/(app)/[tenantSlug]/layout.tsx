@@ -81,29 +81,8 @@ export default async function AppLayout({
 
       {/* Main Content Area */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="flex h-14 items-center justify-between border-b border-border/40 bg-background/95 px-4 lg:px-6">
-          <div className="flex items-center gap-4">
-            <button className="sm:hidden text-muted-foreground">
-              <Menu size={20} />
-            </button>
-            <div className="relative hidden max-w-md sm:flex items-center">
-              <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
-              <input
-                type="search"
-                placeholder="Search anything... (⌘K)"
-                className="flex h-9 w-[300px] rounded-md border border-input bg-transparent px-3 py-1 pl-9 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-              />
-            </div>
-          </div>
-          <div className="flex items-center gap-4">
-            <button className="text-muted-foreground hover:text-foreground">
-              <Settings size={20} />
-            </button>
-          </div>
-        </header>
-        
-        <main className="flex-1 overflow-y-auto bg-muted/20 p-4 lg:p-8">
-          <div className="mx-auto max-w-6xl">
+        <main className="flex-1 overflow-y-auto bg-background p-4 lg:p-8">
+          <div className="mx-auto max-w-full">
             {children}
           </div>
         </main>

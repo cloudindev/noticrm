@@ -1,15 +1,18 @@
-"use client";
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
   CheckSquare, 
   X, 
   Calendar as CalendarIcon, 
   User as UserIcon, 
-  ArrowUpRight 
+  ArrowUpRight,
+  Check
 } from 'lucide-react';
 
 interface InlineTaskCreatorProps {
@@ -17,9 +20,28 @@ interface InlineTaskCreatorProps {
   onSave: (title: string, createMore: boolean) => void;
 }
 
+const MOCK_USERS = [
+  { id: 1, name: "Alvaro S.", initials: "AS", avatar: "" },
+  { id: 2, name: "Maria G.", initials: "MG", avatar: "" },
+];
+
+const MOCK_RECORDS = [
+  { id: 1, name: "Intercom", domain: "intercom.com" },
+  { id: 2, name: "United Airlines", domain: "united.com" },
+  { id: 3, name: "LVMH", domain: "lvmh.com" },
+  { id: 4, name: "Microsoft", domain: "microsoft.com" },
+  { id: 5, name: "Apple", domain: "apple.com" },
+  { id: 6, name: "Attio", domain: "attio.com" },
+];
+
 export function InlineTaskCreator({ onClose, onSave }: InlineTaskCreatorProps) {
   const [title, setTitle] = useState('');
   const [createMore, setCreateMore] = useState(false);
+  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [assignee, setAssignee] = useState<typeof MOCK_USERS[0] | null>(MOCK_USERS[0]);
+  const [openAssignee, setOpenAssignee] = useState(false);
+  const [openRecord, setOpenRecord] = useState(false);
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -55,7 +77,7 @@ export function InlineTaskCreator({ onClose, onSave }: InlineTaskCreatorProps) {
   };
 
   return (
-    <div className="flex flex-col rounded-xl border border-border/60 bg-card shadow-lg ring-1 ring-black/5 dark:ring-white/5 overflow-hidden ring-border">
+    <div className="flex flex-col rounded-xl border border-border/80 bg-card shadow-[0_8px_30px_rgb(0,0,0,0.12)] overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-border/40">
         <div className="flex items-center gap-2 text-sm font-medium text-foreground">
@@ -69,17 +91,15 @@ export function InlineTaskCreator({ onClose, onSave }: InlineTaskCreatorProps) {
       </div>
 
       {/* Input Area */}
-      <div className="p-4">
+      <div className="p-4 bg-background">
         <Input
           ref={inputRef}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Schedule a follow-up call with a @Contact"
-          className="border-0 shadow-none focus-visible:ring-0 px-0 text-base bg-transparent h-auto placeholder:text-muted-foreground/60 rounded-none w-full"
+          className="border-0 shadow-none focus-visible:ring-0 px-0 text-base bg-transparent h-auto placeholder:text-muted-foreground/50 font-medium rounded-none w-full"
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.metaKey && !e.ctrlKey) {
-              // Standard enter should just save if we want, or do nothing.
-              // Let's make standard enter save it too to be user friendly, unless multiline.
               e.preventDefault();
               handleSaveClick();
             }
@@ -88,45 +108,123 @@ export function InlineTaskCreator({ onClose, onSave }: InlineTaskCreatorProps) {
       </div>
 
       {/* Footer / Toolbar */}
-      <div className="flex items-center justify-between px-4 py-3 bg-muted/20 border-t border-border/40">
+      <div className="flex items-center justify-between px-4 py-3 bg-white border-t border-border/40">
         {/* Left Side Selectors */}
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="h-8 gap-1.5 bg-background shadow-sm border-border/60 text-xs">
-            <CalendarIcon size={14} className="text-muted-foreground" />
-            Today
-          </Button>
-          <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-muted-foreground px-2 text-xs">
-            <UserIcon size={14} />
-            @ Assigned to You
-          </Button>
-          <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-muted-foreground px-2 text-xs">
-            <ArrowUpRight size={14} />
-            Add record
-          </Button>
+        <div className="flex items-center gap-1.5">
+          <Popover>
+            <PopoverTrigger>
+              <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-1.5 bg-background shadow-xs border border-border/60 text-xs text-foreground font-medium rounded-md px-2.5 hover:bg-muted/50">
+                <CalendarIcon size={14} className="text-muted-foreground" />
+                {date ? "Today" : "Set date"}
+              </div>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={setDate}
+                initialFocus
+              />
+            </PopoverContent>
+          </Popover>
+
+          <Popover open={openAssignee} onOpenChange={setOpenAssignee}>
+            <PopoverTrigger>
+              <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-1.5 text-muted-foreground px-2.5 text-xs font-medium rounded-md hover:bg-muted/60 bg-muted/30">
+                <UserIcon size={14} />
+                @ {assignee?.name === "Alvaro S." ? "Assigned to You" : assignee?.name || "Assign"}
+              </div>
+            </PopoverTrigger>
+            <PopoverContent className="w-[240px] p-0" align="start">
+              <Command>
+                <CommandInput placeholder="Find a user..." className="h-9 text-xs" />
+                <CommandList>
+                  <CommandEmpty>No users found.</CommandEmpty>
+                  <CommandGroup>
+                    {MOCK_USERS.map((user) => (
+                      <CommandItem
+                        key={user.id}
+                        value={user.name}
+                        onSelect={() => {
+                          setAssignee(user);
+                          setOpenAssignee(false);
+                        }}
+                        className="text-xs"
+                      >
+                        <Avatar className="h-4 w-4 mr-2">
+                          <AvatarFallback className="text-[8px] bg-primary/10 text-primary">{user.initials}</AvatarFallback>
+                        </Avatar>
+                        {user.name}
+                        <Check
+                          className={`ml-auto h-4 w-4 ${assignee?.id === user.id ? "opacity-100" : "opacity-0"}`}
+                        />
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+
+          <Popover open={openRecord} onOpenChange={setOpenRecord}>
+            <PopoverTrigger>
+              <div role="button" tabIndex={0} className="hidden sm:inline-flex cursor-pointer items-center justify-center h-8 gap-1.5 text-muted-foreground px-2.5 text-xs font-medium rounded-md hover:bg-muted/60 bg-muted/30">
+                <ArrowUpRight size={14} />
+                Add record
+              </div>
+            </PopoverTrigger>
+            <PopoverContent className="w-[280px] p-0" align="start">
+              <Command>
+                <CommandInput placeholder="Search..." className="h-9 text-xs" />
+                <CommandList>
+                  <CommandEmpty>No records found.</CommandEmpty>
+                  <CommandGroup>
+                    {MOCK_RECORDS.map((record) => (
+                      <CommandItem
+                        key={record.id}
+                        value={record.name}
+                        onSelect={() => {
+                          setOpenRecord(false);
+                          // Handle record select visually
+                        }}
+                        className="text-xs"
+                      >
+                        <div className="flex h-4 w-4 items-center justify-center rounded bg-black text-white mr-2 text-[8px] font-bold">
+                          {record.name.charAt(0)}
+                        </div>
+                        <span className="font-medium mr-1">{record.name}</span>
+                        <span className="text-muted-foreground">{record.domain}</span>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
 
         {/* Right Side Actions */}
-        <div className="flex items-center gap-4">
-          <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-muted-foreground hover:text-foreground transition-colors mr-2">
+        <div className="flex items-center gap-3">
+          <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-foreground transition-colors mr-1">
             <Switch 
               checked={createMore} 
               onCheckedChange={setCreateMore} 
-              className="scale-75 data-[state=checked]:bg-primary"
+              className="scale-75 data-[state=checked]:bg-[#2f6bff]"
             />
             Create more
           </label>
           
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={onClose} className="h-8 text-muted-foreground px-3 text-xs gap-1.5">
+          <div className="flex items-center gap-1.5">
+            <Button variant="outline" size="sm" onClick={onClose} className="h-8 text-foreground bg-white border-border/60 hover:bg-muted/30 px-3 text-xs gap-1.5 shadow-xs font-medium rounded-md">
               Cancel
-              <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded border border-border/50 bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+              <kbd className="hidden sm:inline-flex h-4 items-center gap-1 rounded bg-muted/60 px-1 font-mono text-[9px] font-medium text-muted-foreground uppercase">
                 ESC
               </kbd>
             </Button>
-            <Button size="sm" onClick={handleSaveClick} disabled={!title.trim()} className="h-8 shadow-sm px-3 text-xs gap-1.5">
+            <Button size="sm" onClick={handleSaveClick} disabled={!title.trim()} className="h-8 bg-[#2f6bff] hover:bg-[#1a55e8] text-white shadow-sm px-3 text-xs gap-1.5 font-medium rounded-md">
               Save
-              <kbd className="hidden sm:inline-flex h-5 items-center gap-1 rounded bg-primary-foreground/20 px-1.5 font-mono text-[10px] font-medium text-primary-foreground">
-                <span className="text-[12px]">⌘</span> ↵
+              <kbd className="hidden sm:inline-flex h-4 items-center gap-1 rounded bg-white/20 px-1 font-sans text-[10px] font-medium text-white/90">
+                ⌘ ↵
               </kbd>
             </Button>
           </div>

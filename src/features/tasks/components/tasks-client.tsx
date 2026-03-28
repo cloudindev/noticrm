@@ -11,10 +11,13 @@ import {
   Calendar,
   User as UserIcon,
   ArrowUpRight,
-  MoreHorizontal
+  MoreHorizontal,
+  CheckSquare, 
+  ChevronDown
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { InlineTaskCreator } from './inline-task-creator';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 // Mock Data matching the UI
 const INITIAL_TASKS = [
@@ -83,29 +86,50 @@ export function TasksClient() {
   return (
     <div className="flex flex-col gap-6 h-full pb-10">
       {/* Header & Toolbar */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between py-2">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary/10 text-primary">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight">Tasks</h1>
+          <CheckSquare size={20} className="text-muted-foreground mr-1" />
+          <h1 className="text-xl font-semibold tracking-tight">Tasks</h1>
         </div>
 
-        <div className="flex items-center gap-3">
-          <Button variant="outline" size="sm" className="h-9 gap-2 text-muted-foreground border-border/60">
-            <ListFilter size={14} />
-            Sorted by <span className="text-foreground font-medium">Due date</span>
-          </Button>
-          <Button variant="outline" size="sm" className="h-9 gap-2 text-muted-foreground border-border/60">
+        <div className="flex items-center gap-2.5">
+          <Popover>
+            <PopoverTrigger>
+              <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-2 bg-background shadow-xs border border-border/60 text-xs text-muted-foreground font-medium rounded-md px-3 hover:bg-muted/50">
+                <ListFilter size={14} />
+                Sorted by <span className="text-foreground font-medium flex items-center gap-1">Due date <ChevronDown size={12} className="opacity-50" /></span>
+              </div>
+            </PopoverTrigger>
+            <PopoverContent className="w-[180px] p-2" align="start">
+              <div className="text-xs font-medium px-2 py-1.5 text-muted-foreground">Sort options</div>
+              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer flex justify-between">Due date <span className="text-primary mr-1">✓</span></div>
+              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer">Created date</div>
+              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer">Priority</div>
+            </PopoverContent>
+          </Popover>
+          
+          <Button variant="outline" size="sm" className="h-8 gap-2 text-muted-foreground border-border/60 shadow-sm rounded-md">
             <SlidersHorizontal size={14} />
             Filter
           </Button>
-          <div className="h-4 w-px bg-border mx-1"></div>
-          <Button variant="ghost" size="sm" className="h-9 gap-2 text-muted-foreground">
-            <LayoutGrid size={14} />
-            View settings
-          </Button>
-          <Button size="sm" className="h-9 gap-1.5 shadow-sm" onClick={() => setIsCreating(true)}>
+
+          <div className="h-4 w-px bg-border/60 mx-1"></div>
+          
+          <Popover>
+            <PopoverTrigger>
+              <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-2 text-xs text-muted-foreground font-medium rounded-md px-2.5 hover:bg-muted/50">
+                <LayoutGrid size={14} />
+                View settings <ChevronDown size={12} className="opacity-50 -ml-1" />
+              </div>
+            </PopoverTrigger>
+            <PopoverContent className="w-[180px] p-2" align="end">
+              <div className="text-xs font-medium px-2 py-1.5 text-muted-foreground">Layout</div>
+              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer flex justify-between">List <span className="text-primary mr-1">✓</span></div>
+              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer">Board</div>
+            </PopoverContent>
+          </Popover>
+
+          <Button size="sm" className="h-8 gap-1.5 shadow-sm bg-[#2f6bff] hover:bg-[#1a55e8] text-white rounded-md font-medium ml-1" onClick={() => setIsCreating(true)}>
             <Plus size={16} />
             New task
           </Button>
