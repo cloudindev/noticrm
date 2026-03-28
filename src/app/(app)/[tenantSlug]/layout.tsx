@@ -10,9 +10,25 @@ import {
   Target,
   Search,
   Settings,
-  Menu
+  Menu,
+  ChevronsUpDown,
+  LogOut,
+  Sparkles,
+  User as UserIcon,
+  CreditCard,
+  Bell
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { auth } from "@/lib/auth";
 
 export default async function AppLayout({
   children,
@@ -22,6 +38,10 @@ export default async function AppLayout({
   params: Promise<{ tenantSlug: string }>;
 }) {
   const { tenantSlug } = await params;
+  const session = await auth();
+  const userName = session?.user?.name || "User Name";
+  const userEmail = session?.user?.email || "user@example.com";
+  const initials = userName.charAt(0).toUpperCase();
 
   return (
     <div className="flex h-screen w-full overflow-hidden bg-background">
@@ -59,15 +79,65 @@ export default async function AppLayout({
           </nav>
         </div>
         
-        <div className="flex items-center gap-3 border-t border-border/40 p-4">
-          <Avatar className="h-8 w-8 rounded-md">
-            <AvatarImage src="" alt="User" />
-            <AvatarFallback className="rounded-md bg-primary/10 text-xs">U</AvatarFallback>
-          </Avatar>
-          <div className="flex flex-col overflow-hidden">
-            <span className="truncate text-sm font-medium">User Name</span>
-            <span className="truncate text-xs text-muted-foreground">user@example.com</span>
-          </div>
+        <div className="mt-auto border-t border-border/40 p-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex w-full cursor-pointer items-center justify-between gap-3 rounded-md p-2 hover:bg-sidebar-accent/50 outline-none transition-colors border-0">
+                <div className="flex items-center gap-3 overflow-hidden text-left">
+                  <Avatar className="h-8 w-8 rounded-md">
+                    <AvatarImage src="" alt={userName} />
+                  <AvatarFallback className="rounded-md bg-primary/10 text-xs font-semibold">{initials}</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col overflow-hidden text-left flex-1">
+                  <span className="truncate text-sm font-semibold">{userName}</span>
+                  <span className="truncate text-xs text-muted-foreground">{userEmail}</span>
+                </div>
+                <ChevronsUpDown size={16} className="text-muted-foreground shrink-0" />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" align="end" side="right" sideOffset={12}>
+              <DropdownMenuLabel className="p-0 font-normal">
+                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                  <Avatar className="h-8 w-8 rounded-md">
+                    <AvatarImage src="" alt={userName} />
+                    <AvatarFallback className="rounded-md bg-primary/10 text-xs font-semibold">{initials}</AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold">{userName}</span>
+                    <span className="truncate text-xs text-muted-foreground">{userEmail}</span>
+                  </div>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem className="cursor-pointer">
+                  <Sparkles size={16} className="mr-2" />
+                  Upgrade to Pro
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem className="cursor-pointer">
+                  <UserIcon size={16} className="mr-2" />
+                  Account
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">
+                  <CreditCard size={16} className="mr-2" />
+                  Billing
+                </DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">
+                  <Bell size={16} className="mr-2" />
+                  Notifications
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <Link href="/api/auth/signout" className="flex items-center w-full">
+                <DropdownMenuItem className="cursor-pointer w-full">
+                    <LogOut size={16} className="mr-2" />
+                    Log out
+                </DropdownMenuItem>
+              </Link>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </aside>
 
