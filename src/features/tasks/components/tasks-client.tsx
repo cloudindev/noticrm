@@ -19,68 +19,81 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { InlineTaskCreator } from './inline-task-creator';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
-// Mock Data matching the UI
-const INITIAL_TASKS = [
-  {
-    id: 1,
-    title: "Schedule a Q2 review with Enterprise clients",
-    completed: true,
-    dueDate: "Yesterday",
-    dueColor: "text-red-500",
-    record: "Enterprise Segment",
-    assignee: { name: "Alvaro S.", initials: "AS", avatar: "" }
-  },
-  {
-    id: 2,
-    title: "tesrt",
-    completed: false,
-    dueDate: "Next week",
-    dueColor: "text-muted-foreground",
-    record: "ACME Corp",
-    assignee: { name: "Alvaro S.", initials: "AS", avatar: "" }
-  },
-  {
-    id: 3,
-    title: "dasdsdsd",
-    completed: false,
-    dueDate: "Due today",
-    dueColor: "text-orange-500 font-medium",
-    record: "Global Tech",
-    assignee: { name: "Alvaro S.", initials: "AS", avatar: "" }
-  },
-  {
-    id: 4,
-    title: "dasdas",
-    completed: false,
-    dueDate: "Tomorrow",
-    dueColor: "text-muted-foreground",
-    record: "Pipeline",
-    assignee: { name: "Alvaro S.", initials: "AS", avatar: "" }
-  }
-];
+// Removed Mock Data
+import { createTask, updateTaskStatus } from '../actions';
+import { useTransition } from 'react';
 
-export function TasksClient() {
-  const [tasks, setTasks] = useState(INITIAL_TASKS);
+export interface TaskItem {
+  id: string;
+  title: string;
+  completed: boolean;
+  dueDate: string;
+  dueColor: string;
+  record: string;
+  assignee: { name: string; initials: string; avatar: string };
+}
+
+interface TasksClientProps {
+  initialTasks: TaskItem[];
+  tenantSlug: string;
+}
+
+export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
+  // Use React's experimental useOptimistic if we wanted to avoid lag, 
+  // but since we are handling dynamic sorting, let's keep local state as source of truth combined with Server Actions
+  const [tasks, setTasks] = useState<TaskItem[]>(initialTasks);
   const [isCreating, setIsCreating] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
-  const toggleTask = (id: number) => {
-    setTasks(tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
+  // Sync state if initialTasks change securely after revalidation
+  React.useEffect(() => {
+    setTasks(initialTasks);
+  }, [initialTasks]);
+
+  const toggleTask = (id: string, currentlyCompleted: boolean) => {
+    // Optimistic UI Update
+    setTasks(tasks.map(t => t.id === id ? { ...t, completed: !currentlyCompleted } : t));
+    
+    startTransition(async () => {
+      const result = await updateTaskStatus(tenantSlug, id, !currentlyCompleted);
+      if (result.error) {
+        // Revert on error
+        setTasks(tasks.map(t => t.id === id ? { ...t, completed: currentlyCompleted } : t));
+      }
+    });
   };
 
   const handleCreateTask = (title: string, createMore: boolean) => {
-    const newTask = {
-      id: Date.now(),
+    // Optimistic Creation
+    const optimisticTask: TaskItem = {
+      id: `temp-${Date.now()}`,
       title,
       completed: false,
       dueDate: "Today",
       dueColor: "text-orange-500 font-medium",
       record: "None",
-      assignee: { name: "Alvaro S.", initials: "AS", avatar: "" }
+      assignee: { name: "Assigning...", initials: "...", avatar: "" }
     };
-    setTasks(prev => [newTask, ...prev]);
+    
+    setTasks(prev => [optimisticTask, ...prev]);
+    
     if (!createMore) {
       setIsCreating(false);
     }
+
+    startTransition(async () => {
+      // For now, no relatedEntity or dates passed from the simplistic overlay visually 
+      // but they can directly be added to the signature
+      const result = await createTask(tenantSlug, title);
+      
+      if (result.error) {
+        // Revert
+        setTasks(prev => prev.filter(t => t.id !== optimisticTask.id));
+      } else if (result.task) {
+        // Swap temp with actual
+        // Revalidation will handle the ultimate sync, but this gives instant feedback
+      }
+    });
   };
 
   return (
@@ -168,7 +181,8 @@ export function TasksClient() {
               <div className="w-[20px] flex justify-center">
                 <Checkbox 
                   checked={task.completed} 
-                  onCheckedChange={() => toggleTask(task.id)}
+                  onCheckedChange={() => toggleTask(task.id, task.completed)}
+                  disabled={isPending && task.id.startsWith('temp-')}
                   className="rounded-full h-4 w-4 border-border/70 data-[state=checked]:bg-muted-foreground data-[state=checked]:border-muted-foreground data-[state=checked]:text-white" 
                 />
               </div>
