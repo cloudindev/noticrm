@@ -4,7 +4,7 @@ import { LoginForm } from "@/features/auth/components/form-login";
 
 export default function LoginPage() {
   return (
-    <div className="flex w-full flex-col justify-center space-y-6 sm:w-[380px]">
+    <div className="flex w-full flex-col justify-center space-y-6">
       <div className="flex flex-col space-y-2 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">
           Welcome back

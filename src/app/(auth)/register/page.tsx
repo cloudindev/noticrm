@@ -3,7 +3,7 @@ import { RegisterForm } from "@/features/auth/components/form-register";
 
 export default function RegisterPage() {
   return (
-    <div className="flex w-full flex-col justify-center space-y-6 sm:w-[420px]">
+    <div className="flex w-full flex-col justify-center space-y-6">
       <div className="flex flex-col space-y-2 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">
           Create an account

@@ -16,7 +16,7 @@ export default function AuthLayout({
           <span className="text-lg font-semibold tracking-tight">Noticrm</span>
         </Link>
       </div>
-      <div className="w-full max-w-sm rounded-xl border border-border/40 bg-card p-8 shadow-sm">
+      <div className="w-full max-w-[460px] rounded-xl border border-border/40 bg-card p-6 sm:p-8 shadow-sm">
         {children}
       </div>
     </div>
