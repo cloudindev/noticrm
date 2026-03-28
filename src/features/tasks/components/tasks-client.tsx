@@ -13,14 +13,21 @@ import {
   ArrowUpRight,
   MoreHorizontal,
   CheckSquare, 
-  ChevronDown
+  ChevronDown,
+  Trash2
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { InlineTaskCreator } from './inline-task-creator';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from '@/components/ui/dropdown-menu';
 
 // Removed Mock Data
-import { createTask, updateTaskStatus } from '../actions';
+import { createTask, updateTaskStatus, deleteTask } from '../actions';
 import { useTransition } from 'react';
 
 export interface TaskItem {
@@ -92,6 +99,20 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
       } else if (result.task) {
         // Swap temp with actual
         // Revalidation will handle the ultimate sync, but this gives instant feedback
+      }
+    });
+  };
+
+  const handleDeleteTask = (id: string) => {
+    // Optimistic Delete
+    const previousTasks = [...tasks];
+    setTasks(tasks.filter(t => t.id !== id));
+    
+    startTransition(async () => {
+      const result = await deleteTask(tenantSlug, id);
+      if (result.error) {
+        // Revert on error
+        setTasks(previousTasks);
       }
     });
   };
@@ -203,9 +224,20 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
                 <span className="text-sm text-muted-foreground truncate">{task.assignee.name}</span>
               </div>
               <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-                <Button variant="ghost" size="icon-sm" className="h-7 w-7 text-muted-foreground">
-                  <MoreHorizontal size={14} />
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="inline-flex items-center justify-center h-7 w-7 rounded-sm text-muted-foreground hover:bg-muted hover:text-foreground outline-none border-0 ring-0 focus-visible:ring-0">
+                    <MoreHorizontal size={14} />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-[180px] p-1.5 rounded-xl border border-border/40 shadow-xl min-w-0 z-50">
+                    <DropdownMenuItem 
+                      onClick={() => handleDeleteTask(task.id)}
+                      className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-2 text-sm text-red-600 focus:bg-red-500/10 focus:text-red-600 transition-colors"
+                    >
+                      <Trash2 size={15} />
+                      <span className="font-medium">Delete task</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           ))}
