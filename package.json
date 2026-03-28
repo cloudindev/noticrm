@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "npx prisma generate && next build",
-    "start": "npx prisma env && npx prisma db push && next start",
+    "start": "npx prisma db push && next start",
     "lint": "eslint"
   },
   "prisma": {
