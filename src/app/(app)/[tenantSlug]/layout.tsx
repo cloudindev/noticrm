@@ -52,9 +52,10 @@ export default async function AppLayout({
     
     if (validMembership) {
       redirect(`/${validMembership.tenant.slug}/home`);
+    } else {
+      // If absolutely no memberships, they need to onboard
+      redirect("/onboarding");
     }
-    
-    notFound();
   }
 
   const userName = session.user.name || "User Name";
