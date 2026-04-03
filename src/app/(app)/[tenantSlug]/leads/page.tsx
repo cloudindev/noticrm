@@ -15,23 +15,23 @@ export default function LeadsPage() {
     <div className="flex h-full flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Leads</h1>
-          <p className="text-sm text-muted-foreground mt-1">Track and close your deals.</p>
+          <h1 className="text-2xl font-semibold tracking-tight">Oportunidades</h1>
+          <p className="text-sm text-muted-foreground mt-1">Haz seguimiento y cierra tus tratos.</p>
         </div>
         <Button className="gap-2">
           <Plus size={16} />
-          New Lead
+          Nueva Oportunidad
         </Button>
       </div>
 
       <div className="flex items-center gap-4">
         <div className="relative max-w-sm flex-1">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search leads..." className="pl-9 bg-background" />
+          <Input placeholder="Buscar negociaciones..." className="pl-9 bg-background" />
         </div>
         <Button variant="outline" className="gap-2 bg-background">
           <Filter size={16} />
-          Filter
+          Filtros
         </Button>
       </div>
 

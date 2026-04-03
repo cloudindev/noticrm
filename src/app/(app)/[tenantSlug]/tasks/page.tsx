@@ -7,8 +7,8 @@ import { format, isPast, isToday, isTomorrow } from 'date-fns';
 const prisma = new PrismaClient();
 
 export const metadata = {
-  title: 'Tasks | Noticrm',
-  description: 'Manage your tasks and follow-ups.',
+  title: 'Tareas | Noticrm',
+  description: 'Gestiona tus tareas y seguimientos.',
 };
 
 export default async function TasksPage({ params }: { params: Promise<{ tenantSlug: string }> }) {
@@ -35,24 +35,24 @@ export default async function TasksPage({ params }: { params: Promise<{ tenantSl
   });
 
   const formattedTasks = dbTasks.map((task: any) => {
-    let dueDateLabel = "No date";
+    let dueDateLabel = "Sin fecha";
     let dueColor = "text-muted-foreground";
 
     if (task.dueDate) {
       if (isToday(task.dueDate)) {
-        dueDateLabel = "Today";
+        dueDateLabel = "Hoy";
         dueColor = "text-orange-500 font-medium";
       } else if (isTomorrow(task.dueDate)) {
-        dueDateLabel = "Tomorrow";
+        dueDateLabel = "Mañana";
       } else if (isPast(task.dueDate)) {
-        dueDateLabel = "Overdue";
+        dueDateLabel = "Atrasada";
         dueColor = "text-red-500 font-medium";
       } else {
         dueDateLabel = format(task.dueDate, "MMM d");
       }
     }
 
-    const assigneeName = task.assignee?.name || "Unassigned";
+    const assigneeName = task.assignee?.name || "Sin asignar";
     const initials = assigneeName.substring(0, 2).toUpperCase();
 
     return {
@@ -61,7 +61,7 @@ export default async function TasksPage({ params }: { params: Promise<{ tenantSl
       completed: task.status === 'COMPLETED',
       dueDate: dueDateLabel,
       dueColor,
-      record: task.relatedEntityId || "None",
+      record: task.relatedEntityId || "Ninguno",
       assignee: {
         name: assigneeName,
         initials,

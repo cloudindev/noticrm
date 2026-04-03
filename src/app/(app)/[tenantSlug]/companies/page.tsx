@@ -24,23 +24,23 @@ export default function CompaniesPage() {
     <div className="flex h-full flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Companies</h1>
-          <p className="text-sm text-muted-foreground mt-1">Manage and track your target accounts.</p>
+          <h1 className="text-2xl font-semibold tracking-tight">Empresas</h1>
+          <p className="text-sm text-muted-foreground mt-1">Gestiona y realiza seguimiento de tus cuentas objetivo.</p>
         </div>
         <Button className="gap-2">
           <Plus size={16} />
-          New Company
+          Nueva Empresa
         </Button>
       </div>
 
       <div className="flex items-center gap-4">
         <div className="relative max-w-sm flex-1">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search companies..." className="pl-9 bg-background" />
+          <Input placeholder="Buscar empresas..." className="pl-9 bg-background" />
         </div>
         <Button variant="outline" className="gap-2 bg-background">
           <Filter size={16} />
-          Filter
+          Filtros
         </Button>
       </div>
 
@@ -48,10 +48,10 @@ export default function CompaniesPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[300px]">NAME</TableHead>
-              <TableHead>INDUSTRY</TableHead>
-              <TableHead>WEBSITE</TableHead>
-              <TableHead>OWNER</TableHead>
+              <TableHead className="w-[300px]">NOMBRE</TableHead>
+              <TableHead>INDUSTRIA</TableHead>
+              <TableHead>SITIO WEB</TableHead>
+              <TableHead>PROPIETARIO</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

@@ -76,10 +76,10 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
       id: `temp-${Date.now()}`,
       title,
       completed: false,
-      dueDate: "Today",
+      dueDate: "Hoy",
       dueColor: "text-orange-500 font-medium",
-      record: "None",
-      assignee: { name: "Assigning...", initials: "...", avatar: "" }
+      record: "Ninguno",
+      assignee: { name: "Asignando...", initials: "...", avatar: "" }
     };
     
     setTasks(prev => [optimisticTask, ...prev]);
@@ -123,7 +123,7 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between py-2">
         <div className="flex items-center gap-2">
           <CheckSquare size={20} className="text-muted-foreground mr-1" />
-          <h1 className="text-xl font-semibold tracking-tight">Tasks</h1>
+          <h1 className="text-xl font-semibold tracking-tight">Tareas</h1>
         </div>
 
         <div className="flex items-center gap-2.5">
@@ -131,20 +131,20 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
             <PopoverTrigger>
               <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-2 bg-background shadow-xs border border-border/60 text-xs text-muted-foreground font-medium rounded-md px-3 hover:bg-muted/50">
                 <ListFilter size={14} />
-                Sorted by <span className="text-foreground font-medium flex items-center gap-1">Due date <ChevronDown size={12} className="opacity-50" /></span>
+                Ordenado por <span className="text-foreground font-medium flex items-center gap-1">Fecha venc. <ChevronDown size={12} className="opacity-50" /></span>
               </div>
             </PopoverTrigger>
             <PopoverContent className="w-[180px] p-2" align="start">
-              <div className="text-xs font-medium px-2 py-1.5 text-muted-foreground">Sort options</div>
-              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer flex justify-between">Due date <span className="text-primary mr-1">✓</span></div>
-              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer">Created date</div>
-              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer">Priority</div>
+              <div className="text-xs font-medium px-2 py-1.5 text-muted-foreground">Opciones de orden</div>
+              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer flex justify-between">Fecha vencimiento <span className="text-primary mr-1">✓</span></div>
+              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer">Fecha creación</div>
+              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer">Prioridad</div>
             </PopoverContent>
           </Popover>
           
           <Button variant="outline" size="sm" className="h-8 gap-2 text-muted-foreground border-border/60 shadow-sm rounded-md">
             <SlidersHorizontal size={14} />
-            Filter
+            Filtros
           </Button>
 
           <div className="h-4 w-px bg-border/60 mx-1"></div>
@@ -153,19 +153,19 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
             <PopoverTrigger>
               <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-2 text-xs text-muted-foreground font-medium rounded-md px-2.5 hover:bg-muted/50">
                 <LayoutGrid size={14} />
-                View settings <ChevronDown size={12} className="opacity-50 -ml-1" />
+                Vista <ChevronDown size={12} className="opacity-50 -ml-1" />
               </div>
             </PopoverTrigger>
             <PopoverContent className="w-[180px] p-2" align="end">
-              <div className="text-xs font-medium px-2 py-1.5 text-muted-foreground">Layout</div>
-              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer flex justify-between">List <span className="text-primary mr-1">✓</span></div>
-              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer">Board</div>
+              <div className="text-xs font-medium px-2 py-1.5 text-muted-foreground">Diseño</div>
+              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer flex justify-between">Lista <span className="text-primary mr-1">✓</span></div>
+              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer">Tablero</div>
             </PopoverContent>
           </Popover>
 
           <Button size="sm" className="h-8 gap-1.5 shadow-sm bg-[#2f6bff] hover:bg-[#1a55e8] text-white rounded-md font-medium ml-1" onClick={() => setIsCreating(true)}>
             <Plus size={16} />
-            New task
+            Nueva tarea
           </Button>
         </div>
       </div>
@@ -175,10 +175,10 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
         {/* Table Header */}
         <div className="grid grid-cols-[auto_1fr_150px_150px_150px_40px] gap-2 md:gap-4 items-center px-4 py-3 border-b border-border/60 bg-muted/20 text-xs font-medium text-muted-foreground">
           <div className="w-[20px]"></div>
-          <div>Task</div>
-          <div className="flex items-center gap-1.5"><Calendar size={12} /> Due date</div>
-          <div className="flex items-center gap-1.5"><ArrowUpRight size={12} /> Record</div>
-          <div className="flex items-center gap-1.5"><UserIcon size={12} /> Assigned to</div>
+          <div>Tarea</div>
+          <div className="flex items-center gap-1.5"><Calendar size={12} /> Vencimiento</div>
+          <div className="flex items-center gap-1.5"><ArrowUpRight size={12} /> Registro</div>
+          <div className="flex items-center gap-1.5"><UserIcon size={12} /> Asignada a</div>
           <div></div>
         </div>
 
@@ -234,7 +234,7 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
                       className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-2 text-sm text-red-600 focus:bg-red-500/10 focus:text-red-600 transition-colors"
                     >
                       <Trash2 size={15} />
-                      <span className="font-medium">Delete task</span>
+                      <span className="font-medium">Eliminar tarea</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -244,7 +244,7 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
           
           {tasks.length === 0 && !isCreating && (
             <div className="p-12 text-center text-muted-foreground text-sm">
-              All tasks completed. Time for a break! 🎉
+              Todas las tareas completadas. ¡Hora de un descanso! 🎉
             </div>
           )}
         </div>

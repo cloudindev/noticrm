@@ -87,11 +87,11 @@ export function InlineTaskCreator({ onClose, onSave }: InlineTaskCreatorProps) {
       <div className="flex items-center justify-between px-4 py-2.5 border-b border-border/40">
         <div className="flex items-center gap-2 text-sm font-medium text-foreground">
           <CheckSquare size={16} className="text-muted-foreground" />
-          Create task
+          Crear tarea
         </div>
         <Button variant="ghost" size="icon-sm" onClick={onClose} className="h-6 w-6 text-muted-foreground hover:bg-muted/50 rounded-md">
           <X size={14} />
-          <span className="sr-only">Close</span>
+          <span className="sr-only">Cerrar</span>
         </Button>
       </div>
 
@@ -101,7 +101,7 @@ export function InlineTaskCreator({ onClose, onSave }: InlineTaskCreatorProps) {
           ref={inputRef}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Schedule a follow-up call with a @Contact"
+          placeholder="Llamada de seguimiento con @Contacto"
           className="border-0 shadow-none focus-visible:ring-0 px-0 text-base bg-transparent h-auto placeholder:text-muted-foreground/50 font-medium rounded-none w-full"
           onKeyDown={(e) => {
             if (e.key === 'Enter' && !e.metaKey && !e.ctrlKey) {
@@ -120,13 +120,13 @@ export function InlineTaskCreator({ onClose, onSave }: InlineTaskCreatorProps) {
             <PopoverTrigger>
               <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-1.5 bg-background shadow-xs border border-border/60 text-xs text-foreground font-medium rounded-md px-2.5 hover:bg-muted/50">
                 <CalendarIcon size={14} className="text-muted-foreground" />
-                {date ? "Today" : "Set date"}
+                {date ? "Hoy" : "Establecer fecha"}
               </div>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
               <div className="flex bg-background rounded-md shadow-sm border border-border/40 overflow-hidden">
                 <div className="w-[140px] border-r border-border/40 bg-muted/10 p-2 flex flex-col gap-1">
-                  <div className="text-xs font-semibold text-muted-foreground uppercase px-2 py-1.5 flex items-center gap-1.5"><Clock size={12}/> Suggestions</div>
+                  <div className="text-xs font-semibold text-muted-foreground uppercase px-2 py-1.5 flex items-center gap-1.5"><Clock size={12}/> Sugerencias</div>
                   <Button 
                     variant="ghost" 
                     size="sm" 
@@ -134,7 +134,7 @@ export function InlineTaskCreator({ onClose, onSave }: InlineTaskCreatorProps) {
                     onClick={() => { setDate(new Date()); /* Optionally close popover here if wanted */ }}
                   >
                     <div className="text-[#2f6bff]"><Sun size={14}/></div>
-                    Today
+                    Hoy
                   </Button>
                   <Button 
                     variant="ghost" 
@@ -143,7 +143,7 @@ export function InlineTaskCreator({ onClose, onSave }: InlineTaskCreatorProps) {
                     onClick={() => setDate(addDays(new Date(), 1))}
                   >
                     <div className="text-[#ff9800]"><Coffee size={14}/></div>
-                    Tomorrow
+                    Mañana
                   </Button>
                   <Button 
                     variant="ghost" 
@@ -152,7 +152,7 @@ export function InlineTaskCreator({ onClose, onSave }: InlineTaskCreatorProps) {
                     onClick={() => setDate(nextFriday(new Date()))}
                   >
                     <div className="text-muted-foreground"><Clock size={14}/></div>
-                    This weekend
+                    Este fin de semana
                   </Button>
                   <Button 
                     variant="ghost" 
@@ -161,7 +161,7 @@ export function InlineTaskCreator({ onClose, onSave }: InlineTaskCreatorProps) {
                     onClick={() => setDate(nextMonday(new Date()))}
                   >
                     <div className="text-muted-foreground"><CalendarDays size={14}/></div>
-                    Next week
+                    Próxima semana
                   </Button>
                   
                   <div className="mt-auto pt-2 border-t border-border/40">
@@ -171,7 +171,7 @@ export function InlineTaskCreator({ onClose, onSave }: InlineTaskCreatorProps) {
                       className="justify-start w-full h-8 text-xs font-medium px-2 text-red-500 hover:text-red-600 hover:bg-red-50" 
                       onClick={() => setDate(undefined)}
                     >
-                      Clear priority
+                      Borrar prioridad
                     </Button>
                   </div>
                 </div>
@@ -192,14 +192,14 @@ export function InlineTaskCreator({ onClose, onSave }: InlineTaskCreatorProps) {
             <PopoverTrigger>
               <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-1.5 text-muted-foreground px-2.5 text-xs font-medium rounded-md hover:bg-muted/60 bg-muted/30">
                 <UserIcon size={14} />
-                @ {assignee?.name === "Alvaro S." ? "Assigned to You" : assignee?.name || "Assign"}
+                @ {assignee?.name === "Alvaro S." ? "Asignado a ti" : assignee?.name || "Asignar"}
               </div>
             </PopoverTrigger>
             <PopoverContent className="w-[240px] p-0" align="start">
               <Command>
-                <CommandInput placeholder="Find a user..." className="h-9 text-xs" />
+                <CommandInput placeholder="Buscar un usuario..." className="h-9 text-xs" />
                 <CommandList>
-                  <CommandEmpty>No users found.</CommandEmpty>
+                  <CommandEmpty>No hay usuarios.</CommandEmpty>
                   <CommandGroup>
                     {MOCK_USERS.map((user) => (
                       <CommandItem
@@ -230,14 +230,14 @@ export function InlineTaskCreator({ onClose, onSave }: InlineTaskCreatorProps) {
             <PopoverTrigger>
               <div role="button" tabIndex={0} className="hidden sm:inline-flex cursor-pointer items-center justify-center h-8 gap-1.5 text-muted-foreground px-2.5 text-xs font-medium rounded-md hover:bg-muted/60 bg-muted/30">
                 <ArrowUpRight size={14} />
-                Add record
+                Añadir registro
               </div>
             </PopoverTrigger>
             <PopoverContent className="w-[280px] p-0" align="start">
               <Command>
-                <CommandInput placeholder="Search..." className="h-9 text-xs" />
+                <CommandInput placeholder="Buscar..." className="h-9 text-xs" />
                 <CommandList>
-                  <CommandEmpty>No records found.</CommandEmpty>
+                  <CommandEmpty>No hay coincidencias.</CommandEmpty>
                   <CommandGroup>
                     {MOCK_RECORDS.map((record) => (
                       <CommandItem
@@ -271,18 +271,18 @@ export function InlineTaskCreator({ onClose, onSave }: InlineTaskCreatorProps) {
               onCheckedChange={setCreateMore} 
               className="scale-75 data-[state=checked]:bg-[#2f6bff]"
             />
-            Create more
+            Crear varias
           </label>
           
           <div className="flex items-center gap-1.5">
             <Button variant="outline" size="sm" onClick={onClose} className="h-8 text-foreground bg-white border-border/60 hover:bg-muted/30 px-3 text-xs gap-1.5 shadow-xs font-medium rounded-md">
-              Cancel
+              Cancelar
               <kbd className="hidden sm:inline-flex h-4 items-center gap-1 rounded bg-muted/60 px-1 font-mono text-[9px] font-medium text-muted-foreground uppercase">
                 ESC
               </kbd>
             </Button>
             <Button size="sm" onClick={handleSaveClick} disabled={!title.trim()} className="h-8 bg-[#2f6bff] hover:bg-[#1a55e8] text-white shadow-sm px-3 text-xs gap-1.5 font-medium rounded-md">
-              Save
+              Guardar
               <kbd className="hidden sm:inline-flex h-4 items-center gap-1 rounded bg-white/20 px-1 font-sans text-[10px] font-medium text-white/90">
                 ⌘ ↵
               </kbd>

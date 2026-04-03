@@ -22,23 +22,23 @@ export default function PeoplePage() {
     <div className="flex h-full flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">People</h1>
-          <p className="text-sm text-muted-foreground mt-1">Manage your contacts and relationships.</p>
+          <h1 className="text-2xl font-semibold tracking-tight">Personas</h1>
+          <p className="text-sm text-muted-foreground mt-1">Gestiona tus contactos y relaciones.</p>
         </div>
         <Button className="gap-2">
           <Plus size={16} />
-          Add Person
+          Añadir Persona
         </Button>
       </div>
 
       <div className="flex items-center gap-4">
         <div className="relative max-w-sm flex-1">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search people..." className="pl-9 bg-background" />
+          <Input placeholder="Buscar personas..." className="pl-9 bg-background" />
         </div>
         <Button variant="outline" className="gap-2 bg-background">
           <Filter size={16} />
-          Filter
+          Filtros
         </Button>
       </div>
 
@@ -46,9 +46,9 @@ export default function PeoplePage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[250px]">NAME</TableHead>
-              <TableHead>TITLE</TableHead>
-              <TableHead>COMPANY</TableHead>
+              <TableHead className="w-[250px]">NOMBRE</TableHead>
+              <TableHead>CARGO</TableHead>
+              <TableHead>EMPRESA</TableHead>
               <TableHead>EMAIL</TableHead>
             </TableRow>
           </TableHeader>
