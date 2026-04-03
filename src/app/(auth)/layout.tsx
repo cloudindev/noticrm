@@ -13,7 +13,7 @@ export default function AuthLayout({
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold font-mono">
             N/
           </div>
-          <span className="text-lg font-semibold tracking-tight">Noticrm</span>
+          <span className="text-lg font-bold tracking-tight">noticrm</span>
         </Link>
       </div>
       <div className="w-full max-w-[460px] rounded-xl border border-border/40 bg-card p-6 sm:p-8 shadow-sm">
