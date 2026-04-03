@@ -19,14 +19,17 @@ import {
   MessageCircle,
   Mail,
   Receipt,
-  PenTool
+  PenTool,
+  Megaphone,
+  ClipboardList
 } from 'lucide-react';
 
 const CATEGORIES = [
   "All",
   "Integrations",
   "Sectors",
-  "Productivity"
+  "Productivity",
+  "Leads"
 ];
 
 const MODULES = [
@@ -107,6 +110,22 @@ const MODULES = [
     icon: <PenTool size={24} className="text-cyan-600" />,
     installed: false,
     badge: "Premium"
+  },
+
+  // Leads
+  {
+    title: "Meta Leads Manager",
+    description: "Sync leads from Facebook & Instagram directly into your CRM campaigns.",
+    category: "Leads",
+    icon: <Megaphone size={24} className="text-blue-600" />,
+    installed: false,
+  },
+  {
+    title: "Lead Form Builder",
+    description: "Create custom contact forms and embed them easily on your website.",
+    category: "Leads",
+    icon: <ClipboardList size={24} className="text-orange-500" />,
+    installed: false,
   }
 ];
 
