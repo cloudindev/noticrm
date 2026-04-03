@@ -127,7 +127,7 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
             <h1 className="text-sm font-semibold tracking-tight">Tareas</h1>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" className="h-8 shadow-sm">Configuración</Button>
+            {/* Action buttons could go here */}
           </div>
         </div>
 

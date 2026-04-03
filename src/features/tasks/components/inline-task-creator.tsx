@@ -22,7 +22,8 @@ import {
   Users,
   Target
 } from 'lucide-react';
-import { addDays, nextMonday, nextFriday } from 'date-fns';
+import { addDays, nextMonday, nextFriday, format, isToday, isTomorrow } from 'date-fns';
+import { es } from 'date-fns/locale';
 
 export interface RecordItem {
   id: string;
@@ -239,8 +240,8 @@ export function InlineTaskCreator({ onClose, onSave }: InlineTaskCreatorProps) {
           <Popover>
             <PopoverTrigger>
               <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-1.5 bg-background shadow-[0_1px_2px_rgba(0,0,0,0.05)] border border-border/60 text-xs text-foreground font-medium rounded-md px-2.5 hover:bg-muted/50 transition-colors">
-                <CalendarIcon size={14} className="text-muted-foreground" />
-                {date ? "Hoy" : "Fecha"}
+                <CalendarIcon size={14} className={date ? "text-foreground" : "text-muted-foreground"} />
+                {date ? (isToday(date) ? "Hoy" : isTomorrow(date) ? "Mañana" : format(date, "d MMM yyyy", { locale: es })) : "Fecha"}
               </div>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0 border-border/40 shadow-xl" align="start">
@@ -273,8 +274,8 @@ export function InlineTaskCreator({ onClose, onSave }: InlineTaskCreatorProps) {
                     onSelect={setDate}
                     initialFocus
                     captionLayout="dropdown"
-                    fromYear={2020}
-                    toYear={2030}
+                    fromYear={2026}
+                    toYear={2050}
                     className="bg-transparent"
                   />
                 </div>
