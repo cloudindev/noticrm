@@ -11,10 +11,10 @@ import {
   Search,
   Settings,
   Menu,
-  Blocks,
-  ChevronDown
+  Blocks
 } from 'lucide-react';
 import { SidebarNavItem } from "@/components/app/sidebar-nav-item";
+import { CollapsibleSection } from "@/components/app/collapsible-section";
 import { UserProfileDropdown } from "@/components/app/user-profile-dropdown";
 import { auth } from "@/lib/auth";
 import { redirect, notFound } from "next/navigation";
@@ -85,11 +85,7 @@ export default async function AppLayout({
         </div>
         
         <div className="flex-1 overflow-auto py-2">
-          <nav className="flex flex-col gap-[2px] px-2">
-            <div className="mb-1 mt-2 px-3 text-sm font-medium text-foreground flex justify-between items-center group cursor-pointer hover:bg-muted/30 rounded-md py-1">
-              Espacio de trabajo
-              <ChevronDown size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
+          <nav className="flex flex-col gap-[2px] px-2 mt-2">
             <SidebarNavItem icon={<Home size={18} />} label="Inicio" href={`/${tenantSlug}/home`} />
             <SidebarNavItem 
               icon={<CheckSquare size={18} />} 
@@ -99,31 +95,27 @@ export default async function AppLayout({
             />
             <SidebarNavItem icon={<Mail size={18} />} label="Correos" href={`/${tenantSlug}/emails`} />
             
-            <div className="mb-1 mt-6 px-3 text-sm font-medium text-foreground flex justify-between items-center group cursor-pointer hover:bg-muted/30 rounded-md py-1">
-              Registros
-              <ChevronDown size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
-            <SidebarNavItem 
-              icon={<div className="flex h-5 w-5 items-center justify-center rounded-[5px] bg-[#2f6bff] text-white shadow-sm"><Building2 size={13} strokeWidth={2.5} /></div>} 
-              label="Empresas" 
-              href={`/${tenantSlug}/companies`} 
-            />
-            <SidebarNavItem 
-              icon={<div className="flex h-5 w-5 items-center justify-center rounded-[5px] bg-[#2f6bff] text-white shadow-sm"><Users size={13} strokeWidth={2.5} /></div>} 
-              label="Personas" 
-              href={`/${tenantSlug}/people`} 
-            />
-            <SidebarNavItem 
-              icon={<div className="flex h-5 w-5 items-center justify-center rounded-[5px] bg-[#f26522] text-white shadow-sm"><Target size={13} strokeWidth={2.5} /></div>} 
-              label="Oportunidades" 
-              href={`/${tenantSlug}/leads`} 
-            />
+            <CollapsibleSection title="Registros">
+              <SidebarNavItem 
+                icon={<div className="flex h-5 w-5 items-center justify-center rounded-[5px] bg-[#2f6bff] text-white shadow-sm"><Building2 size={13} strokeWidth={2.5} /></div>} 
+                label="Empresas" 
+                href={`/${tenantSlug}/companies`} 
+              />
+              <SidebarNavItem 
+                icon={<div className="flex h-5 w-5 items-center justify-center rounded-[5px] bg-[#2f6bff] text-white shadow-sm"><Users size={13} strokeWidth={2.5} /></div>} 
+                label="Personas" 
+                href={`/${tenantSlug}/people`} 
+              />
+              <SidebarNavItem 
+                icon={<div className="flex h-5 w-5 items-center justify-center rounded-[5px] bg-[#f26522] text-white shadow-sm"><Target size={13} strokeWidth={2.5} /></div>} 
+                label="Oportunidades" 
+                href={`/${tenantSlug}/leads`} 
+              />
+            </CollapsibleSection>
             
-            <div className="mb-1 mt-6 px-3 text-sm font-medium text-foreground flex justify-between items-center group cursor-pointer hover:bg-muted/30 rounded-md py-1">
-              Analíticas
-              <ChevronDown size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
-            <SidebarNavItem icon={<BarChart2 size={18} />} label="Informes" href={`/${tenantSlug}/reports`} />
+            <CollapsibleSection title="Analíticas">
+              <SidebarNavItem icon={<BarChart2 size={18} />} label="Informes" href={`/${tenantSlug}/reports`} />
+            </CollapsibleSection>
           </nav>
         </div>
         
