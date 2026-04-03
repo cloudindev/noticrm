@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Search, Filter } from 'lucide-react';
+import { Plus, Search, Filter, Users } from 'lucide-react';
 import {
   Table,
   TableBody,
@@ -19,53 +19,57 @@ export default function PeoplePage() {
   ];
 
   return (
-    <div className="flex h-full flex-col gap-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Personas</h1>
-          <p className="text-sm text-muted-foreground mt-1">Gestiona tus contactos y relaciones.</p>
+    <div className="flex h-full flex-col">
+      {/* Header */}
+      <div className="flex items-center justify-between border-b border-border/40 px-6 py-3 shrink-0">
+        <div className="flex items-center gap-2.5">
+          <Users size={18} className="text-muted-foreground" />
+          <h1 className="text-[15px] font-semibold tracking-tight">Personas</h1>
         </div>
-        <Button className="gap-2">
-          <Plus size={16} />
-          Añadir Persona
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" className="h-8 shadow-sm">Configuración</Button>
+          <Button size="sm" className="bg-[#2f6bff] hover:bg-[#1a55e8] h-8 text-white shadow-sm">
+            <Plus size={16} className="mr-1.5" />
+            Añadir Persona
+          </Button>
+        </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 px-6 py-3 border-b border-border/20">
         <div className="relative max-w-sm flex-1">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Buscar personas..." className="pl-9 bg-background" />
+          <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
+          <Input placeholder="Buscar personas..." className="h-8 pl-8 text-sm shadow-sm bg-background" />
         </div>
-        <Button variant="outline" className="gap-2 bg-background">
-          <Filter size={16} />
+        <Button variant="outline" size="sm" className="gap-2 h-8 bg-background text-xs font-semibold shadow-sm">
+          <Filter size={14} />
           Filtros
         </Button>
       </div>
 
-      <div className="rounded-md border border-border/40 bg-background shadow-sm">
+      <div className="bg-background flex-1 overflow-auto">
         <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[250px]">NOMBRE</TableHead>
-              <TableHead>CARGO</TableHead>
-              <TableHead>EMPRESA</TableHead>
-              <TableHead>EMAIL</TableHead>
+          <TableHeader className="bg-muted/10 sticky top-0 z-10 border-b border-border/40">
+            <TableRow className="border-none hover:bg-transparent">
+              <TableHead className="w-[300px] h-9 text-xs font-semibold pl-6">NOMBRE</TableHead>
+              <TableHead className="h-9 text-xs font-semibold">CARGO</TableHead>
+              <TableHead className="h-9 text-xs font-semibold">EMPRESA</TableHead>
+              <TableHead className="h-9 text-xs font-semibold pr-6">EMAIL</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {people.map((person) => (
-              <TableRow key={person.id} className="cursor-pointer hover:bg-muted/50">
-                <TableCell className="font-medium">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-xs font-semibold text-secondary-foreground">
+              <TableRow key={person.id} className="cursor-pointer border-border/30 hover:bg-muted/30">
+                <TableCell className="font-medium pl-6 py-2.5">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-secondary text-[10px] font-semibold text-secondary-foreground">
                       {person.name.charAt(0)}
                     </div>
-                    {person.name}
+                    <span>{person.name}</span>
                   </div>
                 </TableCell>
-                <TableCell className="text-muted-foreground">{person.title}</TableCell>
-                <TableCell>{person.company}</TableCell>
-                <TableCell className="text-muted-foreground">{person.email}</TableCell>
+                <TableCell className="text-muted-foreground py-2.5">{person.title}</TableCell>
+                <TableCell className="py-2.5">{person.company}</TableCell>
+                <TableCell className="text-muted-foreground py-2.5 pr-6">{person.email}</TableCell>
               </TableRow>
             ))}
           </TableBody>

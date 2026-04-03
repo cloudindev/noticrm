@@ -118,64 +118,78 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
   };
 
   return (
-    <div className="flex flex-col gap-6 h-full pb-10">
+    <div className="flex flex-col h-full bg-background">
       {/* Header & Toolbar */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between py-2">
-        <div className="flex items-center gap-2">
-          <CheckSquare size={20} className="text-muted-foreground mr-1" />
-          <h1 className="text-xl font-semibold tracking-tight">Tareas</h1>
+      {/* Header */}
+      <div className="flex flex-col shrink-0">
+        <div className="flex items-center justify-between border-b border-border/40 px-6 py-3">
+          <div className="flex items-center gap-2.5">
+            <CheckSquare size={18} className="text-muted-foreground" />
+            <h1 className="text-[15px] font-semibold tracking-tight">Tareas</h1>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="h-8 shadow-sm">Configuración</Button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          <Popover>
-            <PopoverTrigger>
-              <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-2 bg-background shadow-xs border border-border/60 text-xs text-muted-foreground font-medium rounded-md px-3 hover:bg-muted/50">
-                <ListFilter size={14} />
-                Ordenado por <span className="text-foreground font-medium flex items-center gap-1">Fecha venc. <ChevronDown size={12} className="opacity-50" /></span>
-              </div>
-            </PopoverTrigger>
-            <PopoverContent className="w-[180px] p-2" align="start">
-              <div className="text-xs font-medium px-2 py-1.5 text-muted-foreground">Opciones de orden</div>
-              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer flex justify-between">Fecha vencimiento <span className="text-primary mr-1">✓</span></div>
-              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer">Fecha creación</div>
-              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer">Prioridad</div>
-            </PopoverContent>
-          </Popover>
+        {/* Toolbar */}
+        <div className="flex items-center justify-between px-6 py-3 border-b border-border/20">
+          <div className="flex items-center gap-2">
+            <Popover>
+              <PopoverTrigger>
+                <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-2 bg-background shadow-sm border border-border/60 text-xs text-muted-foreground font-medium rounded-md px-3 hover:bg-muted/50">
+                  <ListFilter size={14} />
+                  Ordenado por <span className="text-foreground font-medium flex items-center gap-1">Fecha venc. <ChevronDown size={12} className="opacity-50" /></span>
+                </div>
+              </PopoverTrigger>
+              <PopoverContent className="w-[180px] p-2" align="start">
+                <div className="text-xs font-medium px-2 py-1.5 text-muted-foreground">Opciones de orden</div>
+                <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer flex justify-between">Fecha vencimiento <span className="text-primary mr-1">✓</span></div>
+                <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer">Fecha creación</div>
+                <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer">Prioridad</div>
+              </PopoverContent>
+            </Popover>
+            
+            <Button variant="outline" size="sm" className="h-8 gap-2 text-muted-foreground border-border/60 shadow-sm rounded-md">
+              <SlidersHorizontal size={14} />
+              Filtros
+            </Button>
+          </div>
           
           <Button variant="outline" size="sm" className="h-8 gap-2 text-muted-foreground border-border/60 shadow-sm rounded-md">
             <SlidersHorizontal size={14} />
             Filtros
           </Button>
 
-          <div className="h-4 w-px bg-border/60 mx-1"></div>
-          
-          <Popover>
-            <PopoverTrigger>
-              <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-2 text-xs text-muted-foreground font-medium rounded-md px-2.5 hover:bg-muted/50">
-                <LayoutGrid size={14} />
-                Vista <ChevronDown size={12} className="opacity-50 -ml-1" />
-              </div>
-            </PopoverTrigger>
-            <PopoverContent className="w-[180px] p-2" align="end">
-              <div className="text-xs font-medium px-2 py-1.5 text-muted-foreground">Diseño</div>
-              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer flex justify-between">Lista <span className="text-primary mr-1">✓</span></div>
-              <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer">Tablero</div>
-            </PopoverContent>
-          </Popover>
+          <div className="flex items-center gap-2">
+            <Popover>
+              <PopoverTrigger>
+                <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-2 text-xs text-muted-foreground font-medium rounded-md px-2.5 hover:bg-muted/50">
+                  <LayoutGrid size={14} />
+                  Vista <ChevronDown size={12} className="opacity-50 -ml-1" />
+                </div>
+              </PopoverTrigger>
+              <PopoverContent className="w-[180px] p-2" align="end">
+                <div className="text-xs font-medium px-2 py-1.5 text-muted-foreground">Diseño</div>
+                <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer flex justify-between">Lista <span className="text-primary mr-1">✓</span></div>
+                <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer">Tablero</div>
+              </PopoverContent>
+            </Popover>
 
-          <Button size="sm" className="h-8 gap-1.5 shadow-sm bg-[#2f6bff] hover:bg-[#1a55e8] text-white rounded-md font-medium ml-1" onClick={() => setIsCreating(true)}>
-            <Plus size={16} />
-            Nueva tarea
-          </Button>
+            <Button size="sm" className="h-8 gap-1.5 shadow-sm bg-[#2f6bff] hover:bg-[#1a55e8] text-white rounded-md font-medium" onClick={() => setIsCreating(true)}>
+              <Plus size={16} />
+              Nueva tarea
+            </Button>
+          </div>
         </div>
       </div>
 
       {/* Main Table Area */}
-      <div className="flex-1 rounded-xl border border-border/60 bg-card overflow-hidden shadow-sm relative">
+      <div className="flex-1 overflow-auto bg-background">
         {/* Table Header */}
-        <div className="grid grid-cols-[auto_1fr_150px_150px_150px_40px] gap-2 md:gap-4 items-center px-4 py-3 border-b border-border/60 bg-muted/20 text-xs font-medium text-muted-foreground">
+        <div className="grid grid-cols-[auto_1fr_150px_150px_150px_40px] gap-2 md:gap-4 items-center px-6 py-2 border-b border-border/40 bg-muted/10 text-xs font-semibold text-muted-foreground sticky top-0 z-10">
           <div className="w-[20px]"></div>
-          <div>Tarea</div>
+          <div>TAREA</div>
           <div className="flex items-center gap-1.5"><Calendar size={12} /> Vencimiento</div>
           <div className="flex items-center gap-1.5"><ArrowUpRight size={12} /> Registro</div>
           <div className="flex items-center gap-1.5"><UserIcon size={12} /> Asignada a</div>
@@ -197,7 +211,7 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
           {tasks.map(task => (
             <div 
               key={task.id} 
-              className={`group grid grid-cols-[auto_1fr_150px_150px_150px_40px] gap-2 md:gap-4 items-center px-4 py-3 hover:bg-muted/30 transition-colors ${task.completed ? 'opacity-60' : ''}`}
+              className={`group grid grid-cols-[auto_1fr_150px_150px_150px_40px] gap-2 md:gap-4 items-center px-6 py-2.5 hover:bg-muted/30 transition-colors border-b border-border/30 ${task.completed ? 'opacity-60' : ''}`}
             >
               <div className="w-[20px] flex justify-center">
                 <Checkbox 

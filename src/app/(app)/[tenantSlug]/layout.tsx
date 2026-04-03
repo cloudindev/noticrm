@@ -143,8 +143,8 @@ export default async function AppLayout({
 
       {/* Main Content Area */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        <main className="flex-1 overflow-y-auto bg-background p-4 lg:p-8">
-          <div className="mx-auto max-w-full">
+        <main className="flex-1 overflow-y-auto bg-background">
+          <div className="mx-auto h-full w-full">
             {children}
           </div>
         </main>
