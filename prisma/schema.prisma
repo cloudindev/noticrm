@@ -149,12 +149,67 @@ model Invite {
 model Company {
   id       String  @id @default(cuid())
   tenantId String
+  
+  // Basic info (acts as generic display name in lists)
   name     String
-  sector   String?
-  website  String?
-  phone    String?
+  
+  // Entity Classification
+  entityType String  @default("COMPANY") // COMPANY or INDIVIDUAL (Persona Física)
+  
+  // Fiscal Identification (Company)
+  legalName  String? // Razón Social
+  taxId      String? // CIF / NIF / DNI
+  
+  // Fiscal Identification (Individual)
+  firstName       String?
+  lastName        String?
+  secondLastName  String?
+  
+  // Contact Info
   email    String?
-  address  String?
+  phone    String?
+  website  String?
+
+  // Legal Representative (If Company)
+  legalRepName     String?
+  legalRepLastName String?
+  legalRepTaxId    String?
+  legalRepEmail    String?
+  legalRepPhone    String?
+  
+  // Fiscal Address
+  address         String?
+  addressCity     String?
+  addressProvince String?
+  addressZip      String?
+  addressCountry  String? @default("España")
+  
+  // Operating Address
+  useSameAddress    Boolean @default(true)
+  opAddress         String?
+  opAddressCity     String?
+  opAddressProvince String?
+  opAddressZip      String?
+  opAddressCountry  String?
+  
+  // Business Information
+  companyType    String? // Autónomo, SL, SA, Cooperativa, Otro
+  sector         String?
+  employeeCount  String?
+  revenueRange   String?
+  foundationYear Int?
+  
+  // Bank Details
+  iban       String?
+  bankOwner  String?
+  bankName   String?
+  sepaUrl    String?
+  
+  // Documentation Uploads
+  cifUrl        String?
+  escriturasUrl String?
+  dniUrl        String?
+  
   notes    String? @db.Text
   status   String  @default("ACTIVE")
   ownerId  String?

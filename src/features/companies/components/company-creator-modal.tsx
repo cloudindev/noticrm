@@ -1,0 +1,295 @@
+"use client";
+
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { 
+  Building2, 
+  User as UserIcon, 
+  MapPin, 
+  FileText,
+  Building,
+  Mail,
+  Phone,
+  Globe,
+  Loader2
+} from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { createCompany } from '../actions';
+import { toast } from 'sonner';
+
+interface CompanyCreatorModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  tenantSlug: string;
+  onSuccess?: () => void;
+}
+
+const PROVINCES = [
+  "Álava", "Albacete", "Alicante", "Almería", "Asturias", "Ávila", "Badajoz", "Barcelona", "Burgos", "Cáceres", 
+  "Cádiz", "Cantabria", "Castellón", "Ciudad Real", "Córdoba", "A Coruña", "Cuenca", "Girona", "Granada", 
+  "Guadalajara", "Gipuzkoa", "Huelva", "Huesca", "Illes Balears", "Jaén", "León", "Lleida", "Lugo", "Madrid", 
+  "Málaga", "Murcia", "Navarra", "Ourense", "Palencia", "Las Palmas", "Pontevedra", "La Rioja", "Salamanca", 
+  "Segovia", "Sevilla", "Soria", "Tarragona", "Santa Cruz de Tenerife", "Teruel", "Toledo", "Valencia", 
+  "Valladolid", "Zamora", "Zaragoza", "Ceuta", "Melilla"
+];
+
+export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess }: CompanyCreatorModalProps) {
+  const [isCompany, setIsCompany] = useState(true);
+  const [useSameAddress, setUseSameAddress] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    const formData = new FormData(e.currentTarget);
+    formData.append('entityType', isCompany ? 'COMPANY' : 'INDIVIDUAL');
+    formData.append('useSameAddress', useSameAddress ? 'true' : 'false');
+    
+    // Validate required fields
+    if (isCompany) {
+      if (!formData.get('legalName') || !formData.get('taxId')) {
+        toast.error("Razón social y CIF son obligatorios");
+        setIsSubmitting(false);
+        return;
+      }
+    } else {
+      if (!formData.get('firstName') || !formData.get('lastName') || !formData.get('taxId')) {
+        toast.error("Nombre, apellidos y DNI son obligatorios");
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
+    if (!formData.get('address') || !formData.get('addressCity') || !formData.get('addressProvince') || !formData.get('addressZip')) {
+      toast.error("Faltan datos en la dirección fiscal");
+      setIsSubmitting(false);
+      return;
+    }
+
+    const { error, companyId } = await createCompany(tenantSlug, formData);
+
+    if (error) {
+      toast.error(error);
+    } else {
+      toast.success(isCompany ? "Empresa creada con éxito" : "Contacto creado con éxito");
+      onOpenChange(false);
+      if (onSuccess) onSuccess();
+    }
+    
+    setIsSubmitting(false);
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl p-0 overflow-hidden bg-background">
+        <DialogHeader className="px-6 py-4 border-b border-border/40 bg-muted/20">
+          <DialogTitle className="text-lg font-semibold flex items-center gap-2">
+            <Building className="text-muted-foreground w-5 h-5" />
+            Nuevo Registro
+          </DialogTitle>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="flex flex-col max-h-[80vh]">
+          <div className="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-hide">
+            
+            {/* 1. Toggle Tipo Entidad */}
+            <div className="flex items-center justify-center p-4 bg-muted/30 rounded-xl border border-border/50">
+              <div className="flex items-center gap-3">
+                <span className={`text-sm font-medium ${isCompany ? 'text-foreground' : 'text-muted-foreground'}`}>
+                  Empresa / Entidad
+                </span>
+                <Switch checked={!isCompany} onCheckedChange={(checked) => setIsCompany(!checked)} className="data-[state=checked]:bg-primary" />
+                <span className={`text-sm font-medium ${!isCompany ? 'text-foreground' : 'text-muted-foreground'}`}>
+                  Persona Física
+                </span>
+              </div>
+            </div>
+
+            {/* 2. IDENTIFICACIÓN */}
+            <div className="space-y-4">
+              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                <FileText size={14} />
+                Identificación Fiscal
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {isCompany ? (
+                  <>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="legalName">Razón Social <span className="text-red-500">*</span></Label>
+                      <Input id="legalName" name="legalName" placeholder="Acme Corporation S.L." required />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="name">Nombre Comercial <span className="text-red-500">*</span></Label>
+                      <Input id="name" name="name" placeholder="Acme" required />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="taxId">CIF / NIF <span className="text-red-500">*</span></Label>
+                      <Input id="taxId" name="taxId" placeholder="B12345678" required />
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="firstName">Nombre <span className="text-red-500">*</span></Label>
+                      <Input id="firstName" name="firstName" placeholder="Juan" required />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="lastName">Primer Apellido <span className="text-red-500">*</span></Label>
+                      <Input id="lastName" name="lastName" placeholder="Pérez" required />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="secondLastName">Segundo Apellido</Label>
+                      <Input id="secondLastName" name="secondLastName" placeholder="García" />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="taxId">DNI / NIE <span className="text-red-500">*</span></Label>
+                      <Input id="taxId" name="taxId" placeholder="12345678Z" required />
+                    </div>
+                  </>
+                )}
+                
+                <div className="space-y-1.5">
+                  <Label htmlFor="email">Email principal {!isCompany && <span className="text-red-500">*</span>}</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input id="email" name="email" type="email" placeholder="hola@ejemplo.com" className="pl-9" required={!isCompany} />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="phone">Teléfono {!isCompany && <span className="text-red-500">*</span>}</Label>
+                  <div className="relative">
+                    <Phone className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input id="phone" name="phone" placeholder="+34 600 000 000" className="pl-9" required={!isCompany} />
+                  </div>
+                </div>
+                {isCompany && (
+                  <div className="space-y-1.5">
+                    <Label htmlFor="website">Web (opcional)</Label>
+                    <div className="relative">
+                      <Globe className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Input id="website" name="website" placeholder="www.acme.com" className="pl-9" />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* 4. DIRECCIÓN FISCAL */}
+            <div className="space-y-4">
+              <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                <MapPin size={14} />
+                Dirección Fiscal
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1.5 md:col-span-2">
+                  <Label htmlFor="address">Dirección completa <span className="text-red-500">*</span></Label>
+                  <Input id="address" name="address" placeholder="Calle Ejemplo 123, Piso 4A" required />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="addressCity">Ciudad <span className="text-red-500">*</span></Label>
+                  <Input id="addressCity" name="addressCity" placeholder="Madrid" required />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="addressProvince">Provincia <span className="text-red-500">*</span></Label>
+                  <Select name="addressProvince" required>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Seleccione provincia" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PROVINCES.map(p => (
+                        <SelectItem key={p} value={p}>{p}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="addressZip">Código Postal <span className="text-red-500">*</span></Label>
+                  <Input id="addressZip" name="addressZip" placeholder="28001" required />
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="addressCountry">País</Label>
+                  <Input id="addressCountry" name="addressCountry" defaultValue="España" readOnly className="bg-muted/50" />
+                </div>
+              </div>
+            </div>
+
+            {/* 5. DIRECCIÓN OPERATIVA */}
+            <div className="space-y-4 p-4 border border-border/50 rounded-xl bg-muted/10">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label className="text-sm font-semibold">Dirección Operativa</Label>
+                  <p className="text-xs text-muted-foreground">Donde se realiza la actividad principal</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="same-address" className="text-xs text-muted-foreground font-medium cursor-pointer">Usar misma dirección fiscal</Label>
+                  <Switch id="same-address" checked={useSameAddress} onCheckedChange={setUseSameAddress} />
+                </div>
+              </div>
+
+              {!useSameAddress && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-border/50 mt-4">
+                  <div className="space-y-1.5 md:col-span-2">
+                    <Label htmlFor="opAddress">Dirección completa operativa</Label>
+                    <Input id="opAddress" name="opAddress" placeholder="Nave 4, Polígono Industrial..." />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="opAddressCity">Ciudad</Label>
+                    <Input id="opAddressCity" name="opAddressCity" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="opAddressProvince">Provincia</Label>
+                    <Select name="opAddressProvince">
+                      <SelectTrigger>
+                        <SelectValue placeholder="Seleccione provincia" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {PROVINCES.map(p => (
+                          <SelectItem key={p} value={p}>{p}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="opAddressZip">Código Postal</Label>
+                    <Input id="opAddressZip" name="opAddressZip" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="opAddressCountry">País</Label>
+                    <Input id="opAddressCountry" name="opAddressCountry" defaultValue="España" />
+                  </div>
+                </div>
+              )}
+            </div>
+
+          </div>
+
+          <DialogFooter className="px-6 py-4 border-t border-border/40 bg-muted/10 shrink-0">
+            <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancelar</Button>
+            <Button type="submit" disabled={isSubmitting} className="min-w-[120px] bg-[#2f6bff] hover:bg-[#1a55e8] text-white">
+              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Crear Registro"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
