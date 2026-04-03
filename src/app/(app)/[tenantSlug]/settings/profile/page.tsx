@@ -5,41 +5,41 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { User } from 'lucide-react';
 
-export default function ProfileSettingsPage() {
+export default function PerfilSettingsPage() {
   return (
     <div className="flex flex-col h-full w-full">
       {/* Top Header */}
       <div className="flex h-14 items-center px-6 border-b border-border/40 gap-2 shrink-0 bg-background z-10 sticky top-0">
         <User size={16} className="text-muted-foreground" />
-        <span className="text-sm font-semibold">Profile</span>
+        <span className="text-sm font-semibold">Perfil</span>
       </div>
 
       <div className="flex-1 overflow-y-auto w-full">
         <div className="mx-auto max-w-4xl py-10 px-8">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold mb-1">Profile</h1>
-        <p className="text-sm text-muted-foreground">Manage your personal details</p>
+        <h1 className="text-2xl font-semibold mb-1">Perfil</h1>
+        <p className="text-sm text-muted-foreground">Gestiona tus datos personales</p>
       </div>
 
       {/* Info Banner */}
       <div className="mb-10 rounded-md bg-muted/30 p-3 text-sm flex items-center gap-2 border border-border/40 text-muted-foreground">
         <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-current text-[10px] font-bold">i</div>
-        Changes to your profile will apply to all of your workspaces.
+        Los cambios en tu perfil se aplicarán a todos tus espacios de trabajo.
       </div>
 
-      {/* Profile Picture */}
+      {/* Perfil Picture */}
       <div className="mb-8 flex items-start gap-6">
         <Avatar className="h-20 w-20 border border-border/40 text-blue-500 bg-blue-100 dark:bg-blue-900/40">
           <AvatarImage src="" />
           <AvatarFallback className="text-2xl font-medium bg-transparent">AS</AvatarFallback>
         </Avatar>
         <div className="flex flex-col gap-1.5 pt-1">
-          <h2 className="text-sm font-semibold">Profile Picture</h2>
-          <p className="text-xs text-muted-foreground mb-1">We only support PNGs, JPEGs and GIFs under 10MB</p>
+          <h2 className="text-sm font-semibold">Perfil Picture</h2>
+          <p className="text-xs text-muted-foreground mb-1">Soportamos PNGs, JPEGs y GIFs de máximo 10MB</p>
           <div className="flex items-center gap-3">
             <Button size="sm" className="bg-[#2f6bff] hover:bg-[#1a55e8] text-white shadow-sm h-8 px-4 font-medium rounded-md">
-              Upload new image
+              Subir nueva imagen
             </Button>
             <Button variant="outline" size="icon-sm" className="h-8 w-8 text-red-500 hover:text-red-500 hover:bg-red-50 border-border/50 rounded-md shadow-sm">
               <span className="sr-only">Delete</span>
@@ -53,20 +53,20 @@ export default function ProfileSettingsPage() {
       <div className="flex flex-col gap-6 max-w-2xl">
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-semibold text-muted-foreground">First Name</label>
+            <label className="text-xs font-semibold text-muted-foreground">Nombre</label>
             <Input defaultValue="Alvaro" className="h-9 shadow-sm" />
           </div>
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-semibold text-muted-foreground">Last Name</label>
+            <label className="text-xs font-semibold text-muted-foreground">Apellidos</label>
             <Input defaultValue="S." className="h-9 shadow-sm" />
           </div>
         </div>
 
         <div className="flex flex-col gap-2">
-          <label className="text-xs font-semibold text-muted-foreground">Primary email address</label>
+          <label className="text-xs font-semibold text-muted-foreground">Correo electrónico principal</label>
           <div className="flex w-full items-center justify-between rounded-md border border-input bg-background h-9 px-3 shadow-sm">
             <span className="text-sm">info@musguilla.com</span>
-            <button className="text-xs font-medium text-foreground py-1 px-2 hover:bg-muted/50 rounded-sm border border-border/50 bg-background shadow-xs">Edit</button>
+            <button className="text-xs font-medium text-foreground py-1 px-2 hover:bg-muted/50 rounded-sm border border-border/50 bg-background shadow-xs">Editar</button>
           </div>
         </div>
       </div>
@@ -75,14 +75,14 @@ export default function ProfileSettingsPage() {
 
       {/* Time Preferences */}
       <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-1">Time preferences</h2>
-        <p className="text-sm text-muted-foreground">Manage your time preferences</p>
+        <h2 className="text-lg font-semibold mb-1">Preferencias de tiempo</h2>
+        <p className="text-sm text-muted-foreground">Gestiona tus preferencias de horario</p>
       </div>
 
       <div className="flex flex-col gap-6 max-w-2xl">
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-semibold text-muted-foreground">Preferred Timezone</label>
+            <label className="text-xs font-semibold text-muted-foreground">Zona horaria preferida</label>
             <Select defaultValue="eu">
               <SelectTrigger className="h-9 shadow-sm">
                 <SelectValue placeholder="Europe/Madrid" />
@@ -95,7 +95,7 @@ export default function ProfileSettingsPage() {
             </Select>
           </div>
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-semibold text-muted-foreground">Start week on</label>
+            <label className="text-xs font-semibold text-muted-foreground">La semana comienza en</label>
             <Select defaultValue="mon">
               <SelectTrigger className="h-9 shadow-sm">
                 <SelectValue placeholder="Monday" />

@@ -82,7 +82,7 @@ export function UserProfileDropdown({ userName, userEmail, initials, tenantSlug 
           <div className="px-1">
             <Link href={`/${tenantSlug}/settings/plans`} onClick={() => setIsOpen(false)} className="w-full flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm outline-none hover:bg-muted text-left">
               <Sparkles size={16} className="text-muted-foreground" />
-              Upgrade to Pro
+              Actualizar a Pro
             </Link>
           </div>
           
@@ -91,15 +91,15 @@ export function UserProfileDropdown({ userName, userEmail, initials, tenantSlug 
           <div className="px-1">
             <Link href={`/${tenantSlug}/settings/profile`} onClick={() => setIsOpen(false)} className="w-full flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm outline-none hover:bg-muted text-left">
               <UserIcon size={16} className="text-muted-foreground" />
-              Account
+              Cuenta
             </Link>
             <Link href={`/${tenantSlug}/settings/general`} onClick={() => setIsOpen(false)} className="w-full flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm outline-none hover:bg-muted text-left">
               <Settings size={16} className="text-muted-foreground" />
-              Settings
+              Ajustes
             </Link>
             <Link href={`/${tenantSlug}/settings/plans`} onClick={() => setIsOpen(false)} className="w-full flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm outline-none hover:bg-muted text-left">
               <CreditCard size={16} className="text-muted-foreground" />
-              Subscription
+              Suscripción
             </Link>
           </div>
 
@@ -111,7 +111,7 @@ export function UserProfileDropdown({ userName, userEmail, initials, tenantSlug 
               className="w-full flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 text-sm outline-none text-red-500 hover:bg-red-500/10 hover:text-red-600 text-left font-medium transition-colors"
             >
               <LogOut size={16} />
-              Log out
+              Cerrar sesión
             </button>
           </div>
         </div>

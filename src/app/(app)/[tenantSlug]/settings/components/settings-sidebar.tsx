@@ -3,22 +3,23 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ChevronLeft, Search, User, Mail, CreditCard, Building, Settings, Blocks } from 'lucide-react';
+import { ChevronLeft, Search, User, Mail, CreditCard, Building, Settings, Blocks, Sparkles } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 export function SettingsSidebar({ tenantSlug }: { tenantSlug: string }) {
   const pathname = usePathname();
 
   const personalLinks = [
-    { href: `/${tenantSlug}/settings/profile`, label: 'Profile', icon: User },
-    { href: `/${tenantSlug}/settings/emails`, label: 'Email accounts', icon: Mail },
+    { href: `/${tenantSlug}/settings/profile`, label: 'Perfil', icon: User },
+    { href: `/${tenantSlug}/settings/emails`, label: 'Cuentas de email', icon: Mail },
   ];
 
   const workspaceLinks = [
     { href: `/${tenantSlug}/settings/general`, label: 'General', icon: Building },
-    { href: `/${tenantSlug}/settings/members`, label: 'Members', icon: User },
-    { href: `/${tenantSlug}/settings/plans`, label: 'Plans', icon: Blocks },
-    { href: `/${tenantSlug}/settings/billing`, label: 'Billing', icon: CreditCard },
+    { href: `/${tenantSlug}/settings/members`, label: 'Miembros', icon: User },
+    { href: `/${tenantSlug}/settings/ai`, label: 'Inteligencia artificial', icon: Sparkles },
+    { href: `/${tenantSlug}/settings/plans`, label: 'Planes', icon: Blocks },
+    { href: `/${tenantSlug}/settings/billing`, label: 'Facturación', icon: CreditCard },
   ];
 
   return (
@@ -29,7 +30,7 @@ export function SettingsSidebar({ tenantSlug }: { tenantSlug: string }) {
           className="flex items-center gap-2 text-sm font-semibold hover:text-muted-foreground transition-colors"
         >
           <ChevronLeft size={16} className="text-muted-foreground" />
-          Settings
+          Ajustes
         </Link>
       </div>
       
@@ -38,7 +39,7 @@ export function SettingsSidebar({ tenantSlug }: { tenantSlug: string }) {
           <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search settings..."
+            placeholder="Buscar ajustes..."
             className="w-full bg-background pl-8 shadow-none h-8 text-xs border-border/60 rounded-md focus-visible:ring-1"
           />
         </div>
@@ -72,7 +73,7 @@ export function SettingsSidebar({ tenantSlug }: { tenantSlug: string }) {
 
         {/* Workspace Group */}
         <div className="px-4 mb-6">
-          <h3 className="mb-2 text-xs font-semibold text-muted-foreground">Workspace</h3>
+          <h3 className="mb-2 text-xs font-semibold text-muted-foreground">Espacio de trabajo</h3>
           <nav className="flex flex-col gap-0.5">
             {workspaceLinks.map((link) => {
               const active = pathname === link.href;

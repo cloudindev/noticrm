@@ -37,22 +37,22 @@ export default async function MembersSettingsPage({
       {/* Top Header */}
       <div className="flex h-14 items-center px-6 border-b border-border/40 gap-2 shrink-0 bg-background z-10 sticky top-0">
         <User size={16} className="text-muted-foreground" />
-        <span className="text-sm font-semibold">Members</span>
+        <span className="text-sm font-semibold">Miembros</span>
       </div>
 
       <div className="flex-1 overflow-y-auto w-full">
         <div className="mx-auto max-w-5xl py-10 px-8">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold mb-1">Members</h1>
-        <p className="text-sm text-muted-foreground">Manage workspace members, set access levels, and invite new users.</p>
+        <h1 className="text-2xl font-semibold mb-1">Miembros</h1>
+        <p className="text-sm text-muted-foreground">Gestiona los miembros, niveles de acceso e invita nuevos usuarios.</p>
       </div>
 
       {/* Static "Tab" Header representation (no Teams) */}
       <div className="flex items-center gap-6 border-b border-border/40 mb-6 px-1">
         <div className="pb-3 border-b-2 border-primary text-sm font-semibold flex items-center gap-2">
           <User size={15} className="text-muted-foreground" />
-          Members
+          Miembros
         </div>
       </div>
 
@@ -61,18 +61,18 @@ export default async function MembersSettingsPage({
         <div className="relative flex-1 w-full">
           <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input 
-            placeholder="Search name or email" 
+            placeholder="Buscar por nombre o email" 
             className="pl-9 h-9 shadow-sm bg-background border-border/60"
           />
         </div>
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <Button variant="outline" className="h-9 shadow-sm border-border/60 text-sm font-medium gap-2">
             <SlidersHorizontal size={14} />
-            Filter
+            Filtro
           </Button>
           <Button className="h-9 bg-[#2f6bff] hover:bg-[#1a55e8] text-white shadow-sm font-medium gap-2 px-4">
             <UserPlus size={16} />
-            Invite member
+            Invitar miembro
           </Button>
         </div>
       </div>
@@ -81,8 +81,8 @@ export default async function MembersSettingsPage({
       <div className="rounded-xl border border-border/60 overflow-hidden shadow-sm bg-background">
         {/* Table Header */}
         <div className="grid grid-cols-[1fr_120px_40px] gap-4 items-center px-4 py-3 border-b border-border/60 bg-muted/10 text-[13px] font-medium text-muted-foreground">
-          <div className="flex items-center gap-2"><User size={14} className="opacity-70" /> User</div>
-          <div className="flex items-center gap-2"><Shield size={14} className="opacity-70" /> Role</div>
+          <div className="flex items-center gap-2"><User size={14} className="opacity-70" /> Usuario</div>
+          <div className="flex items-center gap-2"><Shield size={14} className="opacity-70" /> Rol</div>
           <div></div>
         </div>
 
@@ -96,7 +96,7 @@ export default async function MembersSettingsPage({
               : 'bg-muted text-muted-foreground hover:bg-muted';
             
             // Format role display: OWNER -> Admin, MEMBER -> Member
-            const displayRole = membership.role === 'OWNER' || membership.role === 'ADMIN' ? 'Admin' : 'Member';
+            const displayRole = membership.role === 'OWNER' || membership.role === 'ADMIN' ? 'Admin' : 'Miembro';
             
             return (
               <div key={membership.id} className="grid grid-cols-[1fr_120px_40px] gap-4 items-center px-4 py-3 group hover:bg-muted/20 transition-colors">
@@ -110,7 +110,7 @@ export default async function MembersSettingsPage({
                   </Avatar>
                   <div className="flex items-baseline gap-2 min-w-0">
                     <span className="text-[14px] font-semibold text-foreground truncate">
-                      {membership.user.name || "User"} {isYou && <span className="text-muted-foreground font-normal">(You)</span>}
+                      {membership.user.name || "Usuario"} {isYou && <span className="text-muted-foreground font-normal">(Tú)</span>}
                     </span>
                     <span className="text-[13px] text-muted-foreground hidden md:inline truncate">
                       {membership.user.email}

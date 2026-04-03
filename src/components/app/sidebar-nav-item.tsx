@@ -23,10 +23,10 @@ export function SidebarNavItem({
   return (
     <Link
       href={href}
-      className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors ${
+      className={`flex items-center gap-2.5 rounded-md px-3 py-[7px] text-[14px] transition-colors ${
         isActive 
-          ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium' 
-          : 'text-sidebar-foreground hover:bg-sidebar-accent/50'
+          ? 'bg-muted/80 text-foreground font-medium' 
+          : 'text-muted-foreground hover:bg-muted/50 hover:text-foreground font-medium'
       }`}
     >
       {icon}
@@ -36,7 +36,7 @@ export function SidebarNavItem({
           {badge}
         </span>
       )}
-      {isActive && !badge && <div className="ml-auto h-2 w-2 rounded-full bg-primary" />}
+
     </Link>
   );
 }

@@ -8,7 +8,7 @@ export default function EmailSettingsPage() {
       {/* Top Header */}
       <div className="flex h-14 items-center px-6 border-b border-border/40 gap-2 shrink-0 bg-background z-10 sticky top-0">
         <Mail size={16} className="text-muted-foreground" />
-        <span className="text-sm font-semibold">Email and calendar accounts</span>
+        <span className="text-sm font-semibold">Cuentas de correo y calendario</span>
       </div>
 
       <div className="flex-1 overflow-y-auto w-full">
@@ -17,11 +17,11 @@ export default function EmailSettingsPage() {
           {/* Header */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-2xl font-semibold mb-1">Emails</h1>
-              <p className="text-sm text-muted-foreground">Your unified inbox for client communications.</p>
+              <h1 className="text-2xl font-semibold mb-1">Correos</h1>
+              <p className="text-sm text-muted-foreground">Tu bandeja de entrada unificada para comunicaciones.</p>
             </div>
             <Button variant="outline" size="sm" className="h-9 font-medium shadow-sm border-border/60">
-              Connect Inbox
+              Conectar Bandeja
             </Button>
           </div>
 
@@ -31,16 +31,16 @@ export default function EmailSettingsPage() {
               <Mail size={22} className="text-foreground" strokeWidth={1.5} />
             </div>
             
-            <h2 className="text-[17px] font-semibold mb-2">Sync your communications</h2>
+            <h2 className="text-[17px] font-semibold mb-2">Sincroniza tus comunicaciones</h2>
             <p className="text-[13.5px] text-muted-foreground max-w-[420px] mb-8 leading-relaxed">
-              Connect your Google Workspace or Microsoft 365 account to automatically sync emails with your contacts and companies.
+              Conecta tu cuenta de Google Workspace o Microsoft 365 para sincronizar automáticamente tus correos.
             </p>
 
             {/* Connection Buttons using the requested dashed layout style */}
             <div className="rounded-xl border border-dashed border-border/80 bg-muted/10 p-2.5 flex flex-wrap items-center justify-center gap-3">
               <Button variant="outline" className="h-10 bg-background shadow-xs border-border/60 text-sm font-medium px-5 flex items-center gap-2.5 hover:bg-muted/50 transition-colors">
                 <Server size={16} className="text-muted-foreground" />
-                Connect SMTP Account
+                Conectar Cuenta SMTP
               </Button>
 
               <Button variant="outline" className="h-10 bg-background shadow-xs border-border/60 text-sm font-medium px-5 flex items-center gap-2.5 hover:bg-muted/50 transition-colors">
@@ -50,7 +50,7 @@ export default function EmailSettingsPage() {
                   <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
                   <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                 </svg>
-                Connect Google Account
+                Conectar Cuenta Google
               </Button>
               
               <Button variant="outline" className="h-10 bg-background shadow-xs border-border/60 text-sm font-medium px-5 flex items-center gap-2.5 hover:bg-muted/50 transition-colors">
@@ -60,7 +60,7 @@ export default function EmailSettingsPage() {
                   <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
                   <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
                 </svg>
-                Connect Microsoft Account
+                Conectar Cuenta Microsoft
               </Button>
             </div>
 

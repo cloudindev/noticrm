@@ -37,7 +37,7 @@ export default async function GeneralSettingsPage({
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-2xl font-semibold mb-1">General</h1>
-        <p className="text-sm text-muted-foreground">Change the settings for your current workspace</p>
+        <p className="text-sm text-muted-foreground">Modifica los ajustes de tu espacio de trabajo actual</p>
       </div>
 
       <div className="my-10 h-px bg-border/40 max-w-3xl" />
@@ -51,12 +51,12 @@ export default async function GeneralSettingsPage({
           </AvatarFallback>
         </Avatar>
         <div className="flex flex-col gap-1.5 pt-0.5">
-          <h2 className="text-sm font-semibold">Workspace logo</h2>
-          <p className="text-xs text-muted-foreground mb-1">We only support PNGs, JPEGs and GIFs under 10MB</p>
+          <h2 className="text-sm font-semibold">Logo del espacio</h2>
+          <p className="text-xs text-muted-foreground mb-1">Soportamos PNGs, JPEGs y GIFs menores de 10MB</p>
           <div className="flex items-center gap-3">
             <Button size="sm" className="bg-[#2f6bff] hover:bg-[#1a55e8] text-white shadow-sm h-8 px-4 font-medium rounded-md gap-2">
               <Camera size={14} />
-              Upload logo
+              Subir logo
             </Button>
           </div>
         </div>
@@ -66,11 +66,11 @@ export default async function GeneralSettingsPage({
       <div className="flex flex-col gap-6 max-w-3xl">
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-semibold text-muted-foreground">Name</label>
+            <label className="text-xs font-semibold text-muted-foreground">Nombre</label>
             <Input defaultValue={workspaceName} className="h-9 shadow-sm px-3" />
           </div>
           <div className="flex flex-col gap-2">
-            <label className="text-xs font-semibold text-muted-foreground">Slug</label>
+            <label className="text-xs font-semibold text-muted-foreground">Identificador (Slug)</label>
             <div className="relative">
               <Input 
                 value={tenantSlug} 
@@ -91,22 +91,22 @@ export default async function GeneralSettingsPage({
       <div className="mb-10 max-w-3xl">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-[15px] font-semibold mb-1">Export workspace data</h2>
-            <p className="text-sm text-muted-foreground">Exports are in CSV format and can be downloaded within 7 days</p>
+            <h2 className="text-[15px] font-semibold mb-1">Exportar datos</h2>
+            <p className="text-sm text-muted-foreground">Las exportaciones son en CSV y se pueden descargar en los próximos 7 días</p>
           </div>
           <Button variant="outline" size="sm" className="h-8 shadow-sm border-border/60 text-sm font-medium gap-2">
             <Download size={14} />
-            Start new export
+            Nueva exportación
           </Button>
         </div>
         
         <div className="rounded-xl border border-border/60 overflow-hidden shadow-sm">
           <div className="grid grid-cols-2 gap-4 items-center px-4 py-3 border-b border-border/60 bg-muted/10 text-xs font-medium text-muted-foreground">
-            <div className="flex items-center gap-2"><LayoutGrid size={14} className="opacity-70" /> Type</div>
-            <div className="flex items-center gap-2"><Calendar size={14} className="opacity-70" /> Date</div>
+            <div className="flex items-center gap-2"><LayoutGrid size={14} className="opacity-70" /> Tipo</div>
+            <div className="flex items-center gap-2"><Calendar size={14} className="opacity-70" /> Fecha</div>
           </div>
           <div className="px-4 py-4 text-sm text-muted-foreground bg-background">
-            No exports yet
+            Sin exportaciones
           </div>
         </div>
       </div>
@@ -115,16 +115,16 @@ export default async function GeneralSettingsPage({
 
       {/* Danger Zone */}
       <div className="mb-10 max-w-3xl">
-        <h2 className="text-[15px] font-semibold mb-4">Danger zone</h2>
+        <h2 className="text-[15px] font-semibold mb-4">Zona de peligro</h2>
         
         <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4 flex items-center justify-between">
           <div>
-            <h3 className="text-[14px] font-semibold text-foreground mb-1">Delete workspace</h3>
-            <p className="text-sm text-muted-foreground">Once deleted, your workspace cannot be recovered</p>
+            <h3 className="text-[14px] font-semibold text-foreground mb-1">Eliminar espacio de trabajo</h3>
+            <p className="text-sm text-muted-foreground">Una vez eliminado, u espacio de trabajo no podrá recuperarse</p>
           </div>
           <Button variant="destructive" size="sm" className="h-9 shadow-sm bg-red-500 hover:bg-red-600 text-white font-medium px-4 gap-2">
             <Trash2 size={16} />
-            Delete workspace
+            Eliminar espacio
           </Button>
         </div>
       </div>

@@ -26,16 +26,16 @@ export default async function PlansSettingsPage({
       {/* Top Header */}
       <div className="flex h-14 items-center px-6 border-b border-border/40 gap-2 shrink-0 bg-background z-10 sticky top-0">
         <Blocks size={16} className="text-muted-foreground" />
-        <span className="text-sm font-semibold">Plans</span>
+        <span className="text-sm font-semibold">Planes</span>
       </div>
 
       <div className="flex-1 overflow-y-auto w-full">
         <div className="mx-auto max-w-[1000px] py-10 px-4 md:px-8">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold mb-1">Plans</h1>
+        <h1 className="text-2xl font-semibold mb-1">Planes</h1>
         <p className="text-sm text-muted-foreground flex items-center gap-1">
-          Designed for every stage of your journey. If you couldn't find something, massage us 
+          Diseñado para cada etapa de tu empresa. Si no encuentras algo, consúltanos 
           <ArrowUpRight size={14} className="opacity-70" />
         </p>
       </div>
@@ -48,24 +48,24 @@ export default async function PlansSettingsPage({
           </div>
           <div className="flex flex-col">
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Current</span>
+              <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">Actual</span>
               <span className="text-[11px] text-muted-foreground">·</span>
-              <span className="text-[11px] font-medium text-muted-foreground">11 days left on trial</span>
+              <span className="text-[11px] font-medium text-muted-foreground">11 días de prueba restantes</span>
             </div>
             <div className="flex items-center gap-2 mb-0.5">
               <h2 className="text-base font-semibold">Pro</h2>
               <Badge className="bg-blue-50 text-blue-600 hover:bg-blue-50 border-none font-semibold px-2 py-0 shadow-none text-[11px] dark:bg-blue-900/40 dark:text-blue-300">
-                Trial
+                Prueba
               </Badge>
             </div>
             <p className="text-[13px] text-muted-foreground">
-              0,00 € per user/month, billed monthly · <Link href="#" className="text-blue-600 hover:text-blue-700 font-medium">Change to annually (Save 20%)</Link>
+              0,00 € por usuario/mes, facturado mensualmente · <Link href="#" className="text-blue-600 hover:text-blue-700 font-medium">Cambiar a anual (Ahorra 20%)</Link>
             </p>
           </div>
         </div>
         <Button variant="outline" size="sm" className="h-9 shadow-sm border-border/60 text-sm font-medium gap-2 rounded-md whitespace-nowrap hidden sm:flex">
           <Pencil size={15} />
-          Manage plan
+          Gestionar plan
         </Button>
       </div>
 
@@ -73,32 +73,32 @@ export default async function PlansSettingsPage({
       <div className="grid grid-cols-[minmax(200px,1.5fr)_1fr_1fr_1fr_1fr] border-b border-border/40 pb-4">
         <div className="pr-4 flex flex-col justify-between">
           <div>
-            <h3 className="text-sm font-semibold mb-1">Compare plans</h3>
-            <p className="text-[13px] text-muted-foreground">Find the right plan for you</p>
+            <h3 className="text-sm font-semibold mb-1">Comparar planes</h3>
+            <p className="text-[13px] text-muted-foreground">Encuentra tu plan ideal</p>
           </div>
           
           <div className="mt-8 flex items-center w-fit border border-border/60 rounded-full p-0.5 bg-muted/10">
             <button className="px-3 py-1.5 text-[12px] font-medium rounded-full bg-background shadow-sm border border-border/40 flex items-center gap-1.5">
-              Annual 
+              Anual 
               <span className="bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wide dark:bg-blue-900/40 dark:text-blue-300">-20%</span>
             </button>
             <button className="px-3 py-1.5 text-[12px] font-medium text-muted-foreground rounded-full hover:text-foreground">
-              Monthly
+              Mensual
             </button>
           </div>
         </div>
 
         {/* Free Plan */}
         <div className="flex flex-col px-3 border-l border-transparent">
-          <h4 className="text-sm font-semibold mb-4">Free</h4>
+          <h4 className="text-sm font-semibold mb-4">Gratis</h4>
           <div className="mb-2">
             <span className="text-2xl font-bold">0 €</span><span className="text-[13px] text-muted-foreground">/mo</span>
           </div>
           <div className="text-[11px] leading-tight text-muted-foreground mb-4 h-8">
-            per seat,<br/>billed monthly
+            por usuario,<br/>facturado mensualmente
           </div>
           <Button variant="outline" size="sm" className="w-full text-xs font-semibold h-8 border-border/60 shadow-sm rounded-md hover:bg-muted/50">
-            Downgrade
+            Bajar plan
           </Button>
         </div>
 
@@ -109,10 +109,10 @@ export default async function PlansSettingsPage({
             <span className="text-2xl font-bold">29 €</span><span className="text-[13px] text-muted-foreground">/mo</span>
           </div>
           <div className="text-[11px] leading-tight text-muted-foreground mb-4 h-8">
-            per seat,<br/>billed annually
+            por usuario,<br/>facturado anualmente
           </div>
           <Button variant="outline" size="sm" className="w-full text-xs font-semibold h-8 border-border/60 shadow-sm rounded-md hover:bg-muted/50">
-            Downgrade
+            Bajar plan
           </Button>
         </div>
 
@@ -124,10 +124,10 @@ export default async function PlansSettingsPage({
             <span className="text-2xl font-bold">69 €</span><span className="text-[13px] text-muted-foreground">/mo</span>
           </div>
           <div className="text-[11px] leading-tight text-muted-foreground mb-4 h-8">
-            per seat,<br/>billed annually
+            por usuario,<br/>facturado anualmente
           </div>
           <Button disabled variant="outline" size="sm" className="w-full text-xs font-semibold h-8 border-border/60 shadow-sm rounded-md bg-muted/20 text-muted-foreground">
-            Current plan
+            Plan actual
           </Button>
         </div>
 
@@ -135,13 +135,13 @@ export default async function PlansSettingsPage({
         <div className="flex flex-col px-3 border-l border-border/20">
           <h4 className="text-sm font-semibold mb-4">Enterprise</h4>
           <div className="mb-2">
-            <span className="text-xl font-bold tracking-tight">Custom</span>
+            <span className="text-xl font-bold tracking-tight">A medida</span>
           </div>
           <div className="text-[11px] leading-tight text-muted-foreground mb-4 h-8">
-            per seat,<br/>billed annually
+            por usuario,<br/>facturado anualmente
           </div>
           <Button variant="outline" size="sm" className="w-full text-xs font-semibold h-8 border-border/60 shadow-sm rounded-md hover:bg-muted/50">
-            Talk to sales
+            Hablar con ventas
           </Button>
         </div>
       </div>
@@ -152,7 +152,7 @@ export default async function PlansSettingsPage({
 
         {/* Credits Category */}
         <div className="grid grid-cols-[minmax(200px,1.5fr)_1fr_1fr_1fr_1fr] py-4">
-          <div className="font-semibold px-2">Credits</div><div/><div/><div/><div/>
+          <div className="font-semibold px-2">Créditos</div><div/><div/><div/><div/>
         </div>
         
         <div className="grid grid-cols-[minmax(200px,1.5fr)_1fr_1fr_1fr_1fr] py-3 border-b border-border/30 hover:bg-muted/10 transition-colors group">
@@ -164,7 +164,7 @@ export default async function PlansSettingsPage({
         </div>
         
         <div className="grid grid-cols-[minmax(200px,1.5fr)_1fr_1fr_1fr_1fr] py-3 border-b border-border/30 hover:bg-muted/10 transition-colors group">
-          <div className="flex items-center gap-1.5 text-muted-foreground px-2">Workspace credits <Info size={12} className="opacity-40" /></div>
+          <div className="flex items-center gap-1.5 text-muted-foreground px-2">Créditos por espacio <Info size={12} className="opacity-40" /></div>
           <div className="px-3 font-medium">250</div>
           <div className="px-3 font-medium">1,500</div>
           <div className="px-3 font-medium">10,000</div>
@@ -173,7 +173,7 @@ export default async function PlansSettingsPage({
 
         {/* Add-on Workspace Credits */}
         <div className="grid grid-cols-[minmax(200px,1.5fr)_1fr_1fr_1fr_1fr] py-4">
-          <div className="font-semibold flex items-center gap-1.5 px-2">Add-on workspace credits <Info size={12} className="opacity-40" /></div><div/><div/><div/><div/>
+          <div className="font-semibold flex items-center gap-1.5 px-2">Créditos adicionales (espacio) <Info size={12} className="opacity-40" /></div><div/><div/><div/><div/>
         </div>
 
         <div className="grid grid-cols-[minmax(200px,1.5fr)_1fr_1fr_1fr_1fr] py-3 border-b border-border/30 hover:bg-muted/10 transition-colors group text-[12px]">
@@ -207,15 +207,15 @@ export default async function PlansSettingsPage({
 
         {/* Workspace Category */}
         <div className="grid grid-cols-[minmax(200px,1.5fr)_1fr_1fr_1fr_1fr] py-4">
-          <div className="font-semibold px-2">Workspace</div><div/><div/><div/><div/>
+          <div className="font-semibold px-2">Espacio de trabajo</div><div/><div/><div/><div/>
         </div>
 
         <div className="grid grid-cols-[minmax(200px,1.5fr)_1fr_1fr_1fr_1fr] py-3 border-b border-border/30 hover:bg-muted/10 transition-colors group">
           <div className="flex items-center gap-1.5 text-muted-foreground px-2">Seat limit <Info size={12} className="opacity-40" /></div>
           <div className="px-3 font-medium">Up to 3</div>
-          <div className="px-3 font-medium">Unlimited</div>
-          <div className="px-3 font-medium">Unlimited</div>
-          <div className="px-3 font-medium">Unlimited</div>
+          <div className="px-3 font-medium">Ilimitado</div>
+          <div className="px-3 font-medium">Ilimitado</div>
+          <div className="px-3 font-medium">Ilimitado</div>
         </div>
         
         <div className="grid grid-cols-[minmax(200px,1.5fr)_1fr_1fr_1fr_1fr] py-3 border-b border-border/30 hover:bg-muted/10 transition-colors group">
