@@ -7,10 +7,10 @@ export default function LoginPage() {
     <div className="flex w-full flex-col justify-center space-y-6">
       <div className="flex flex-col space-y-2 text-center">
         <h1 className="text-2xl font-semibold tracking-tight">
-          Welcome back
+          Bienvenido de nuevo
         </h1>
         <p className="text-sm text-muted-foreground">
-          Enter your credentials to sign in to your workspace
+          Por favor, introduce tus credenciales
         </p>
       </div>
       
@@ -25,7 +25,7 @@ export default function LoginPage() {
           </div>
           <div className="relative flex justify-center text-xs uppercase">
             <span className="bg-background px-2 text-muted-foreground">
-              Or continue with
+              O continua con
             </span>
           </div>
         </div>
@@ -41,9 +41,9 @@ export default function LoginPage() {
       </div>
       
       <p className="px-8 text-center text-sm text-muted-foreground">
-        Don&apos;t have an account?{" "}
+        ¿No tienes una cuenta?{" "}
         <Link href="/register" className="underline underline-offset-4 hover:text-primary">
-          Sign up
+          Regístrate gratis
         </Link>
       </p>
     </div>

@@ -86,28 +86,28 @@ export default async function AppLayout({
         <div className="flex-1 overflow-auto py-4">
           <nav className="flex flex-col gap-1 px-2">
             <div className="mb-2 px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
-              Workspace
+              Espacio de trabajo
             </div>
-            <SidebarNavItem icon={<Home size={18} />} label="Home" href={`/${tenantSlug}/home`} />
+            <SidebarNavItem icon={<Home size={18} />} label="Inicio" href={`/${tenantSlug}/home`} />
             <SidebarNavItem 
               icon={<CheckSquare size={18} />} 
-              label="Tasks" 
+              label="Tareas" 
               href={`/${tenantSlug}/tasks`} 
               badge={uncompletedTasksCount > 0 ? uncompletedTasksCount : undefined} 
             />
-            <SidebarNavItem icon={<Mail size={18} />} label="Emails" href={`/${tenantSlug}/emails`} />
+            <SidebarNavItem icon={<Mail size={18} />} label="Correos" href={`/${tenantSlug}/emails`} />
             
             <div className="mb-2 mt-4 px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
-              Records
+              Registros
             </div>
-            <SidebarNavItem icon={<Building2 size={18} />} label="Companies" href={`/${tenantSlug}/companies`} />
-            <SidebarNavItem icon={<Users size={18} />} label="People" href={`/${tenantSlug}/people`} />
-            <SidebarNavItem icon={<Target size={18} />} label="Leads" href={`/${tenantSlug}/leads`} />
+            <SidebarNavItem icon={<Building2 size={18} />} label="Empresas" href={`/${tenantSlug}/companies`} />
+            <SidebarNavItem icon={<Users size={18} />} label="Personas" href={`/${tenantSlug}/people`} />
+            <SidebarNavItem icon={<Target size={18} />} label="Oportunidades" href={`/${tenantSlug}/leads`} />
             
             <div className="mb-2 mt-4 px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
-              Analytics
+              Analíticas
             </div>
-            <SidebarNavItem icon={<BarChart2 size={18} />} label="Reports" href={`/${tenantSlug}/reports`} />
+            <SidebarNavItem icon={<BarChart2 size={18} />} label="Informes" href={`/${tenantSlug}/reports`} />
           </nav>
         </div>
         

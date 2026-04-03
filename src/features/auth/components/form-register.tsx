@@ -12,8 +12,8 @@ import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 
 const registerSchema = z.object({
-  email: z.string().email("Please enter a valid work email"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  email: z.string().email("Por favor, introduce un correo de trabajo válido"),
+  password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
 });
 
 type FormValues = z.infer<typeof registerSchema>;
@@ -48,13 +48,13 @@ export function RegisterForm() {
       }
 
       if ("success" in result && result.success) {
-        toast.success("Workspace created successfully!");
+        toast.success("¡Cuenta creada correctamente!");
         // Because they registered, they usually need to sign in next or get redirected to sign-in.
         // We redirect them to login with a success notice.
         router.push("/login?registered=true");
       }
     } catch (err) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error("Algo ha ido mal. Por favor inténtalo de nuevo.");
     } finally {
       setIsLoading(false);
     }
@@ -68,9 +68,9 @@ export function RegisterForm() {
           name="email"
           render={({ field }) => (
             <FormItem className="flex flex-col gap-1 space-y-0">
-              <FormLabel>Work Email</FormLabel>
+              <FormLabel>Email de trabajo</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="name@company.com" disabled={isLoading} {...field} />
+                <Input type="email" placeholder="nombre@empresa.com" disabled={isLoading} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -82,7 +82,7 @@ export function RegisterForm() {
           name="password"
           render={({ field }) => (
             <FormItem className="flex flex-col gap-1 space-y-0">
-              <FormLabel>Password</FormLabel>
+              <FormLabel>Contraseña</FormLabel>
               <FormControl>
                 <Input type="password" placeholder="••••••••" disabled={isLoading} {...field} />
               </FormControl>
@@ -92,7 +92,7 @@ export function RegisterForm() {
         />
 
         <Button type="submit" className="mt-4" disabled={isLoading}>
-          {isLoading ? "Creating account..." : "Create account"}
+          {isLoading ? "Creando cuenta..." : "Crear cuenta"}
         </Button>
       </form>
     </Form>

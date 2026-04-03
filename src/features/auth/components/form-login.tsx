@@ -13,8 +13,8 @@ import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 
 const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email"),
-  password: z.string().min(1, "Password is required"),
+  email: z.string().email("Por favor introduce un email válido"),
+  password: z.string().min(1, "La contraseña es obligatoria"),
 });
 
 type FormValues = z.infer<typeof loginSchema>;
@@ -44,16 +44,16 @@ export function LoginForm() {
       });
       
       if (result?.error || result?.url?.includes('error')) {
-        toast.error("Invalid email, password, or configuration error.");
+        toast.error("Email, contraseña incorrecta o error de configuración.");
         setIsLoading(false);
         return;
       }
       
       // Successfully authenticated
-      toast.success("Welcome back!");
+      toast.success("¡Bienvenido/a de nuevo!");
       window.location.href = "/app"; // Force full reload to /app so middleware guarantees redirect
     } catch (err) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error("Algo ha ido mal. Por favor inténtalo de nuevo.");
     } finally {
       setIsLoading(false);
     }
@@ -63,7 +63,7 @@ export function LoginForm() {
     <div className="flex flex-col gap-4">
       {registered && (
         <div className="rounded-md bg-green-50 p-4 text-sm text-green-700 border border-green-200">
-          Account created! Please sign in with your credentials.
+          ¡Cuenta creada! Por favor inicia sesión con tus credenciales.
         </div>
       )}
 
@@ -74,9 +74,9 @@ export function LoginForm() {
             name="email"
             render={({ field }) => (
               <FormItem className="flex flex-col gap-1 space-y-0">
-                <FormLabel>Email</FormLabel>
+                <FormLabel>Correo electrónico</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="name@example.com" disabled={isLoading} {...field} />
+                  <Input type="email" placeholder="nombre@ejemplo.com" disabled={isLoading} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -89,9 +89,9 @@ export function LoginForm() {
             render={({ field }) => (
               <FormItem className="flex flex-col gap-1 space-y-0">
                 <div className="flex items-center justify-between">
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Contraseña</FormLabel>
                   <Link href="/forgot-password" className="text-xs font-medium text-muted-foreground hover:text-foreground">
-                    Forgot password?
+                    ¿Has olvidado tu contraseña?
                   </Link>
                 </div>
                 <FormControl>
@@ -103,7 +103,7 @@ export function LoginForm() {
           />
 
           <Button type="submit" className="mt-2" disabled={isLoading}>
-            {isLoading ? "Signing in..." : "Sign In"}
+            {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
           </Button>
         </form>
       </Form>
