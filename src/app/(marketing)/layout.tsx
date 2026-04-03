@@ -14,22 +14,22 @@ export default function MarketingLayout({
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold font-mono">
               N/
             </div>
-            <span className="text-lg font-semibold tracking-tight">Noticrm</span>
+            <span className="text-lg font-bold tracking-tight">noticrm</span>
           </Link>
           <nav className="hidden md:flex gap-6 text-sm text-muted-foreground font-medium">
-            <Link href="#features" className="hover:text-foreground transition-colors">Platform</Link>
-            <Link href="#pricing" className="hover:text-foreground transition-colors">Pricing</Link>
+            <Link href="#features" className="hover:text-foreground transition-colors">Funcionalidades</Link>
+            <Link href="#pricing" className="hover:text-foreground transition-colors">Precios</Link>
           </nav>
         </div>
         <div className="flex items-center gap-4">
           <Link href="/login" className="text-sm font-medium hover:text-foreground transition-colors">
-            Sign in
+            Iniciar sesión
           </Link>
           <Link 
             href="/register" 
             className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow transition hover:opacity-90"
           >
-            Start for free
+            Empezar gratis
           </Link>
         </div>
       </header>
@@ -40,7 +40,7 @@ export default function MarketingLayout({
 
       <footer className="border-t border-border/40 py-12">
         <div className="container mx-auto px-6 text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} Noticrm, Inc. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} noticrm. Todos los derechos reservados.</p>
         </div>
       </footer>
     </div>
