@@ -37,8 +37,7 @@ export function UserProfileDropdown({ userName, userEmail, initials, tenantSlug 
 
   const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault();
-    // Using NextAuth's built-in signout endpoint for robust logout since signOut from next-auth/react can sometimes fail in certain v5 edge cases without SessionProvider
-    window.location.href = '/api/auth/signout?callbackUrl=/login';
+    window.location.href = '/signout';
   };
 
   return (
