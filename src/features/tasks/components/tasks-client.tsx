@@ -70,16 +70,16 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
     });
   };
 
-  const handleCreateTask = (title: string, createMore: boolean) => {
+  const handleCreateTask = (title: string, createMore: boolean, assigneeId?: string, recordId?: string, recordType?: string, selectedDate?: Date) => {
     // Optimistic Creation
     const optimisticTask: TaskItem = {
       id: `temp-${Date.now()}`,
       title,
       completed: false,
-      dueDate: "Hoy",
-      dueColor: "text-orange-500 font-medium",
-      record: "Ninguno",
-      assignee: { name: "Asignando...", initials: "...", avatar: "" }
+      dueDate: selectedDate ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'short' }).format(selectedDate) : "Sin fecha",
+      dueColor: selectedDate ? "text-foreground font-medium" : "text-muted-foreground",
+      record: recordId ? "Registro asignado" : "Ninguno",
+      assignee: assigneeId === "1" ? { name: "Luis S.", initials: "LS", avatar: "" } : { name: "Asignando...", initials: "...", avatar: "" }
     };
     
     setTasks(prev => [optimisticTask, ...prev]);
@@ -89,8 +89,7 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
     }
 
     startTransition(async () => {
-      // For now, no relatedEntity or dates passed from the simplistic overlay visually 
-      // but they can directly be added to the signature
+      // For now, testing optimistic UI
       const result = await createTask(tenantSlug, title);
       
       if (result.error) {
