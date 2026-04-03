@@ -125,7 +125,7 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
         <div className="flex items-center justify-between border-b border-border/40 px-6 py-3">
           <div className="flex items-center gap-2.5">
             <CheckSquare size={18} className="text-muted-foreground" />
-            <h1 className="text-[15px] font-semibold tracking-tight">Tareas</h1>
+            <h1 className="text-sm font-semibold tracking-tight">Tareas</h1>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" className="h-8 shadow-sm">Configuración</Button>

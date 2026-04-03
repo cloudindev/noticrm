@@ -17,7 +17,7 @@ export default function LeadsPage() {
       <div className="flex items-center justify-between border-b border-border/40 px-6 py-3 shrink-0">
         <div className="flex items-center gap-2.5">
           <Target size={18} className="text-muted-foreground" />
-          <h1 className="text-[15px] font-semibold tracking-tight">Oportunidades</h1>
+          <h1 className="text-sm font-semibold tracking-tight">Oportunidades</h1>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" className="h-8 shadow-sm">Configuración</Button>

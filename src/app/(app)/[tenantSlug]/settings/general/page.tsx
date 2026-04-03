@@ -91,7 +91,7 @@ export default async function GeneralSettingsPage({
       <div className="mb-10 max-w-3xl">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-[15px] font-semibold mb-1">Exportar datos</h2>
+            <h2 className="text-sm font-semibold mb-1">Exportar datos</h2>
             <p className="text-sm text-muted-foreground">Las exportaciones son en CSV y se pueden descargar en los próximos 7 días</p>
           </div>
           <Button variant="outline" size="sm" className="h-8 shadow-sm border-border/60 text-sm font-medium gap-2">
@@ -115,7 +115,7 @@ export default async function GeneralSettingsPage({
 
       {/* Danger Zone */}
       <div className="mb-10 max-w-3xl">
-        <h2 className="text-[15px] font-semibold mb-4">Zona de peligro</h2>
+        <h2 className="text-sm font-semibold mb-4">Zona de peligro</h2>
         
         <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4 flex items-center justify-between">
           <div>

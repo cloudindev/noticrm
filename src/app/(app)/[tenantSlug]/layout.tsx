@@ -86,7 +86,7 @@ export default async function AppLayout({
         
         <div className="flex-1 overflow-auto py-2">
           <nav className="flex flex-col gap-[2px] px-2">
-            <div className="mb-1 mt-2 px-3 text-[13px] font-medium text-muted-foreground/80 flex justify-between items-center group cursor-pointer hover:text-foreground">
+            <div className="mb-1 mt-2 px-3 text-sm font-medium text-foreground flex justify-between items-center group cursor-pointer hover:bg-muted/30 rounded-md py-1">
               Espacio de trabajo
               <ChevronDown size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
@@ -99,7 +99,7 @@ export default async function AppLayout({
             />
             <SidebarNavItem icon={<Mail size={18} />} label="Correos" href={`/${tenantSlug}/emails`} />
             
-            <div className="mb-1 mt-6 px-3 text-[13px] font-medium text-muted-foreground/80 flex justify-between items-center group cursor-pointer hover:text-foreground">
+            <div className="mb-1 mt-6 px-3 text-sm font-medium text-foreground flex justify-between items-center group cursor-pointer hover:bg-muted/30 rounded-md py-1">
               Registros
               <ChevronDown size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
@@ -119,7 +119,7 @@ export default async function AppLayout({
               href={`/${tenantSlug}/leads`} 
             />
             
-            <div className="mb-1 mt-6 px-3 text-[13px] font-medium text-muted-foreground/80 flex justify-between items-center group cursor-pointer hover:text-foreground">
+            <div className="mb-1 mt-6 px-3 text-sm font-medium text-foreground flex justify-between items-center group cursor-pointer hover:bg-muted/30 rounded-md py-1">
               Analíticas
               <ChevronDown size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
