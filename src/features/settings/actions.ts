@@ -3,7 +3,7 @@
 import { PrismaClient } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
-import { s3Client, getPublicS3Url } from "@/lib/s3";
+import { getS3Client, getPublicS3Url } from "@/lib/s3";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 
 const prisma = new PrismaClient();
@@ -38,7 +38,8 @@ export async function updateProfileAvatar(tenantSlug: string, formData: FormData
       // but 'Visibility Mapping' from the image says the bucket is public by default.
     });
 
-    await s3Client.send(putCommand);
+    const s3 = getS3Client();
+    await s3.send(putCommand);
 
     const publicUrl = getPublicS3Url(key);
 
