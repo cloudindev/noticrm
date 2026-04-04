@@ -2,7 +2,7 @@ import React from 'react';
 import { PrismaClient } from '@prisma/client';
 import { auth } from '@/lib/auth';
 import { TasksClient } from '@/features/tasks/components/tasks-client';
-import { format, isPast, isToday, isTomorrow } from 'date-fns';
+import { format, isBefore, isToday, isTomorrow, startOfDay } from 'date-fns';
 
 const prisma = new PrismaClient();
 
@@ -44,7 +44,7 @@ export default async function TasksPage({ params }: { params: Promise<{ tenantSl
         dueColor = "text-orange-500 font-medium";
       } else if (isTomorrow(task.dueDate)) {
         dueDateLabel = "Mañana";
-      } else if (isPast(task.dueDate)) {
+      } else if (isBefore(startOfDay(task.dueDate), startOfDay(new Date()))) {
         dueDateLabel = "Atrasada";
         dueColor = "text-red-500 font-medium";
       } else {

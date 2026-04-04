@@ -93,8 +93,13 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
       const safeAssigneeId = assigneeId && assigneeId.length > 10 ? assigneeId : null;
       const safeRecordId = recordId && recordId.length > 10 ? recordId : null;
 
+      // Force to 12:00 UTC so date boundaries do not mismatch across timezones
+      const safeDate = selectedDate 
+        ? new Date(Date.UTC(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 12, 0, 0)) 
+        : null;
+
       // Send the real data
-      const result = await createTask(tenantSlug, title, selectedDate ?? null, safeAssigneeId, safeRecordId, recordType ?? null);
+      const result = await createTask(tenantSlug, title, safeDate, safeAssigneeId, safeRecordId, recordType ?? null);
       
       if (result.error) {
         // Revert
