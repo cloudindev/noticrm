@@ -89,8 +89,12 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
     }
 
     startTransition(async () => {
+      // Prevent mock IDs from crashing the DB
+      const safeAssigneeId = assigneeId && assigneeId.length > 10 ? assigneeId : null;
+      const safeRecordId = recordId && recordId.length > 10 ? recordId : null;
+
       // Send the real data
-      const result = await createTask(tenantSlug, title, selectedDate ?? null, assigneeId ?? null, recordId ?? null, recordType ?? null);
+      const result = await createTask(tenantSlug, title, selectedDate ?? null, safeAssigneeId, safeRecordId, recordType ?? null);
       
       if (result.error) {
         // Revert
