@@ -89,15 +89,12 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
     }
 
     startTransition(async () => {
-      // For now, testing optimistic UI
-      const result = await createTask(tenantSlug, title);
+      // Send the real data
+      const result = await createTask(tenantSlug, title, selectedDate ?? null, assigneeId ?? null, recordId ?? null, recordType ?? null);
       
       if (result.error) {
         // Revert
         setTasks(prev => prev.filter(t => t.id !== optimisticTask.id));
-      } else if (result.task) {
-        // Swap temp with actual
-        // Revalidation will handle the ultimate sync, but this gives instant feedback
       }
     });
   };

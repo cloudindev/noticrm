@@ -28,20 +28,18 @@ async function authenticateTenant(tenantSlug: string) {
   return { tenant, user: session.user };
 }
 
-export async function createTask(tenantSlug: string, title: string, dueDate?: Date | null, assigneeId?: string | null, relatedEntityId?: string | null) {
+export async function createTask(tenantSlug: string, title: string, dueDate?: Date | null, assigneeId?: string | null, relatedEntityId?: string | null, relatedEntityType?: string | null) {
   try {
     const { tenant, user } = await authenticateTenant(tenantSlug);
-    
-    // Default to today if no date provided
-    const defaultDate = new Date();
     
     const task = await prisma.task.create({
       data: {
         tenantId: tenant.id,
         title,
-        dueDate: dueDate || defaultDate,
+        dueDate: dueDate !== undefined ? dueDate : null,
         assigneeId: assigneeId || user.id, // default to self
         relatedEntityId,
+        relatedEntityType,
         status: "TODO",
         priority: "MEDIUM"
       },
