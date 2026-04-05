@@ -45,8 +45,10 @@ export function CompaniesClient({ initialCompanies, tenantSlug }: CompaniesClien
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border/40 px-6 py-3 shrink-0 bg-background">
         <div className="flex items-center gap-2.5">
-          <Building2 size={18} className="text-muted-foreground" />
-          <h1 className="text-sm font-semibold tracking-tight">Empresas y Contactos</h1>
+          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#2f6bff] text-white shadow-sm">
+            <Building2 size={14} strokeWidth={2.5} />
+          </div>
+          <h1 className="text-sm font-semibold tracking-tight">Empresas</h1>
         </div>
         <div className="flex items-center gap-2">
           <Button size="sm" onClick={() => setIsCreatorOpen(true)} className="bg-[#2f6bff] hover:bg-[#1a55e8] h-8 text-white shadow-sm font-medium">

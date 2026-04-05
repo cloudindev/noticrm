@@ -16,7 +16,9 @@ export default function LeadsPage() {
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border/40 px-6 py-3 shrink-0">
         <div className="flex items-center gap-2.5">
-          <Target size={18} className="text-muted-foreground" />
+          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#f26522] text-white shadow-sm">
+            <Target size={14} strokeWidth={2.5} />
+          </div>
           <h1 className="text-sm font-semibold tracking-tight">Oportunidades</h1>
         </div>
         <div className="flex items-center gap-2">

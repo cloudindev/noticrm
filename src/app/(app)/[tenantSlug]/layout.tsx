@@ -86,41 +86,41 @@ export default async function AppLayout({
         
         <div className="flex-1 overflow-auto py-2">
           <nav className="flex flex-col gap-[2px] px-2 mt-2">
-            <SidebarNavItem icon={<Home size={18} />} label="Inicio" href={`/${tenantSlug}/home`} />
+            <SidebarNavItem icon={<Home size={16} />} label="Inicio" href={`/${tenantSlug}/home`} />
             <SidebarNavItem 
-              icon={<CheckSquare size={18} />} 
+              icon={<CheckSquare size={16} />} 
               label="Tareas" 
               href={`/${tenantSlug}/tasks`} 
               badge={uncompletedTasksCount > 0 ? uncompletedTasksCount : undefined} 
             />
-            <SidebarNavItem icon={<Mail size={18} />} label="Correos" href={`/${tenantSlug}/emails`} />
+            <SidebarNavItem icon={<Mail size={16} />} label="Correos" href={`/${tenantSlug}/emails`} />
             
             <CollapsibleSection title="Registros">
               <SidebarNavItem 
-                icon={<div className="flex h-5 w-5 items-center justify-center rounded-[5px] bg-[#2f6bff] text-white shadow-sm"><Building2 size={13} strokeWidth={2.5} /></div>} 
+                icon={<div className="flex h-[18px] w-[18px] items-center justify-center rounded-[5px] bg-[#2f6bff] text-white shadow-sm"><Building2 size={12} strokeWidth={2.5} /></div>} 
                 label="Empresas" 
                 href={`/${tenantSlug}/companies`} 
               />
               <SidebarNavItem 
-                icon={<div className="flex h-5 w-5 items-center justify-center rounded-[5px] bg-[#2f6bff] text-white shadow-sm"><Users size={13} strokeWidth={2.5} /></div>} 
+                icon={<div className="flex h-[18px] w-[18px] items-center justify-center rounded-[5px] bg-[#2f6bff] text-white shadow-sm"><Users size={12} strokeWidth={2.5} /></div>} 
                 label="Personas" 
                 href={`/${tenantSlug}/people`} 
               />
               <SidebarNavItem 
-                icon={<div className="flex h-5 w-5 items-center justify-center rounded-[5px] bg-[#f26522] text-white shadow-sm"><Target size={13} strokeWidth={2.5} /></div>} 
+                icon={<div className="flex h-[18px] w-[18px] items-center justify-center rounded-[5px] bg-[#f26522] text-white shadow-sm"><Target size={12} strokeWidth={2.5} /></div>} 
                 label="Oportunidades" 
                 href={`/${tenantSlug}/leads`} 
               />
             </CollapsibleSection>
             
             <CollapsibleSection title="Analíticas">
-              <SidebarNavItem icon={<BarChart2 size={18} />} label="Informes" href={`/${tenantSlug}/reports`} />
+              <SidebarNavItem icon={<BarChart2 size={16} />} label="Informes" href={`/${tenantSlug}/reports`} />
             </CollapsibleSection>
           </nav>
         </div>
         
         <div className="px-2 mb-2">
-          <SidebarNavItem icon={<Blocks size={18} />} label="Marketplace" href={`/${tenantSlug}/marketplace`} />
+          <SidebarNavItem icon={<Blocks size={16} />} label="Marketplace" href={`/${tenantSlug}/marketplace`} />
         </div>
 
         <div className="mt-auto border-t border-border/40 p-2">

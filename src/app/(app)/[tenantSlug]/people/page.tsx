@@ -23,7 +23,9 @@ export default function PeoplePage() {
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border/40 px-6 py-3 shrink-0">
         <div className="flex items-center gap-2.5">
-          <Users size={18} className="text-muted-foreground" />
+          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#2f6bff] text-white shadow-sm">
+            <Users size={14} strokeWidth={2.5} />
+          </div>
           <h1 className="text-sm font-semibold tracking-tight">Personas</h1>
         </div>
         <div className="flex items-center gap-2">
