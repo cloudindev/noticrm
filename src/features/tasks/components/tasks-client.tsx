@@ -56,6 +56,13 @@ interface TasksClientProps {
   tenantSlug: string;
 }
 
+const ActiveCheck = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="8" cy="8" r="8" fill="#2f6bff"/>
+    <path d="M4.5 8L7 10.5L11.5 5.5" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
 export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
   const [tasks, setTasks] = useState<TaskItem[]>(initialTasks);
   const [isCreating, setIsCreating] = useState(false);
@@ -325,26 +332,26 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
               <DropdownMenuContent className="w-[200px]" align="start">
                 <DropdownMenuItem onClick={() => setSortBy("dueDate")} className="flex justify-between text-xs cursor-pointer items-center font-medium">
                    <div className="flex items-center gap-2 text-muted-foreground hover:text-foreground"><Calendar size={15} /> Fecha vencimiento</div>
-                   {sortBy === "dueDate" && <div className="h-4 w-4 bg-[#2f6bff] rounded-full flex items-center justify-center"><CheckSquare size={10} className="text-white fill-white" /></div>}
+                   {sortBy === "dueDate" && <ActiveCheck />}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setSortBy("assignee")} className="flex justify-between text-xs cursor-pointer items-center font-medium mt-1">
                    <div className="flex items-center gap-2 text-muted-foreground"><UserIcon size={15} /> Asignado a</div>
-                   {sortBy === "assignee" && <div className="h-4 w-4 bg-[#2f6bff] rounded-full flex items-center justify-center"><CheckSquare size={10} className="text-white fill-white" /></div>}
+                   {sortBy === "assignee" && <ActiveCheck />}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setSortBy("createdAt")} className="flex justify-between text-xs cursor-pointer items-center font-medium mt-1">
                    <div className="flex items-center gap-2 text-muted-foreground"><Clock size={15} /> Fecha de creación</div>
-                   {sortBy === "createdAt" && <div className="h-4 w-4 bg-[#2f6bff] rounded-full flex items-center justify-center"><CheckSquare size={10} className="text-white fill-white" /></div>}
+                   {sortBy === "createdAt" && <ActiveCheck />}
                 </DropdownMenuItem>
                 
                 <DropdownMenuSeparator className="my-2" />
                 
                 <DropdownMenuItem onClick={() => setSortOrder("asc")} className="flex justify-between text-xs cursor-pointer items-center font-medium">
                    <div className="flex items-center gap-2 text-muted-foreground"><ArrowDownUp size={15} /> Ascendente</div>
-                   {sortOrder === "asc" && <div className="h-4 w-4 bg-[#2f6bff] rounded-full flex items-center justify-center"><CheckSquare size={10} className="text-white fill-white" /></div>}
+                   {sortOrder === "asc" && <ActiveCheck />}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setSortOrder("desc")} className="flex justify-between text-xs cursor-pointer items-center font-medium mt-1">
                    <div className="flex items-center gap-2 text-muted-foreground"><ArrowDownUp size={15} className="rotate-180" /> Descendente</div>
-                   {sortOrder === "desc" && <div className="h-4 w-4 bg-[#2f6bff] rounded-full flex items-center justify-center"><CheckSquare size={10} className="text-white fill-white" /></div>}
+                   {sortOrder === "desc" && <ActiveCheck />}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -391,20 +398,20 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
                     <DropdownMenuSubContent className="w-[200px]">
                       <DropdownMenuItem onClick={() => setGroupBy("none")} className="flex justify-between text-xs cursor-pointer font-medium">
                         <div className="flex items-center gap-2"><LayoutGrid size={14} className="opacity-70" /> Ninguno</div>
-                        {groupBy === "none" && <div className="h-4 w-4 bg-[#2f6bff] rounded-full flex items-center justify-center"><CheckSquare size={10} className="text-white fill-white" /></div>}
+                        {groupBy === "none" && <ActiveCheck />}
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem onClick={() => setGroupBy("dueDate")} className="flex justify-between text-xs cursor-pointer font-medium">
                         <div className="flex items-center gap-2"><Calendar size={14} className="opacity-70" /> Fecha vencimiento</div>
-                        {groupBy === "dueDate" && <div className="h-4 w-4 bg-[#2f6bff] rounded-full flex items-center justify-center"><CheckSquare size={10} className="text-white fill-white" /></div>}
+                        {groupBy === "dueDate" && <ActiveCheck />}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => setGroupBy("assignee")} className="flex justify-between text-xs cursor-pointer font-medium mt-1">
                         <div className="flex items-center gap-2"><UserIcon size={14} className="opacity-70" /> Asignado a</div>
-                        {groupBy === "assignee" && <div className="h-4 w-4 bg-[#2f6bff] rounded-full flex items-center justify-center"><CheckSquare size={10} className="text-white fill-white" /></div>}
+                        {groupBy === "assignee" && <ActiveCheck />}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => setGroupBy("createdAt")} className="flex justify-between text-xs cursor-pointer font-medium mt-1">
                         <div className="flex items-center gap-2"><Clock size={14} className="opacity-70" /> Fecha de creación</div>
-                        {groupBy === "createdAt" && <div className="h-4 w-4 bg-[#2f6bff] rounded-full flex items-center justify-center"><CheckSquare size={10} className="text-white fill-white" /></div>}
+                        {groupBy === "createdAt" && <ActiveCheck />}
                       </DropdownMenuItem>
                     </DropdownMenuSubContent>
                   </DropdownMenuPortal>
