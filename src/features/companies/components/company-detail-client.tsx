@@ -81,8 +81,9 @@ export function CompanyDetailClient({ initialCompany, tenantSlug }: { initialCom
 
       <div className="flex flex-1 overflow-hidden">
         {/* Left Content Area */}
-        <div className="flex-1 overflow-y-auto p-6 scrollbar-hide max-w-[800px]">
-          {activeTab === 'visión general' && (
+        <div className="flex-1 overflow-y-auto p-6 lg:p-8 scrollbar-hide">
+          <div className="max-w-[800px]">
+            {activeTab === 'visión general' && (
             <div className="space-y-8 animate-in fade-in duration-300">
               
               {/* Highlights */}
@@ -136,6 +137,7 @@ export function CompanyDetailClient({ initialCompany, tenantSlug }: { initialCom
 
             </div>
           )}
+          </div>
         </div>
 
         {/* Right Sidebar (Details Pane) */}
