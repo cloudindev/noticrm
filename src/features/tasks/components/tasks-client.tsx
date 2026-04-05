@@ -17,7 +17,8 @@ import {
   Trash2,
   Clock,
   ArrowDownUp,
-  Rows3
+  Rows3,
+  X
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { InlineTaskCreator } from './inline-task-creator';
@@ -65,6 +66,27 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [groupBy, setGroupBy] = useState<"dueDate" | "assignee" | "createdAt" | "none">("dueDate");
   const [showCompleted, setShowCompleted] = useState(true);
+
+  // Filters state
+  type FilterField = "assignee" | "record";
+  type FilterOperator = "is" | "is_not";
+  interface ActiveFilter {
+    id: string;
+    field: FilterField;
+    operator: FilterOperator | null;
+    value: string;
+  }
+  const [filters, setFilters] = useState<ActiveFilter[]>([]);
+
+  const addFilter = (field: FilterField) => {
+    setFilters([...filters, { id: `filt-${Date.now()}`, field, operator: null, value: "" }]);
+  };
+  const updateFilter = (id: string, updates: Partial<ActiveFilter>) => {
+    setFilters(filters.map(f => f.id === id ? { ...f, ...updates } : f));
+  };
+  const removeFilter = (id: string) => {
+    setFilters(filters.filter(f => f.id !== id));
+  };
 
   React.useEffect(() => {
     setTasks(initialTasks);
@@ -137,7 +159,24 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
     processed = processed.filter(t => !t.completed);
   }
 
-  // 1. Sort
+  // 1. Filter
+  if (filters.length > 0) {
+    processed = processed.filter(t => {
+      return filters.every(f => {
+        if (!f.operator || !f.value.trim()) return true; // ignore incomplete filter visually
+        const lowerVal = f.value.toLowerCase();
+        let taskValue = "";
+        
+        if (f.field === "assignee") taskValue = t.assignee.name.toLowerCase();
+        else if (f.field === "record") taskValue = t.record.toLowerCase();
+        
+        const isMatch = taskValue.includes(lowerVal);
+        return f.operator === "is" ? isMatch : !isMatch;
+      });
+    });
+  }
+
+  // 2. Sort
   processed.sort((a, b) => {
     let valA: string | number = 0;
     let valB: string | number = 0;
@@ -310,10 +349,23 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button variant="outline" size="sm" className="h-8 gap-2 text-muted-foreground border-border/60 shadow-sm rounded-md bg-muted/30 hover:bg-muted/50">
-              <ListFilter size={14} />
-              Filtros
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger render={
+                <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-2 bg-muted/30 shadow-sm border border-border/60 text-xs text-muted-foreground font-medium rounded-md px-3 hover:bg-muted/50">
+                  <ListFilter size={14} />
+                  Filtros
+                </div>
+              } />
+              <DropdownMenuContent className="w-[180px]" align="start">
+                <div className="text-xs font-semibold text-muted-foreground px-2 py-1.5">Añadir filtro local</div>
+                <DropdownMenuItem onClick={() => addFilter("assignee")} className="flex items-center gap-2 text-xs font-medium cursor-pointer">
+                  <UserIcon size={14} className="text-muted-foreground" /> Asignado a
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => addFilter("record")} className="flex items-center gap-2 text-xs font-medium cursor-pointer mt-1">
+                  <Rows3 size={14} className="text-muted-foreground" /> Registro
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           
           <div className="flex items-center gap-2">
@@ -379,6 +431,73 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
             </Button>
           </div>
         </div>
+        
+        {/* Active Filters Row */}
+        {filters.length > 0 && (
+          <div className="flex items-center gap-2 px-6 pb-3 pt-0 border-b border-border/20 flex-wrap">
+            {filters.map(f => (
+              <div key={f.id} className="flex items-center h-8 rounded-md border border-border/60 shadow-sm text-xs bg-background group/filter">
+                {/* Field name */}
+                <div className="flex items-center gap-1.5 px-2.5 h-full font-medium text-foreground bg-muted/20 border-r border-border/40 shrink-0">
+                  {f.field === "assignee" ? <UserIcon size={13} className="text-muted-foreground" /> : <Rows3 size={13} className="text-muted-foreground" />}
+                  {f.field === "assignee" ? "Asignado a" : "Registro"}
+                </div>
+
+                {/* Operator Select */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger render={
+                    <div role="button" tabIndex={0} className={`flex items-center px-2.5 h-full cursor-pointer hover:bg-muted/30 ${!f.operator ? "text-muted-foreground" : "text-foreground font-medium"}`}>
+                      {f.operator === "is" ? "es" : f.operator === "is_not" ? "no es" : "Select condition"}
+                    </div>
+                  } />
+                  <DropdownMenuContent className="w-[140px] p-1.5" align="start">
+                    <DropdownMenuItem onClick={() => updateFilter(f.id, { operator: "is" })} className="font-medium text-xs cursor-pointer">es</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => updateFilter(f.id, { operator: "is_not" })} className="font-medium text-xs cursor-pointer">no es</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Value Input */}
+                {f.operator && (
+                  <div className="flex items-center px-2 h-full border-l border-border/40 cursor-text min-w-[80px]">
+                    <input 
+                      type="text" 
+                      className="bg-transparent border-none outline-none w-full text-xs font-medium placeholder:text-muted-foreground/60 focus:ring-0" 
+                      placeholder="Valor..." 
+                      value={f.value} 
+                      autoFocus
+                      onChange={(e) => updateFilter(f.id, { value: e.target.value })}
+                    />
+                  </div>
+                )}
+
+                {/* Remove Filter */}
+                <div 
+                  className="flex items-center justify-center w-7 h-full border-l border-border/40 hover:bg-red-500/10 hover:text-red-600 text-muted-foreground cursor-pointer transition-colors"
+                  onClick={() => removeFilter(f.id)}
+                >
+                  <X size={13} />
+                </div>
+              </div>
+            ))}
+            
+            <DropdownMenu>
+              <DropdownMenuTrigger render={
+                <div role="button" tabIndex={0} className="flex items-center justify-center h-8 w-8 rounded-md border border-dashed border-border/60 hover:bg-muted/50 cursor-pointer text-muted-foreground border-b border-border/20">
+                  <Plus size={14} />
+                </div>
+              } />
+              <DropdownMenuContent className="w-[180px]" align="start">
+                <div className="text-xs font-semibold text-muted-foreground px-2 py-1.5">Añadir otro filtro</div>
+                <DropdownMenuItem onClick={() => addFilter("assignee")} className="flex items-center gap-2 text-xs font-medium cursor-pointer">
+                  <UserIcon size={14} className="text-muted-foreground" /> Asignado a
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => addFilter("record")} className="flex items-center gap-2 text-xs font-medium cursor-pointer mt-1">
+                  <Rows3 size={14} className="text-muted-foreground" /> Registro
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        )}
       </div>
 
       {/* Main Table Area */}
