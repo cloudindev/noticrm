@@ -64,23 +64,17 @@ export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess 
     
     // Validate required fields
     if (isCompany) {
-      if (!formData.get('legalName') || !formData.get('taxId')) {
-        toast.error("Razón social y CIF son obligatorios");
+      if (!formData.get('name')) {
+        toast.error("El nombre comercial es obligatorio");
         setIsSubmitting(false);
         return;
       }
     } else {
-      if (!formData.get('firstName') || !formData.get('lastName') || !formData.get('taxId')) {
-        toast.error("Nombre, apellidos y DNI son obligatorios");
+      if (!formData.get('firstName')) {
+        toast.error("El nombre es obligatorio");
         setIsSubmitting(false);
         return;
       }
-    }
-
-    if (!formData.get('address') || !formData.get('addressCity') || !formData.get('addressProvince') || !formData.get('addressZip')) {
-      toast.error("Faltan datos en la dirección fiscal");
-      setIsSubmitting(false);
-      return;
     }
 
     const { error, companyId } = await createCompany(tenantSlug, formData);
@@ -98,7 +92,7 @@ export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl p-0 overflow-hidden bg-background">
+      <DialogContent className="max-w-3xl p-0 overflow-hidden bg-background">
         <DialogHeader className="px-6 py-4 border-b border-border/40 bg-muted/20">
           <DialogTitle className="text-lg font-semibold flex items-center gap-2">
             <Building className="text-muted-foreground w-5 h-5" />
@@ -110,15 +104,25 @@ export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess 
           <div className="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-hide">
             
             {/* 1. Toggle Tipo Entidad */}
-            <div className="flex items-center justify-center p-4 bg-muted/30 rounded-xl border border-border/50">
-              <div className="flex items-center gap-3">
-                <span className={`text-sm font-medium ${isCompany ? 'text-foreground' : 'text-muted-foreground'}`}>
+            <div className="flex justify-center mb-2">
+              <div className="inline-flex items-center p-1 bg-muted/60 rounded-full border border-border/60 shadow-sm relative">
+                <div 
+                  role="button"
+                  tabIndex={0}
+                  className={`flex items-center justify-center px-5 py-2 text-sm font-semibold rounded-full cursor-pointer transition-all z-10 w-[160px] ${isCompany ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                  onClick={() => setIsCompany(true)}
+                >
                   Empresa / Entidad
-                </span>
-                <Switch checked={!isCompany} onCheckedChange={(checked) => setIsCompany(!checked)} className="data-[state=checked]:bg-primary" />
-                <span className={`text-sm font-medium ${!isCompany ? 'text-foreground' : 'text-muted-foreground'}`}>
+                </div>
+                <div 
+                  role="button"
+                  tabIndex={0}
+                  className={`flex items-center justify-center px-5 py-2 text-sm font-semibold rounded-full cursor-pointer transition-all z-10 w-[160px] ${!isCompany ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                  onClick={() => setIsCompany(false)}
+                >
                   Persona Física
-                </span>
+                </div>
+                <div className={`absolute top-1 bottom-1 w-[160px] bg-background rounded-full shadow-sm border border-border/40 transition-transform duration-300 ease-in-out z-0 ${!isCompany ? 'translate-x-[160px]' : 'translate-x-0'}`}></div>
               </div>
             </div>
 
@@ -133,16 +137,16 @@ export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess 
                 {isCompany ? (
                   <>
                     <div className="space-y-1.5">
-                      <Label htmlFor="legalName">Razón Social <span className="text-red-500">*</span></Label>
-                      <Input id="legalName" name="legalName" placeholder="Acme Corporation S.L." required />
+                      <Label htmlFor="legalName">Razón Social</Label>
+                      <Input id="legalName" name="legalName" placeholder="Acme Corporation S.L." />
                     </div>
                     <div className="space-y-1.5">
                       <Label htmlFor="name">Nombre Comercial <span className="text-red-500">*</span></Label>
                       <Input id="name" name="name" placeholder="Acme" required />
                     </div>
                     <div className="space-y-1.5">
-                      <Label htmlFor="taxId">CIF / NIF <span className="text-red-500">*</span></Label>
-                      <Input id="taxId" name="taxId" placeholder="B12345678" required />
+                      <Label htmlFor="taxId">CIF / NIF</Label>
+                      <Input id="taxId" name="taxId" placeholder="B12345678" />
                     </div>
                   </>
                 ) : (
@@ -152,32 +156,32 @@ export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess 
                       <Input id="firstName" name="firstName" placeholder="Juan" required />
                     </div>
                     <div className="space-y-1.5">
-                      <Label htmlFor="lastName">Primer Apellido <span className="text-red-500">*</span></Label>
-                      <Input id="lastName" name="lastName" placeholder="Pérez" required />
+                      <Label htmlFor="lastName">Primer Apellido</Label>
+                      <Input id="lastName" name="lastName" placeholder="Pérez" />
                     </div>
                     <div className="space-y-1.5">
                       <Label htmlFor="secondLastName">Segundo Apellido</Label>
                       <Input id="secondLastName" name="secondLastName" placeholder="García" />
                     </div>
                     <div className="space-y-1.5">
-                      <Label htmlFor="taxId">DNI / NIE <span className="text-red-500">*</span></Label>
-                      <Input id="taxId" name="taxId" placeholder="12345678Z" required />
+                      <Label htmlFor="taxId">DNI / NIE</Label>
+                      <Input id="taxId" name="taxId" placeholder="12345678Z" />
                     </div>
                   </>
                 )}
                 
                 <div className="space-y-1.5">
-                  <Label htmlFor="email">Email principal {!isCompany && <span className="text-red-500">*</span>}</Label>
+                  <Label htmlFor="email">Email principal</Label>
                   <div className="relative">
                     <Mail className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input id="email" name="email" type="email" placeholder="hola@ejemplo.com" className="pl-9" required={!isCompany} />
+                    <Input id="email" name="email" type="email" placeholder="hola@ejemplo.com" className="pl-9" />
                   </div>
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="phone">Teléfono {!isCompany && <span className="text-red-500">*</span>}</Label>
+                  <Label htmlFor="phone">Teléfono</Label>
                   <div className="relative">
                     <Phone className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input id="phone" name="phone" placeholder="+34 600 000 000" className="pl-9" required={!isCompany} />
+                    <Input id="phone" name="phone" placeholder="+34 600 000 000" className="pl-9" />
                   </div>
                 </div>
                 {isCompany && (
@@ -201,16 +205,16 @@ export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess 
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5 md:col-span-2">
-                  <Label htmlFor="address">Dirección completa <span className="text-red-500">*</span></Label>
-                  <Input id="address" name="address" placeholder="Calle Ejemplo 123, Piso 4A" required />
+                  <Label htmlFor="address">Dirección completa</Label>
+                  <Input id="address" name="address" placeholder="Calle Ejemplo 123, Piso 4A" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="addressCity">Ciudad <span className="text-red-500">*</span></Label>
-                  <Input id="addressCity" name="addressCity" placeholder="Madrid" required />
+                  <Label htmlFor="addressCity">Ciudad</Label>
+                  <Input id="addressCity" name="addressCity" placeholder="Madrid" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="addressProvince">Provincia <span className="text-red-500">*</span></Label>
-                  <Select name="addressProvince" required>
+                  <Label htmlFor="addressProvince">Provincia</Label>
+                  <Select name="addressProvince">
                     <SelectTrigger>
                       <SelectValue placeholder="Seleccione provincia" />
                     </SelectTrigger>
@@ -222,8 +226,8 @@ export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess 
                   </Select>
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="addressZip">Código Postal <span className="text-red-500">*</span></Label>
-                  <Input id="addressZip" name="addressZip" placeholder="28001" required />
+                  <Label htmlFor="addressZip">Código Postal</Label>
+                  <Input id="addressZip" name="addressZip" placeholder="28001" />
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="addressCountry">País</Label>
