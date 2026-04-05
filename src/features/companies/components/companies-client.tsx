@@ -31,11 +31,10 @@ interface CompaniesClientProps {
 
 export function CompaniesClient({ initialCompanies, tenantSlug }: CompaniesClientProps) {
   const router = useRouter();
-  const [companies, setCompanies] = useState<CompanyListDTO[]>(initialCompanies);
   const [isCreatorOpen, setIsCreatorOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredCompanies = companies.filter(c => 
+  const filteredCompanies = initialCompanies.filter(c => 
     c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     c.website.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -130,6 +129,7 @@ export function CompaniesClient({ initialCompanies, tenantSlug }: CompaniesClien
         open={isCreatorOpen} 
         onOpenChange={setIsCreatorOpen} 
         tenantSlug={tenantSlug} 
+        onSuccess={() => router.refresh()}
       />
     </div>
   );
