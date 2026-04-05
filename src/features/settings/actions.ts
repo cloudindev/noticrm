@@ -57,3 +57,48 @@ export async function updateProfileAvatar(tenantSlug: string, formData: FormData
     return { error: error.message };
   }
 }
+
+export async function updateProfileDetails(tenantSlug: string, formData: FormData) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
+
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+
+    if (!name || name.trim().length < 2) {
+      return { error: "Name must be at least 2 characters long." };
+    }
+    
+    // Basic email validation if changed
+    if (email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        return { error: "Please provide a valid email address." };
+      }
+      
+      // Check for email collision
+      if (email !== session.user.email) {
+        const existing = await prisma.user.findUnique({ where: { email } });
+        if (existing) {
+          return { error: "This email is already taken by another account." };
+        }
+      }
+    }
+
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { 
+        name,
+        ...(email && { email }) // update email if valid
+      },
+    });
+
+    revalidatePath(`/${tenantSlug}/settings/profile`);
+    
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error updating profile details:", error);
+    return { error: error.message || "Failed to update profile." };
+  }
+}

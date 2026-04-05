@@ -1,10 +1,12 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { AvatarUpload } from './avatar-upload';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { User } from '@prisma/client';
+import { toast } from 'sonner';
+import { updateProfileDetails } from '../actions';
 
 interface ProfileClientProps {
   tenantSlug: string;
@@ -16,8 +18,28 @@ interface ProfileClientProps {
 }
 
 export function ProfileClient({ tenantSlug, user }: ProfileClientProps) {
-  const userName = user.name || "Usuario NotiCRM";
+  const [userName, setUserName] = useState(user.name || "Usuario NotiCRM");
+  const [email, setEmail] = useState(user.email || "");
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const userInitials = userName.substring(0, 2).toUpperCase();
+
+  async function handleSaveDetails() {
+    setIsLoading(true);
+    const fd = new FormData();
+    fd.append("name", userName);
+    fd.append("email", email);
+
+    const res = await updateProfileDetails(tenantSlug, fd);
+    setIsLoading(false);
+    
+    if (res.error) {
+      toast.error(res.error);
+    } else {
+      toast.success("Perfil actualizado correctamente");
+    }
+  }
 
   return (
     <div className="max-w-3xl mx-auto space-y-8 animate-in fade-in duration-500 pb-12">
@@ -40,12 +62,30 @@ export function ProfileClient({ tenantSlug, user }: ProfileClientProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-xs font-semibold text-foreground">Nombre completo</label>
-              <Input defaultValue={userName} className="h-9 shadow-sm" />
+              <Input 
+                value={userName} 
+                onChange={(e) => setUserName(e.target.value)} 
+                className="h-9 shadow-sm" 
+              />
             </div>
             
             <div className="space-y-2">
               <label className="text-xs font-semibold text-foreground">Correo electrónico</label>
-              <Input defaultValue={user.email || ""} disabled className="h-9 shadow-sm bg-muted/30" />
+              <div className="relative">
+                <Input 
+                  value={email} 
+                  onChange={(e) => setEmail(e.target.value)} 
+                  disabled={!isEditingEmail} 
+                  className={`h-9 shadow-sm pr-16 ${!isEditingEmail ? "bg-muted/30" : ""}`} 
+                />
+                <button 
+                  type="button"
+                  onClick={() => setIsEditingEmail(!isEditingEmail)}
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 text-[11px] font-medium text-muted-foreground hover:text-foreground px-2 py-1 rounded hover:bg-muted transition-colors"
+                >
+                  {isEditingEmail ? "Hecho" : "Editar"}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -69,8 +109,13 @@ export function ProfileClient({ tenantSlug, user }: ProfileClientProps) {
         </div>
         
         <div className="p-4 px-6 bg-muted/20 border-t border-border/40 flex justify-end">
-          <Button size="sm" className="bg-foreground text-background hover:bg-foreground/90 font-medium h-8">
-            Guardar cambios
+          <Button 
+            onClick={handleSaveDetails} 
+            disabled={isLoading}
+            size="sm" 
+            className="bg-foreground text-background hover:bg-foreground/90 font-medium h-8"
+          >
+            {isLoading ? "Guardando..." : "Guardar cambios"}
           </Button>
         </div>
       </div>
