@@ -2,7 +2,8 @@ import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Camera, Copy, Download, LayoutGrid, Calendar, Trash2, Building } from 'lucide-react';
+import { Camera, Copy, Download, LayoutGrid, Calendar, Building } from 'lucide-react';
+import { WorkspaceDeleteZone } from '@/features/settings/components/workspace-delete-zone';
 
 import { PrismaClient } from "@prisma/client";
 import { notFound } from "next/navigation";
@@ -114,20 +115,8 @@ export default async function GeneralSettingsPage({
       <div className="my-10 h-px bg-border/40 max-w-3xl" />
 
       {/* Danger Zone */}
-      <div className="mb-10 max-w-3xl">
-        <h2 className="text-sm font-semibold mb-4">Zona de peligro</h2>
-        
-        <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4 flex items-center justify-between">
-          <div>
-            <h3 className="text-[14px] font-semibold text-foreground mb-1">Eliminar espacio de trabajo</h3>
-            <p className="text-sm text-muted-foreground">Una vez eliminado, u espacio de trabajo no podrá recuperarse</p>
-          </div>
-          <Button variant="destructive" size="sm" className="h-9 shadow-sm bg-red-500 hover:bg-red-600 text-white font-medium px-4 gap-2">
-            <Trash2 size={16} />
-            Eliminar espacio
-          </Button>
-        </div>
-      </div>
+      <WorkspaceDeleteZone tenantSlug={tenantSlug} workspaceName={workspaceName} />
+
         </div>
       </div>
     </div>

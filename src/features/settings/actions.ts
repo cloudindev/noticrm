@@ -102,3 +102,36 @@ export async function updateProfileDetails(tenantSlug: string, formData: FormDat
     return { error: error.message || "Failed to update profile." };
   }
 }
+
+export async function deleteWorkspaceAction(tenantSlug: string) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
+
+    const tenant = await prisma.tenant.findUnique({
+      where: { slug: tenantSlug },
+      include: {
+        members: { where: { userId: session.user.id } }
+      }
+    });
+
+    if (!tenant) return { error: "Espacio de trabajo no encontrado." };
+    
+    // Solo el OWNER (o ADMIN genérico) puede borrar. Asumamos que el que tiene rol de ADMIN/OWNER
+    const member = tenant.members[0];
+    if (!member || (member.role !== "OWNER" && member.role !== "ADMIN")) {
+      return { error: "No tienes permisos suficientes para eliminar el espacio de trabajo." };
+    }
+
+    // Cascade delete handles relationships
+    await prisma.tenant.delete({
+      where: { id: tenant.id }
+    });
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error al eliminar espacio de trabajo:", error);
+    return { error: "Error inesperado al intentar borrar el espacio." };
+  }
+}
+
