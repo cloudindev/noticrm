@@ -142,7 +142,7 @@ export default function MarketplacePage() {
   });
 
   return (
-    <div className="flex flex-col gap-8 pb-8">
+    <div className="flex flex-col gap-8 pb-8 w-full max-w-7xl mx-auto p-6 md:p-8">
       {/* Header Section */}
       <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div>

@@ -27,7 +27,6 @@ export default function PeoplePage() {
           <h1 className="text-sm font-semibold tracking-tight">Personas</h1>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="h-8 shadow-sm">Configuración</Button>
           <Button size="sm" className="bg-[#2f6bff] hover:bg-[#1a55e8] h-8 text-white shadow-sm">
             <Plus size={16} className="mr-1.5" />
             Añadir Persona

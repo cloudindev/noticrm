@@ -5,7 +5,7 @@ import { Target, Users, Building2, CheckSquare } from 'lucide-react';
 export default async function TenantDashboardHome({ params }: { params: Promise<{ tenantSlug: string }> }) {
   const { tenantSlug } = await params;
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 w-full max-w-7xl mx-auto p-6 md:p-8">
       <div>
         <h1 className="text-3xl font-semibold tracking-tight text-foreground">
           Good evening, User.

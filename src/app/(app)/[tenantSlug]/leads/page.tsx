@@ -20,7 +20,6 @@ export default function LeadsPage() {
           <h1 className="text-sm font-semibold tracking-tight">Oportunidades</h1>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="h-8 shadow-sm">Configuración</Button>
           <Button size="sm" className="bg-[#f26522] hover:bg-[#d55219] h-8 text-white shadow-sm">
             <Plus size={16} className="mr-1.5" />
             Nueva Oportunidad
