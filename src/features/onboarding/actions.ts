@@ -3,6 +3,8 @@
 import { z } from "zod";
 import { PrismaClient } from "@prisma/client";
 import { auth } from "@/lib/auth";
+import { getS3Client, getPublicS3Url } from "@/lib/s3";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 
 const prisma = new PrismaClient();
 
@@ -25,9 +27,32 @@ export async function updateProfileAction(formData: FormData) {
 
     const { firstName, lastName } = parsed.data;
 
+    let imageUrl = undefined;
+    const file = formData.get("avatar") as File | null;
+    if (file && file.size > 0 && file.size <= 5 * 1024 * 1024) {
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const extension = file.name.split('.').pop() || 'png';
+      const timestamp = Date.now();
+      const key = `users/${session.user.id}/avatar-${timestamp}.${extension}`;
+
+      const putCommand = new PutObjectCommand({
+        Bucket: process.env['S3_BUCKET_NAME'] || 'principal-bucket-4xd5',
+        Key: key,
+        Body: buffer,
+        ContentType: file.type,
+      });
+
+      const s3 = getS3Client();
+      await s3.send(putCommand);
+      imageUrl = getPublicS3Url(key);
+    }
+
     await prisma.user.update({
       where: { id: session.user.id },
-      data: { name: `${firstName} ${lastName}` },
+      data: { 
+        name: `${firstName} ${lastName}`,
+        ...(imageUrl && { image: imageUrl })
+      },
     });
 
     return { success: true };
@@ -81,8 +106,35 @@ export async function createWorkspaceAction(formData: FormData) {
           tenantId: tenant.id,
           name: companyName,
           billingCountry,
+          // We will update logoUrl after organization is created (need tenant.id)
         },
       });
+
+      // Handle Logo Upload
+      let logoUrl = undefined;
+      const logoFile = formData.get("logo") as File | null;
+      if (logoFile && logoFile.size > 0 && logoFile.size <= 5 * 1024 * 1024) {
+        const buffer = Buffer.from(await logoFile.arrayBuffer());
+        const extension = logoFile.name.split('.').pop() || 'png';
+        const timestamp = Date.now();
+        const key = `companies/${tenant.id}/logo-${timestamp}.${extension}`;
+
+        const putCommand = new PutObjectCommand({
+          Bucket: process.env['S3_BUCKET_NAME'] || 'principal-bucket-4xd5',
+          Key: key,
+          Body: buffer,
+          ContentType: logoFile.type,
+        });
+
+        const s3 = getS3Client();
+        await s3.send(putCommand);
+        logoUrl = getPublicS3Url(key);
+
+        await tx.organization.update({
+          where: { tenantId: tenant.id },
+          data: { logoUrl }
+        });
+      }
 
       // Create Membership linking Owner to Tenant
       await tx.membership.create({

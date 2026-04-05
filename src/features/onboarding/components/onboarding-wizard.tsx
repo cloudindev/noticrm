@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,9 +16,13 @@ export function OnboardingWizard() {
 
   // Step 1 State
   const [profile, setProfile] = useState({ firstName: "", lastName: "" });
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
   
   // Step 2 State
   const [workspace, setWorkspace] = useState({ companyName: "", handle: "", billingCountry: "US" });
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
 
   // Step 3 State
   const [invites, setInvites] = useState([{ email: "", role: "MEMBER" }]);
@@ -32,6 +36,9 @@ export function OnboardingWizard() {
     const fd = new FormData();
     fd.append("firstName", profile.firstName);
     fd.append("lastName", profile.lastName);
+    if (avatarFile) {
+      fd.append("avatar", avatarFile);
+    }
     
     const res = await updateProfileAction(fd);
     setIsLoading(false);
@@ -53,6 +60,9 @@ export function OnboardingWizard() {
     fd.append("companyName", workspace.companyName);
     fd.append("workspaceHandle", workspace.handle);
     fd.append("billingCountry", workspace.billingCountry);
+    if (logoFile) {
+      fd.append("logo", logoFile);
+    }
     
     const res = await createWorkspaceAction(fd);
     setIsLoading(false);
@@ -165,8 +175,25 @@ export function OnboardingWizard() {
                 
                 <form onSubmit={handleProfileSubmit} className="space-y-6">
                   <div className="flex items-center gap-6">
-                    <div className="w-20 h-20 rounded-full border-2 border-dashed border-zinc-200 bg-zinc-50 flex items-center justify-center text-zinc-400 cursor-pointer hover:bg-zinc-100 transition-colors">
-                      <span className="text-xs font-medium">Add Photo</span>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      className="hidden" 
+                      ref={avatarInputRef}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) setAvatarFile(file);
+                      }}
+                    />
+                    <div 
+                      onClick={() => avatarInputRef.current?.click()}
+                      className="w-20 h-20 rounded-full border-2 border-dashed border-zinc-200 bg-zinc-50 flex items-center justify-center text-zinc-400 cursor-pointer overflow-hidden hover:bg-zinc-100 transition-colors"
+                    >
+                      {avatarFile ? (
+                        <img src={URL.createObjectURL(avatarFile)} alt="Avatar preview" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-xs font-medium">Add Photo</span>
+                      )}
                     </div>
                     <div className="flex-1 text-sm text-zinc-500">
                       Upload a square image, ideally 500x500px or larger.
@@ -200,8 +227,25 @@ export function OnboardingWizard() {
                 
                 <form onSubmit={handleWorkspaceSubmit} className="space-y-6">
                   <div className="flex items-center gap-6">
-                    <div className="w-16 h-16 rounded-xl border border-zinc-200 bg-zinc-50 flex items-center justify-center text-zinc-400 cursor-pointer hover:bg-zinc-100 shadow-sm transition-colors">
-                      <span className="text-xl">+</span>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      className="hidden" 
+                      ref={logoInputRef}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) setLogoFile(file);
+                      }}
+                    />
+                    <div 
+                      onClick={() => logoInputRef.current?.click()}
+                      className="w-16 h-16 rounded-xl border border-zinc-200 bg-zinc-50 flex items-center justify-center text-zinc-400 cursor-pointer shadow-sm overflow-hidden hover:bg-zinc-100 transition-colors"
+                    >
+                      {logoFile ? (
+                        <img src={URL.createObjectURL(logoFile)} alt="Logo preview" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-xl">+</span>
+                      )}
                     </div>
                     <div className="flex-1 text-sm text-zinc-500">
                       Company Logo
