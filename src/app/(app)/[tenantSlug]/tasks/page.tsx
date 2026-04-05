@@ -60,6 +60,8 @@ export default async function TasksPage({ params }: { params: Promise<{ tenantSl
       title: task.title,
       completed: task.status === 'COMPLETED',
       dueDate: dueDateLabel,
+      rawDueDate: task.dueDate ? task.dueDate.toISOString() : null,
+      rawCreatedAt: task.createdAt ? task.createdAt.toISOString() : new Date().toISOString(),
       dueColor,
       record: task.relatedEntityId || "Ninguno",
       assignee: {

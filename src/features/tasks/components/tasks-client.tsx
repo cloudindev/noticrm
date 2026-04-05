@@ -14,27 +14,37 @@ import {
   MoreHorizontal,
   CheckSquare, 
   ChevronDown,
-  Trash2
+  Trash2,
+  Clock,
+  ArrowDownUp,
+  Rows3
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { InlineTaskCreator } from './inline-task-creator';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
   DropdownMenuItem, 
-  DropdownMenuTrigger 
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+  DropdownMenuPortal
 } from '@/components/ui/dropdown-menu';
+import { Switch } from '@/components/ui/switch';
 
-// Removed Mock Data
 import { createTask, updateTaskStatus, deleteTask } from '../actions';
 import { useTransition } from 'react';
+import { endOfWeek, isBefore, isToday, startOfDay } from 'date-fns';
 
 export interface TaskItem {
   id: string;
   title: string;
   completed: boolean;
   dueDate: string;
+  rawDueDate: string | null;
+  rawCreatedAt: string;
   dueColor: string;
   record: string;
   assignee: { name: string; initials: string; avatar: string };
@@ -46,36 +56,42 @@ interface TasksClientProps {
 }
 
 export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
-  // Use React's experimental useOptimistic if we wanted to avoid lag, 
-  // but since we are handling dynamic sorting, let's keep local state as source of truth combined with Server Actions
   const [tasks, setTasks] = useState<TaskItem[]>(initialTasks);
   const [isCreating, setIsCreating] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  // Sync state if initialTasks change securely after revalidation
+  // Settings states
+  const [sortBy, setSortBy] = useState<"dueDate" | "assignee" | "createdAt">("dueDate");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [groupBy, setGroupBy] = useState<"dueDate" | "assignee" | "createdAt" | "none">("dueDate");
+  const [showCompleted, setShowCompleted] = useState(true);
+
   React.useEffect(() => {
     setTasks(initialTasks);
   }, [initialTasks]);
 
   const toggleTask = (id: string, currentlyCompleted: boolean) => {
-    // Optimistic UI Update
     setTasks(tasks.map(t => t.id === id ? { ...t, completed: !currentlyCompleted } : t));
     
     startTransition(async () => {
       const result = await updateTaskStatus(tenantSlug, id, !currentlyCompleted);
       if (result.error) {
-        // Revert on error
         setTasks(tasks.map(t => t.id === id ? { ...t, completed: currentlyCompleted } : t));
       }
     });
   };
 
   const handleCreateTask = (title: string, createMore: boolean, assigneeId?: string, recordId?: string, recordType?: string, selectedDate?: Date) => {
-    // Optimistic Creation
+    const rawDueStr = selectedDate 
+        ? new Date(Date.UTC(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 12, 0, 0)).toISOString()
+        : null;
+
     const optimisticTask: TaskItem = {
       id: `temp-${Date.now()}`,
       title,
       completed: false,
+      rawDueDate: rawDueStr,
+      rawCreatedAt: new Date().toISOString(),
       dueDate: selectedDate ? new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'short' }).format(selectedDate) : "Sin fecha",
       dueColor: selectedDate ? "text-foreground font-medium" : "text-muted-foreground",
       record: recordId ? "Registro asignado" : "Ninguno",
@@ -89,41 +105,104 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
     }
 
     startTransition(async () => {
-      // Prevent mock IDs from crashing the DB
       const safeAssigneeId = assigneeId && assigneeId.length > 10 ? assigneeId : null;
       const safeRecordId = recordId && recordId.length > 10 ? recordId : null;
-
-      // Force to 12:00 UTC so date boundaries do not mismatch across timezones
       const safeDate = selectedDate 
         ? new Date(Date.UTC(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), 12, 0, 0)) 
         : null;
 
-      // Send the real data
       const result = await createTask(tenantSlug, title, safeDate, safeAssigneeId, safeRecordId, recordType ?? null);
       
       if (result.error) {
-        // Revert
         setTasks(prev => prev.filter(t => t.id !== optimisticTask.id));
       }
     });
   };
 
   const handleDeleteTask = (id: string) => {
-    // Optimistic Delete
     const previousTasks = [...tasks];
     setTasks(tasks.filter(t => t.id !== id));
     
     startTransition(async () => {
       const result = await deleteTask(tenantSlug, id);
       if (result.error) {
-        // Revert on error
         setTasks(previousTasks);
       }
     });
   };
 
-  const todayTasks = tasks.filter(t => t.dueDate === "Hoy" || t.dueDate === "Atrasada" || t.dueColor.includes("red") || t.dueColor.includes("orange"));
-  const upcomingTasks = tasks.filter(t => !todayTasks.includes(t));
+  // Pipeline
+  let processed = [...tasks];
+  if (!showCompleted) {
+    processed = processed.filter(t => !t.completed);
+  }
+
+  // 1. Sort
+  processed.sort((a, b) => {
+    let valA: string | number = 0;
+    let valB: string | number = 0;
+    
+    if (sortBy === "dueDate") {
+      valA = a.rawDueDate ? new Date(a.rawDueDate).getTime() : 9999999999999;
+      valB = b.rawDueDate ? new Date(b.rawDueDate).getTime() : 9999999999999;
+    } else if (sortBy === "createdAt") {
+      valA = new Date(a.rawCreatedAt).getTime();
+      valB = new Date(b.rawCreatedAt).getTime();
+    } else if (sortBy === "assignee") {
+      valA = a.assignee.name.toLowerCase();
+      valB = b.assignee.name.toLowerCase();
+    }
+
+    if (valA < valB) return sortOrder === "asc" ? -1 : 1;
+    if (valA > valB) return sortOrder === "asc" ? 1 : -1;
+    return 0;
+  });
+
+  // 2. Group
+  let groupedTasks: Array<{ id: string, label: string, items: TaskItem[] }> = [];
+
+  if (groupBy === "dueDate") {
+    const pastAndToday: TaskItem[] = [];
+    const thisWeek: TaskItem[] = [];
+    const upcoming: TaskItem[] = [];
+    const noDate: TaskItem[] = [];
+
+    const now = new Date();
+    // Week starts on Monday = 1
+    const endOfCurrentWeek = endOfWeek(now, { weekStartsOn: 1 });
+
+    processed.forEach(task => {
+      if (!task.rawDueDate) {
+        noDate.push(task);
+      } else {
+        const dd = startOfDay(new Date(task.rawDueDate));
+        if (isBefore(dd, startOfDay(now)) || isToday(dd)) {
+          pastAndToday.push(task);
+        } else if (isBefore(dd, endOfCurrentWeek) || dd.getTime() === startOfDay(endOfCurrentWeek).getTime()) {
+          thisWeek.push(task);
+        } else {
+          upcoming.push(task);
+        }
+      }
+    });
+
+    if (pastAndToday.length > 0) groupedTasks.push({ id: 'today', label: 'Hoy', items: pastAndToday });
+    if (thisWeek.length > 0) groupedTasks.push({ id: 'week', label: 'Esta semana', items: thisWeek });
+    if (upcoming.length > 0) groupedTasks.push({ id: 'upcoming', label: 'Próximas', items: upcoming });
+    if (noDate.length > 0) groupedTasks.push({ id: 'nodate', label: 'Sin fecha', items: noDate });
+  } else if (groupBy === "assignee") {
+    const g: Record<string, TaskItem[]> = {};
+    processed.forEach(t => {
+      const name = t.assignee.name || "Sin asignar";
+      if (!g[name]) g[name] = [];
+      g[name].push(t);
+    });
+    groupedTasks = Object.keys(g).sort().map(k => ({ id: k, label: k, items: g[k] }));
+  } else if (groupBy === "createdAt") {
+    groupedTasks = [{ id: 'all', label: 'Todas las tareas', items: processed }]; // Simplified, ideally group by month
+  } else {
+    groupedTasks = [{ id: 'all', label: '', items: processed }]; // No grouping label
+  }
 
   const TaskRow = ({ task }: { task: TaskItem }) => (
     <div 
@@ -182,61 +261,117 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
   return (
     <div className="flex flex-col h-full bg-background">
       {/* Header & Toolbar */}
-      {/* Header */}
       <div className="flex flex-col shrink-0">
         <div className="flex items-center justify-between border-b border-border/40 px-6 py-3">
           <div className="flex items-center gap-2.5">
             <CheckSquare size={18} className="text-muted-foreground" />
             <h1 className="text-sm font-semibold tracking-tight">Tareas</h1>
           </div>
-          <div className="flex items-center gap-2">
-            {/* Action buttons could go here */}
-          </div>
         </div>
 
         {/* Toolbar */}
         <div className="flex items-center justify-between px-6 py-3 border-b border-border/20">
           <div className="flex items-center gap-2">
-            <Popover>
-              <PopoverTrigger>
-                <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-2 bg-background shadow-sm border border-border/60 text-xs text-muted-foreground font-medium rounded-md px-3 hover:bg-muted/50">
-                  <ListFilter size={14} />
-                  Ordenado por <span className="text-foreground font-medium flex items-center gap-1">Fecha venc. <ChevronDown size={12} className="opacity-50" /></span>
-                </div>
-              </PopoverTrigger>
-              <PopoverContent className="w-[180px] p-2" align="start">
-                <div className="text-xs font-medium px-2 py-1.5 text-muted-foreground">Opciones de orden</div>
-                <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer flex justify-between">Fecha vencimiento <span className="text-primary mr-1">✓</span></div>
-                <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer">Fecha creación</div>
-                <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer">Prioridad</div>
-              </PopoverContent>
-            </Popover>
             
-            <Button variant="outline" size="sm" className="h-8 gap-2 text-muted-foreground border-border/60 shadow-sm rounded-md">
-              <SlidersHorizontal size={14} />
+            {/* SORTING MENU (Attio Style) */}
+            <DropdownMenu>
+              <DropdownMenuTrigger render={
+                <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-2 bg-muted/30 shadow-sm border border-border/60 text-xs text-muted-foreground font-medium rounded-md px-3 hover:bg-muted/50">
+                  <ArrowDownUp size={14} />
+                  Ordenado por <span className="text-foreground font-medium flex items-center gap-1">
+                    {sortBy === "dueDate" ? "Fecha vencimiento" : sortBy === "assignee" ? "Asignado a" : "Fecha creación"}
+                  </span>
+                </div>
+              } />
+              <DropdownMenuContent className="w-[200px]" align="start">
+                <DropdownMenuItem onClick={() => setSortBy("dueDate")} className="flex justify-between text-xs cursor-pointer items-center font-medium">
+                   <div className="flex items-center gap-2 text-muted-foreground hover:text-foreground"><Calendar size={15} /> Fecha vencimiento</div>
+                   {sortBy === "dueDate" && <div className="h-4 w-4 bg-[#2f6bff] rounded-full flex items-center justify-center"><CheckSquare size={10} className="text-white fill-white" /></div>}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy("assignee")} className="flex justify-between text-xs cursor-pointer items-center font-medium mt-1">
+                   <div className="flex items-center gap-2 text-muted-foreground"><UserIcon size={15} /> Asignado a</div>
+                   {sortBy === "assignee" && <div className="h-4 w-4 bg-[#2f6bff] rounded-full flex items-center justify-center"><CheckSquare size={10} className="text-white fill-white" /></div>}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortBy("createdAt")} className="flex justify-between text-xs cursor-pointer items-center font-medium mt-1">
+                   <div className="flex items-center gap-2 text-muted-foreground"><Clock size={15} /> Fecha de creación</div>
+                   {sortBy === "createdAt" && <div className="h-4 w-4 bg-[#2f6bff] rounded-full flex items-center justify-center"><CheckSquare size={10} className="text-white fill-white" /></div>}
+                </DropdownMenuItem>
+                
+                <DropdownMenuSeparator className="my-2" />
+                
+                <DropdownMenuItem onClick={() => setSortOrder("asc")} className="flex justify-between text-xs cursor-pointer items-center font-medium">
+                   <div className="flex items-center gap-2 text-muted-foreground"><ArrowDownUp size={15} /> Ascendente</div>
+                   {sortOrder === "asc" && <div className="h-4 w-4 bg-[#2f6bff] rounded-full flex items-center justify-center"><CheckSquare size={10} className="text-white fill-white" /></div>}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setSortOrder("desc")} className="flex justify-between text-xs cursor-pointer items-center font-medium mt-1">
+                   <div className="flex items-center gap-2 text-muted-foreground"><ArrowDownUp size={15} className="rotate-180" /> Descendente</div>
+                   {sortOrder === "desc" && <div className="h-4 w-4 bg-[#2f6bff] rounded-full flex items-center justify-center"><CheckSquare size={10} className="text-white fill-white" /></div>}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <Button variant="outline" size="sm" className="h-8 gap-2 text-muted-foreground border-border/60 shadow-sm rounded-md bg-muted/30 hover:bg-muted/50">
+              <ListFilter size={14} />
               Filtros
             </Button>
           </div>
           
-          <Button variant="outline" size="sm" className="h-8 gap-2 text-muted-foreground border-border/60 shadow-sm rounded-md">
-            <SlidersHorizontal size={14} />
-            Filtros
-          </Button>
-
           <div className="flex items-center gap-2">
-            <Popover>
-              <PopoverTrigger>
-                <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-2 text-xs text-muted-foreground font-medium rounded-md px-2.5 hover:bg-muted/50">
-                  <LayoutGrid size={14} />
-                  Vista <ChevronDown size={12} className="opacity-50 -ml-1" />
+            
+            {/* VIEW SETTINGS (Attio Style) */}
+            <DropdownMenu>
+              <DropdownMenuTrigger render={
+                <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-2 text-xs text-foreground font-medium rounded-md px-3 bg-muted/30 shadow-sm border border-border/60 hover:bg-muted/50">
+                  <LayoutGrid size={14} className="text-muted-foreground" />
+                  Ajustes de vista
                 </div>
-              </PopoverTrigger>
-              <PopoverContent className="w-[180px] p-2" align="end">
-                <div className="text-xs font-medium px-2 py-1.5 text-muted-foreground">Diseño</div>
-                <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer flex justify-between">Lista <span className="text-primary mr-1">✓</span></div>
-                <div className="text-xs px-2 py-1.5 hover:bg-muted/50 rounded-md cursor-pointer">Tablero</div>
-              </PopoverContent>
-            </Popover>
+              } />
+              <DropdownMenuContent className="w-[240px] p-1.5" align="end">
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className="flex items-center justify-between text-sm px-2 py-2 cursor-pointer font-medium hover:bg-muted/50 rounded-md">
+                    <div className="flex items-center gap-2">
+                      <Rows3 size={15} className="opacity-70" /> Agrupado por <span className="text-muted-foreground font-normal ml-1">
+                        {groupBy === "dueDate" ? "Fecha vencimiento" : groupBy === "assignee" ? "Asignado a" : groupBy === "createdAt" ? "Fecha creación" : "Ninguno"}
+                      </span>
+                    </div>
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent className="w-[200px]">
+                      <DropdownMenuItem onClick={() => setGroupBy("none")} className="flex justify-between text-xs cursor-pointer font-medium">
+                        <div className="flex items-center gap-2"><LayoutGrid size={14} className="opacity-70" /> Ninguno</div>
+                        {groupBy === "none" && <div className="h-4 w-4 bg-[#2f6bff] rounded-full flex items-center justify-center"><CheckSquare size={10} className="text-white fill-white" /></div>}
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => setGroupBy("dueDate")} className="flex justify-between text-xs cursor-pointer font-medium">
+                        <div className="flex items-center gap-2"><Calendar size={14} className="opacity-70" /> Fecha vencimiento</div>
+                        {groupBy === "dueDate" && <div className="h-4 w-4 bg-[#2f6bff] rounded-full flex items-center justify-center"><CheckSquare size={10} className="text-white fill-white" /></div>}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setGroupBy("assignee")} className="flex justify-between text-xs cursor-pointer font-medium mt-1">
+                        <div className="flex items-center gap-2"><UserIcon size={14} className="opacity-70" /> Asignado a</div>
+                        {groupBy === "assignee" && <div className="h-4 w-4 bg-[#2f6bff] rounded-full flex items-center justify-center"><CheckSquare size={10} className="text-white fill-white" /></div>}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setGroupBy("createdAt")} className="flex justify-between text-xs cursor-pointer font-medium mt-1">
+                        <div className="flex items-center gap-2"><Clock size={14} className="opacity-70" /> Fecha de creación</div>
+                        {groupBy === "createdAt" && <div className="h-4 w-4 bg-[#2f6bff] rounded-full flex items-center justify-center"><CheckSquare size={10} className="text-white fill-white" /></div>}
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                </DropdownMenuSub>
+                <DropdownMenuSeparator className="my-1" />
+                <div 
+                  className="flex items-center justify-between text-sm px-2 py-2 hover:bg-muted/50 rounded-md cursor-pointer font-medium"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setShowCompleted(!showCompleted);
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <CheckSquare size={15} className="opacity-70" /> Mostrar completadas
+                  </div>
+                  <Switch checked={showCompleted} onCheckedChange={setShowCompleted} />
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             <Button size="sm" className="h-8 gap-1.5 shadow-sm bg-[#2f6bff] hover:bg-[#1a55e8] text-white rounded-md font-medium" onClick={() => setIsCreating(true)}>
               <Plus size={16} />
@@ -270,37 +405,32 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
 
         {/* Task List */}
         <div className={`pb-12 ${isCreating ? 'opacity-40 pointer-events-none' : ''} transition-opacity duration-200 relative`}>
-          {todayTasks.length > 0 && (
-            <>
-              <div className="flex items-center gap-2 px-6 py-2.5 border-b border-border/30 bg-background sticky top-[36px] z-10 w-full">
-                <span className="text-[13px] font-semibold text-foreground">Hoy</span>
-                <span className="flex items-center justify-center bg-muted border border-border/50 text-muted-foreground text-[10px] font-bold h-[18px] min-w-[18px] px-1 rounded-md">{todayTasks.length}</span>
-              </div>
-              <div className="divide-y divide-border/40">
-                {todayTasks.map(task => (
-                  <TaskRow key={task.id} task={task} />
-                ))}
-              </div>
-            </>
-          )}
-
-          {upcomingTasks.length > 0 && (
-            <>
-              <div className="flex items-center gap-2 px-6 py-2.5 border-b border-border/30 bg-background sticky top-[36px] z-10 w-full mt-2">
-                <span className="text-[13px] font-semibold text-foreground">Próximas</span>
-                <span className="flex items-center justify-center bg-muted border border-border/50 text-muted-foreground text-[10px] font-bold h-[18px] min-w-[18px] px-1 rounded-md">{upcomingTasks.length}</span>
-              </div>
-              <div className="divide-y divide-border/40">
-                {upcomingTasks.map(task => (
-                  <TaskRow key={task.id} task={task} />
-                ))}
-              </div>
-            </>
-          )}
           
-          {tasks.length === 0 && !isCreating && (
+          {groupedTasks.map((group, i) => (
+            <React.Fragment key={group.id}>
+              {group.label && (
+                <div className={`flex items-center gap-2 px-6 py-2.5 border-b border-border/30 bg-background sticky z-10 w-full ${i === 0 ? "top-[36px]" : "top-[36px] mt-2"}`}>
+                  <span className="text-[13px] font-semibold text-foreground">{group.label}</span>
+                  <span className="flex items-center justify-center bg-muted border border-border/50 text-muted-foreground text-[10px] font-bold h-[18px] min-w-[18px] px-1 rounded-md">{group.items.length}</span>
+                </div>
+              )}
+              {group.items.length > 0 ? (
+                <div className="divide-y divide-border/40">
+                  {group.items.map(task => (
+                    <TaskRow key={task.id} task={task} />
+                  ))}
+                </div>
+              ) : (
+                <div className="px-6 py-4 text-xs text-muted-foreground italic">
+                  No hay tareas en esta sección.
+                </div>
+              )}
+            </React.Fragment>
+          ))}
+          
+          {processed.length === 0 && !isCreating && (
             <div className="p-12 text-center text-muted-foreground text-sm">
-              Todas las tareas completadas. ¡Hora de un descanso! 🎉
+              No hay tareas para mostrar. ¡Todo al día! 🎉
             </div>
           )}
         </div>
