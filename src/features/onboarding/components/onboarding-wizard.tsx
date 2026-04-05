@@ -147,7 +147,12 @@ export function OnboardingWizard() {
       {/* Left side: Flow */}
       <div className="w-full lg:w-[480px] flex-shrink-0 flex flex-col px-8 py-12 lg:px-16 overflow-y-auto z-10 border-r border-zinc-100 shadow-[20px_0_40px_rgba(0,0,0,0.02)]">
          <div className="mb-12">
-            <h2 className="text-xl font-bold tracking-tight">NotiCRM</h2>
+           <div className="flex items-center gap-2">
+             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold font-mono text-sm">
+               N/
+             </div>
+             <span className="text-xl font-bold tracking-tight">noticrm</span>
+           </div>
          </div>
 
          <div className="flex-1 flex flex-col justify-center max-w-sm w-full mx-auto">
