@@ -30,7 +30,7 @@ export async function updateProfileAvatar(tenantSlug: string, formData: FormData
 
     // Upload to S3
     const putCommand = new PutObjectCommand({
-      Bucket: process.env.S3_BUCKET_NAME || 'principal-bucket-e10q',
+      Bucket: process.env['S3_BUCKET_NAME'] || 'principal-bucket-e10q',
       Key: key,
       Body: buffer,
       ContentType: file.type,
