@@ -92,37 +92,37 @@ export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl p-0 overflow-hidden bg-background">
-        <DialogHeader className="px-6 py-4 border-b border-border/40 bg-muted/20">
+      <DialogContent className="max-w-4xl p-0 overflow-hidden bg-background">
+        <DialogHeader className="px-8 py-5 border-b border-border/40 bg-muted/20">
           <DialogTitle className="text-lg font-semibold flex items-center gap-2">
             <Building className="text-muted-foreground w-5 h-5" />
             Nuevo Registro
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="flex flex-col max-h-[80vh]">
-          <div className="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-hide">
+        <form onSubmit={handleSubmit} className="flex flex-col max-h-[85vh]">
+          <div className="flex-1 overflow-y-auto p-8 space-y-10 scrollbar-hide">
             
             {/* 1. Toggle Tipo Entidad */}
-            <div className="flex justify-center mb-2">
-              <div className="inline-flex items-center p-1 bg-muted/60 rounded-full border border-border/60 shadow-sm relative">
+            <div className="flex justify-center mb-4">
+              <div className="inline-flex items-center p-1.5 bg-muted/60 rounded-full border border-border/60 shadow-sm relative">
                 <div 
                   role="button"
                   tabIndex={0}
-                  className={`flex items-center justify-center px-5 py-2 text-sm font-semibold rounded-full cursor-pointer transition-all z-10 w-[160px] ${isCompany ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                  className={`flex items-center justify-center px-5 py-2 text-sm font-semibold rounded-full cursor-pointer transition-all z-10 w-[180px] ${isCompany ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
                   onClick={() => setIsCompany(true)}
                 >
-                  Empresa / Entidad
+                  Empresa
                 </div>
                 <div 
                   role="button"
                   tabIndex={0}
-                  className={`flex items-center justify-center px-5 py-2 text-sm font-semibold rounded-full cursor-pointer transition-all z-10 w-[160px] ${!isCompany ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+                  className={`flex items-center justify-center px-5 py-2 text-sm font-semibold rounded-full cursor-pointer transition-all z-10 w-[180px] ${!isCompany ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
                   onClick={() => setIsCompany(false)}
                 >
                   Persona Física
                 </div>
-                <div className={`absolute top-1 bottom-1 w-[160px] bg-background rounded-full shadow-sm border border-border/40 transition-transform duration-300 ease-in-out z-0 ${!isCompany ? 'translate-x-[160px]' : 'translate-x-0'}`}></div>
+                <div className={`absolute top-1.5 bottom-1.5 w-[180px] bg-background rounded-full shadow border border-border/40 transition-transform duration-300 ease-in-out z-0 ${!isCompany ? 'translate-x-[180px]' : 'translate-x-0'}`}></div>
               </div>
             </div>
 
@@ -286,9 +286,9 @@ export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess 
 
           </div>
 
-          <DialogFooter className="px-6 py-4 border-t border-border/40 bg-muted/10 shrink-0">
+          <DialogFooter className="px-8 py-5 border-t border-border/40 bg-muted/10 shrink-0">
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancelar</Button>
-            <Button type="submit" disabled={isSubmitting} className="min-w-[120px] bg-[#2f6bff] hover:bg-[#1a55e8] text-white">
+            <Button type="submit" disabled={isSubmitting} className="min-w-[130px] bg-[#2f6bff] hover:bg-[#1a55e8] text-white">
               {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Crear Registro"}
             </Button>
           </DialogFooter>
