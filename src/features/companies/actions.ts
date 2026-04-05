@@ -37,6 +37,7 @@ export async function createCompany(tenantSlug: string, formData: FormData) {
         email: formData.get('email') as string || null,
         phone: formData.get('phone') as string || null,
         website: formData.get('website') as string || null,
+        logoUrl: formData.get('logoUrl') as string || null,
         
         // Fiscal Address
         address: formData.get('address') as string || null,

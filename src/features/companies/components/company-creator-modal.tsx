@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -53,6 +53,51 @@ export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess 
   const [isCompany, setIsCompany] = useState(true);
   const [useSameAddress, setUseSameAddress] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const [nameVal, setNameVal] = useState("");
+  const [websiteVal, setWebsiteVal] = useState("");
+  const [logoUrlVal, setLogoUrlVal] = useState("");
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    if (!nameVal || !isCompany || !showSuggestions) {
+      setSuggestions([]);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`https://autocomplete.clearbit.com/v1/companies/suggest?query=${encodeURIComponent(nameVal)}`);
+        if (res.ok) {
+          const data = await res.json();
+          setSuggestions(data || []);
+        }
+      } catch (e) {
+        setSuggestions([]);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [nameVal, isCompany, showSuggestions]);
+
+  const selectSuggestion = (s: any) => {
+    setNameVal(s.name);
+    if (s.domain) {
+      setWebsiteVal(s.domain);
+      setLogoUrlVal(`https://icon.horse/icon/${s.domain}`);
+    }
+    setShowSuggestions(false);
+  };
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -101,6 +146,7 @@ export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess 
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="flex flex-col max-h-[85vh]">
+          <input type="hidden" name="logoUrl" value={logoUrlVal} />
           <div className="flex-1 overflow-y-auto p-8 space-y-10 scrollbar-hide">
             
             {/* 1. Toggle Tipo Entidad */}
@@ -140,9 +186,42 @@ export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess 
                       <Label htmlFor="legalName">Razón Social</Label>
                       <Input id="legalName" name="legalName" placeholder="Acme Corporation S.L." />
                     </div>
-                    <div className="space-y-1.5">
+                    <div className="space-y-1.5 relative" ref={wrapperRef}>
                       <Label htmlFor="name">Nombre Comercial <span className="text-red-500">*</span></Label>
-                      <Input id="name" name="name" placeholder="Acme" required />
+                      <Input 
+                        id="name" 
+                        name="name" 
+                        placeholder="Acme" 
+                        required 
+                        value={nameVal}
+                        onChange={(e) => {
+                          setNameVal(e.target.value);
+                          setShowSuggestions(true);
+                        }}
+                        onFocus={() => setShowSuggestions(true)}
+                        autoComplete="off"
+                      />
+                      {showSuggestions && suggestions.length > 0 && (
+                        <div className="absolute z-50 top-[calc(100%+4px)] left-0 w-full bg-background border border-border/40 rounded-md shadow-md overflow-hidden animate-in fade-in zoom-in-95 duration-100">
+                          {suggestions.map((s, idx) => (
+                            <div 
+                              key={idx} 
+                              className="flex items-center gap-3 px-3 py-2 cursor-pointer hover:bg-muted transition-colors"
+                              onClick={() => selectSuggestion(s)}
+                            >
+                              <div className="w-6 h-6 rounded bg-muted flex items-center justify-center overflow-hidden shrink-0 border border-border/40 shadow-sm">
+                                {s.domain ? (
+                                  <img src={`https://icon.horse/icon/${s.domain}`} alt={s.name} className="w-full h-full object-cover" />
+                                ) : <Building size={12} className="text-muted-foreground" />}
+                              </div>
+                              <div className="flex flex-col">
+                                <span className="text-sm font-medium leading-tight">{s.name}</span>
+                                {s.domain && <span className="text-[10px] text-muted-foreground">{s.domain}</span>}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                     <div className="space-y-1.5">
                       <Label htmlFor="taxId">CIF / NIF</Label>
@@ -189,7 +268,14 @@ export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess 
                     <Label htmlFor="website">Web (opcional)</Label>
                     <div className="relative">
                       <Globe className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                      <Input id="website" name="website" placeholder="www.acme.com" className="pl-9" />
+                      <Input 
+                        id="website" 
+                        name="website" 
+                        placeholder="www.acme.com" 
+                        className="pl-9" 
+                        value={websiteVal}
+                        onChange={(e) => setWebsiteVal(e.target.value)}
+                      />
                     </div>
                   </div>
                 )}

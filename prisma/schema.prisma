@@ -152,6 +152,8 @@ model Company {
   
   // Basic info (acts as generic display name in lists)
   name     String
+  logoUrl  String?
+
   
   // Entity Classification
   entityType String  @default("COMPANY") // COMPANY or INDIVIDUAL (Persona Física)
