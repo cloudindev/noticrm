@@ -57,7 +57,7 @@ interface TasksClientProps {
 }
 
 const ActiveCheck = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="8" cy="8" r="8" fill="#2f6bff"/>
     <path d="M4.5 8L7 10.5L11.5 5.5" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
@@ -373,6 +373,74 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+
+            {/* Active Filters inline */}
+            {filters.length > 0 && (
+              <>
+                <div className="w-[1px] h-4 bg-border/60 mx-1"></div>
+                {filters.map(f => (
+                  <div key={f.id} className="flex items-center h-8 rounded-md border border-border/60 shadow-sm text-xs bg-background group/filter">
+                    {/* Field name */}
+                    <div className="flex items-center gap-1.5 px-2.5 h-full font-medium text-foreground bg-muted/20 border-r border-border/40 shrink-0">
+                      {f.field === "assignee" ? <UserIcon size={13} className="text-muted-foreground" /> : <Rows3 size={13} className="text-muted-foreground" />}
+                      {f.field === "assignee" ? "Asignado a" : "Registro"}
+                    </div>
+
+                    {/* Operator Select */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger render={
+                        <div role="button" tabIndex={0} className={`flex items-center px-2.5 h-full cursor-pointer hover:bg-muted/30 ${!f.operator ? "text-muted-foreground" : "text-foreground font-medium"}`}>
+                          {f.operator === "is" ? "es" : f.operator === "is_not" ? "no es" : "Select condition"}
+                        </div>
+                      } />
+                      <DropdownMenuContent className="w-[140px] p-1.5" align="start">
+                        <DropdownMenuItem onClick={() => updateFilter(f.id, { operator: "is" })} className="font-medium text-xs cursor-pointer">es</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => updateFilter(f.id, { operator: "is_not" })} className="font-medium text-xs cursor-pointer">no es</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    {/* Value Input */}
+                    {f.operator && (
+                      <div className="flex items-center px-2 h-full border-l border-border/40 cursor-text min-w-[80px]">
+                        <input 
+                          type="text" 
+                          className="bg-transparent border-none outline-none w-full text-xs font-medium placeholder:text-muted-foreground/60 focus:ring-0" 
+                          placeholder="Valor..." 
+                          value={f.value} 
+                          autoFocus
+                          onChange={(e) => updateFilter(f.id, { value: e.target.value })}
+                        />
+                      </div>
+                    )}
+
+                    {/* Remove Filter */}
+                    <div 
+                      className="flex items-center justify-center w-7 h-full border-l border-border/40 hover:bg-red-500/10 hover:text-red-600 text-muted-foreground cursor-pointer transition-colors"
+                      onClick={() => removeFilter(f.id)}
+                    >
+                      <X size={13} />
+                    </div>
+                  </div>
+                ))}
+                
+                <DropdownMenu>
+                  <DropdownMenuTrigger render={
+                    <div role="button" tabIndex={0} className="flex items-center justify-center h-8 w-8 rounded-md border border-dashed border-border/60 hover:bg-muted/50 cursor-pointer text-muted-foreground">
+                      <Plus size={14} />
+                    </div>
+                  } />
+                  <DropdownMenuContent className="w-[180px]" align="start">
+                    <div className="text-xs font-semibold text-muted-foreground px-2 py-1.5">Añadir otro filtro</div>
+                    <DropdownMenuItem onClick={() => addFilter("assignee")} className="flex items-center gap-2 text-xs font-medium cursor-pointer">
+                      <UserIcon size={14} className="text-muted-foreground" /> Asignado a
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => addFilter("record")} className="flex items-center gap-2 text-xs font-medium cursor-pointer mt-1">
+                      <Rows3 size={14} className="text-muted-foreground" /> Registro
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            )}
           </div>
           
           <div className="flex items-center gap-2">
@@ -380,16 +448,16 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
             {/* VIEW SETTINGS (Attio Style) */}
             <DropdownMenu>
               <DropdownMenuTrigger render={
-                <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-2 text-xs text-foreground font-medium rounded-md px-3 bg-muted/30 shadow-sm border border-border/60 hover:bg-muted/50">
+                <div role="button" tabIndex={0} className="inline-flex cursor-pointer items-center justify-center h-8 gap-2 text-xs text-muted-foreground font-medium rounded-md px-3 bg-muted/30 shadow-sm border border-border/60 hover:bg-muted/50">
                   <LayoutGrid size={14} className="text-muted-foreground" />
-                  Ajustes de vista
+                  Vista
                 </div>
               } />
               <DropdownMenuContent className="w-[240px] p-1.5" align="end">
                 <DropdownMenuSub>
-                  <DropdownMenuSubTrigger className="flex items-center justify-between text-sm px-2 py-2 cursor-pointer font-medium hover:bg-muted/50 rounded-md">
+                  <DropdownMenuSubTrigger className="flex items-center justify-between text-xs px-2 py-2 cursor-pointer font-medium hover:bg-muted/50 rounded-md">
                     <div className="flex items-center gap-2">
-                      <Rows3 size={15} className="opacity-70" /> Agrupado por <span className="text-muted-foreground font-normal ml-1">
+                      <Rows3 size={15} className="opacity-70" /> Agrupar por <span className="text-muted-foreground font-normal ml-1">
                         {groupBy === "dueDate" ? "Fecha vencimiento" : groupBy === "assignee" ? "Asignado a" : groupBy === "createdAt" ? "Fecha creación" : "Ninguno"}
                       </span>
                     </div>
@@ -418,7 +486,7 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
                 </DropdownMenuSub>
                 <DropdownMenuSeparator className="my-1" />
                 <div 
-                  className="flex items-center justify-between text-sm px-2 py-2 hover:bg-muted/50 rounded-md cursor-pointer font-medium"
+                  className="flex items-center justify-between text-xs px-2 py-2 hover:bg-muted/50 rounded-md cursor-pointer font-medium"
                   onClick={(e) => {
                     e.preventDefault();
                     setShowCompleted(!showCompleted);
@@ -438,73 +506,6 @@ export function TasksClient({ initialTasks, tenantSlug }: TasksClientProps) {
             </Button>
           </div>
         </div>
-        
-        {/* Active Filters Row */}
-        {filters.length > 0 && (
-          <div className="flex items-center gap-2 px-6 pb-3 pt-0 border-b border-border/20 flex-wrap">
-            {filters.map(f => (
-              <div key={f.id} className="flex items-center h-8 rounded-md border border-border/60 shadow-sm text-xs bg-background group/filter">
-                {/* Field name */}
-                <div className="flex items-center gap-1.5 px-2.5 h-full font-medium text-foreground bg-muted/20 border-r border-border/40 shrink-0">
-                  {f.field === "assignee" ? <UserIcon size={13} className="text-muted-foreground" /> : <Rows3 size={13} className="text-muted-foreground" />}
-                  {f.field === "assignee" ? "Asignado a" : "Registro"}
-                </div>
-
-                {/* Operator Select */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger render={
-                    <div role="button" tabIndex={0} className={`flex items-center px-2.5 h-full cursor-pointer hover:bg-muted/30 ${!f.operator ? "text-muted-foreground" : "text-foreground font-medium"}`}>
-                      {f.operator === "is" ? "es" : f.operator === "is_not" ? "no es" : "Select condition"}
-                    </div>
-                  } />
-                  <DropdownMenuContent className="w-[140px] p-1.5" align="start">
-                    <DropdownMenuItem onClick={() => updateFilter(f.id, { operator: "is" })} className="font-medium text-xs cursor-pointer">es</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => updateFilter(f.id, { operator: "is_not" })} className="font-medium text-xs cursor-pointer">no es</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-
-                {/* Value Input */}
-                {f.operator && (
-                  <div className="flex items-center px-2 h-full border-l border-border/40 cursor-text min-w-[80px]">
-                    <input 
-                      type="text" 
-                      className="bg-transparent border-none outline-none w-full text-xs font-medium placeholder:text-muted-foreground/60 focus:ring-0" 
-                      placeholder="Valor..." 
-                      value={f.value} 
-                      autoFocus
-                      onChange={(e) => updateFilter(f.id, { value: e.target.value })}
-                    />
-                  </div>
-                )}
-
-                {/* Remove Filter */}
-                <div 
-                  className="flex items-center justify-center w-7 h-full border-l border-border/40 hover:bg-red-500/10 hover:text-red-600 text-muted-foreground cursor-pointer transition-colors"
-                  onClick={() => removeFilter(f.id)}
-                >
-                  <X size={13} />
-                </div>
-              </div>
-            ))}
-            
-            <DropdownMenu>
-              <DropdownMenuTrigger render={
-                <div role="button" tabIndex={0} className="flex items-center justify-center h-8 w-8 rounded-md border border-dashed border-border/60 hover:bg-muted/50 cursor-pointer text-muted-foreground border-b border-border/20">
-                  <Plus size={14} />
-                </div>
-              } />
-              <DropdownMenuContent className="w-[180px]" align="start">
-                <div className="text-xs font-semibold text-muted-foreground px-2 py-1.5">Añadir otro filtro</div>
-                <DropdownMenuItem onClick={() => addFilter("assignee")} className="flex items-center gap-2 text-xs font-medium cursor-pointer">
-                  <UserIcon size={14} className="text-muted-foreground" /> Asignado a
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => addFilter("record")} className="flex items-center gap-2 text-xs font-medium cursor-pointer mt-1">
-                  <Rows3 size={14} className="text-muted-foreground" /> Registro
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        )}
       </div>
 
       {/* Main Table Area */}
