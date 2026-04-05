@@ -60,6 +60,21 @@ export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess 
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (!open) {
+      setIsCompany(true);
+      setUseSameAddress(true);
+      setNameVal("");
+      setWebsiteVal("");
+      setLogoUrlVal("");
+      setSuggestions([]);
+      setShowSuggestions(false);
+      setIsSubmitting(false);
+      if (formRef.current) formRef.current.reset();
+    }
+  }, [open]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -145,7 +160,7 @@ export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess 
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="flex flex-col max-h-[85vh]">
+        <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col max-h-[85vh]">
           <input type="hidden" name="logoUrl" value={logoUrlVal} />
           <div className="flex-1 overflow-y-auto p-8 space-y-10 scrollbar-hide">
             
