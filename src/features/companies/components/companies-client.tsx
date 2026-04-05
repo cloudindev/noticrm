@@ -22,6 +22,7 @@ export interface CompanyListDTO {
   website: string;
   owner: string;
   entityType: string;
+  logoUrl?: string | null;
 }
 
 interface CompaniesClientProps {
@@ -86,10 +87,21 @@ export function CompaniesClient({ initialCompanies, tenantSlug }: CompaniesClien
             {filteredCompanies.map((company) => (
               <TableRow 
                 key={company.id} 
-                className="cursor-pointer border-border/30 hover:bg-muted/30 transition-colors"
+                className="cursor-pointer border-border/30 hover:bg-muted/30 transition-colors group"
                 onClick={() => router.push(`/${tenantSlug}/companies/${company.id}`)}
               >
-                <TableCell className="font-medium pl-6 py-2.5 text-[13px]">{company.name}</TableCell>
+                <TableCell className="font-medium pl-6 py-2.5 text-[13px]">
+                  <div className="flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-md bg-muted flex items-center justify-center overflow-hidden shrink-0 border border-border/50 group-hover:bg-background transition-colors">
+                      {company.logoUrl ? (
+                        <img src={company.logoUrl} alt={company.name} className="w-full h-full object-cover" />
+                      ) : (
+                        company.entityType === 'COMPANY' ? <Building2 size={12} className="text-muted-foreground" /> : <UserIcon size={12} className="text-muted-foreground" />
+                      )}
+                    </div>
+                    {company.name}
+                  </div>
+                </TableCell>
                 <TableCell className="text-muted-foreground py-2.5">
                   <div className="flex items-center gap-1.5 text-xs">
                     {company.entityType === 'COMPANY' ? <Building2 size={12}/> : <UserIcon size={12}/>}

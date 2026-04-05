@@ -30,7 +30,8 @@ export default async function CompaniesPage({ params }: { params: Promise<{ tena
     sector: c.sector || "General",
     website: c.website || "-",
     owner: c.owner?.name || "No asignado",
-    entityType: c.entityType
+    entityType: c.entityType,
+    logoUrl: c.logoUrl
   }));
 
   return <CompaniesClient initialCompanies={serializedCompanies} tenantSlug={tenantSlug} />;
