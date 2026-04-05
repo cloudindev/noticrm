@@ -137,7 +137,7 @@ export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl p-0 overflow-hidden bg-background">
+      <DialogContent className="sm:max-w-4xl max-w-4xl p-0 overflow-hidden bg-background">
         <DialogHeader className="px-8 py-5 border-b border-border/40 bg-muted/20">
           <DialogTitle className="text-lg font-semibold flex items-center gap-2">
             <Building className="text-muted-foreground w-5 h-5" />
