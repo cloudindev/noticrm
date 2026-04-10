@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Search, SlidersHorizontal, UserPlus, User, Shield, MoreVertical, Trash, Edit, Mail, ShieldAlert } from 'lucide-react';
+import { Search, SlidersHorizontal, UserPlus, User, Shield, MoreVertical, Trash, Edit, Mail, ShieldAlert, Send } from 'lucide-react';
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { MemberInviteModal } from './member-invite-modal';
-import { revokeMembershipAction } from '../members.actions';
+import { revokeMembershipAction, resendInviteAction, cancelInviteAction } from '../members.actions';
 import { toast } from 'sonner';
 
 interface MembersManagerClientProps {
@@ -57,6 +57,19 @@ export function MembersManagerClient({
     const res = await revokeMembershipAction(tenantSlug, membershipId);
     if (res.error) toast.error(res.error);
     else toast.success("Acceso revocado correctamente.");
+  };
+
+  const handleCancelInvite = async (inviteId: string) => {
+    if (!confirm("¿Cancelar esta invitación pendiente?")) return;
+    const res = await cancelInviteAction(tenantSlug, inviteId);
+    if (res.error) toast.error(res.error);
+    else toast.success("Invitación cancelada.");
+  };
+
+  const handleResendInvite = async (inviteId: string) => {
+    const res = await resendInviteAction(tenantSlug, inviteId);
+    if (res.error) toast.error(res.error);
+    else toast.success("Invitación reenviada correctamente.");
   };
 
   const currentUserRole = memberships.find(m => m.userId === currentUserId)?.role;
@@ -199,8 +212,12 @@ export function MembersManagerClient({
                           <DropdownMenuTrigger className="inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground opacity-50 hover:bg-muted group-hover:opacity-100 transition-opacity focus:outline-none">
                             <MoreVertical size={16} />
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem className="text-destructive gap-2 cursor-pointer focus:text-destructive">
+                          <DropdownMenuContent align="end" className="w-[180px]">
+                            <DropdownMenuItem onClick={() => handleResendInvite(invite.id)} className="gap-2 cursor-pointer">
+                              <Send size={14} className="text-muted-foreground" />
+                              Reenviar invitación
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => handleCancelInvite(invite.id)} className="text-destructive gap-2 cursor-pointer focus:text-destructive">
                               <Trash size={14} />
                               Cancelar
                             </DropdownMenuItem>

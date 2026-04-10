@@ -197,3 +197,81 @@ export async function revokeMembershipAction(
     return { error: "Error al revocar acceso al miembro." };
   }
 }
+
+export async function resendInviteAction(
+  tenantSlug: string,
+  inviteId: string
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) return { error: "No autorizado" };
+
+    const adminCheck = await checkAdminStatus(tenantSlug, session.user.id);
+    if (adminCheck.error) return { error: adminCheck.error };
+    const { tenant } = adminCheck;
+
+    const invite = await prisma.invite.findUnique({
+      where: { id: inviteId }
+    });
+
+    if (!invite || invite.tenantId !== tenant!.id) {
+      return { error: "Invitación no encontrada." };
+    }
+
+    const verificationLink = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/invite?token=${invite.token}`;
+
+    try {
+      await resend.emails.send({
+        from: "NotiCRM <no-reply@noticrm.cloudin.pro>",
+        to: invite.email,
+        subject: `Recordatorio: Invitación al equipo de ${tenant!.name} en NotiCRM`,
+        html: `
+          <h2>Has sido invitado a unirte a ${tenant!.name}</h2>
+          <p>${session.user.name || session.user.email} te ha invitado a unirte a su espacio de trabajo en NotiCRM.</p>
+          <p><a href="${verificationLink}" style="background-color: #2F6BFF; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Aceptar invitación</a></p>
+          <p>Si no esperabas esto, simplemente ignora este correo.</p>
+        `,
+      });
+    } catch (e) {
+      console.error("Resend error", e);
+      return { error: "Error al intentar enviar el email." };
+    }
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error resending invite", error);
+    return { error: "Error inesperado al reenviar invitación." };
+  }
+}
+
+export async function cancelInviteAction(
+  tenantSlug: string,
+  inviteId: string
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) return { error: "No autorizado" };
+
+    const adminCheck = await checkAdminStatus(tenantSlug, session.user.id);
+    if (adminCheck.error) return { error: adminCheck.error };
+    const { tenant } = adminCheck;
+
+    const invite = await prisma.invite.findUnique({
+      where: { id: inviteId }
+    });
+
+    if (!invite || invite.tenantId !== tenant!.id) {
+      return { error: "Invitación no encontrada." };
+    }
+
+    await prisma.invite.delete({
+      where: { id: inviteId }
+    });
+
+    revalidatePath(`/${tenantSlug}/settings/members`);
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error canceling invite", error);
+    return { error: "Error al cancelar la invitación." };
+  }
+}
