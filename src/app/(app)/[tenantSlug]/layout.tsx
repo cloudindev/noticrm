@@ -128,14 +128,18 @@ export default async function AppLayout({
             </CollapsibleSection>
             
             <CollapsibleSection title="Analíticas">
-              <SidebarNavItem icon={<BarChart2 size={16} />} label="Informes" href={`/${tenantSlug}/reports`} />
+              {(membership.role === 'OWNER' || membership.role === 'ADMIN') && (
+                <SidebarNavItem icon={<BarChart2 size={16} />} label="Informes" href={`/${tenantSlug}/reports`} />
+              )}
             </CollapsibleSection>
           </nav>
         </div>
         
-        <div className="px-2 mb-2">
-          <SidebarNavItem icon={<Blocks size={16} />} label="Marketplace" href={`/${tenantSlug}/marketplace`} />
-        </div>
+        {(membership.role === 'OWNER' || membership.role === 'ADMIN') && (
+          <div className="px-2 mb-2">
+            <SidebarNavItem icon={<Blocks size={16} />} label="Marketplace" href={`/${tenantSlug}/marketplace`} />
+          </div>
+        )}
 
         <div className="mt-auto border-t border-border/40 p-2">
           <UserProfileDropdown 

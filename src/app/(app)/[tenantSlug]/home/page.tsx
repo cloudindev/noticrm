@@ -1,54 +1,97 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Target, Users, Building2, CheckSquare } from 'lucide-react';
+import { PrismaClient } from "@prisma/client";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
+
+const prisma = new PrismaClient();
 
 export default async function TenantDashboardHome({ params }: { params: Promise<{ tenantSlug: string }> }) {
   const { tenantSlug } = await params;
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    redirect('/login');
+  }
+
+  const membership = await prisma.membership.findFirst({
+    where: {
+      userId: session.user.id,
+      tenant: { slug: tenantSlug }
+    }
+  });
+
+  if (!membership) {
+    redirect(`/${tenantSlug}/onboarding`);
+  }
+
+  const isAdmin = membership.role === 'OWNER' || membership.role === 'ADMIN';
+  const showPeople = isAdmin || membership.canAccessPeople;
+  const showCompanies = isAdmin || membership.canAccessCompanies;
+  const showLeads = isAdmin || membership.canAccessLeads;
+  const showTasks = isAdmin || membership.canAccessTasks;
+
+  const userName = session.user.name?.split(' ')[0] || "User";
+
   return (
     <div className="flex flex-col gap-8 w-full max-w-7xl mx-auto p-6 md:p-8">
       <div>
         <h1 className="text-3xl font-semibold tracking-tight text-foreground">
-          Good evening, User.
+          Buenas tardes, {userName}.
         </h1>
         <p className="mt-2 text-muted-foreground">
-          Here is what's happening in {tenantSlug} today.
+          Este es un resumen de lo que ocurre en tu espacio de trabajo.
         </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <MetricCard title="Total Contacts" value="2,350" icon={<Users className="h-4 w-4 text-muted-foreground" />} trend="+12% from last month" />
-        <MetricCard title="Companies" value="430" icon={<Building2 className="h-4 w-4 text-muted-foreground" />} trend="+4% from last month" />
-        <MetricCard title="Active Leads" value="84" icon={<Target className="h-4 w-4 text-muted-foreground" />} trend="+2 new this week" />
-        <MetricCard title="Pending Tasks" value="12" icon={<CheckSquare className="h-4 w-4 text-muted-foreground" />} trend="3 due today" />
+        {showPeople && (
+          <MetricCard title="Total Personas" value="2,350" icon={<Users className="h-4 w-4 text-muted-foreground" />} trend="+12% mensual" />
+        )}
+        {showCompanies && (
+          <MetricCard title="Empresas" value="430" icon={<Building2 className="h-4 w-4 text-muted-foreground" />} trend="+4% mensual" />
+        )}
+        {showLeads && (
+          <MetricCard title="Oportunidades Activas" value="84" icon={<Target className="h-4 w-4 text-muted-foreground" />} trend="+2 nuevas esta sem..." />
+        )}
+        {showTasks && (
+          <MetricCard title="Tareas Pendientes" value="12" icon={<CheckSquare className="h-4 w-4 text-muted-foreground" />} trend="3 vencen hoy" />
+        )}
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4 border-border/40 bg-card shadow-sm">
           <CardHeader>
-            <CardTitle className="text-base font-medium">Recent Activity</CardTitle>
+            <CardTitle className="text-base font-medium">Actividad Reciente</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-col gap-6">
-              <ActivityItem text="Meeting with Acme Corp scheduled" time="2h ago" />
-              <ActivityItem text="New lead assigned from website" time="5h ago" />
-              <ActivityItem text="Task 'Send proposal' completed" time="1d ago" />
-              <ActivityItem text="Deal won with Tech Enterprise" time="2d ago" />
+              {showLeads && <ActivityItem text="Meeting with Acme Corp scheduled" time="hace 2h" />}
+              {showLeads && <ActivityItem text="New lead assigned from website" time="hace 5h" />}
+              {showTasks && <ActivityItem text="Task 'Send proposal' completed" time="hace 1d" />}
+              {showCompanies && <ActivityItem text="Deal won with Tech Enterprise" time="hace 2d" />}
+              {(!showLeads && !showTasks && !showCompanies) && (
+                <p className="text-sm text-muted-foreground">No tienes permisos para ver las actividades recientes.</p>
+              )}
             </div>
           </CardContent>
         </Card>
 
-        <Card className="col-span-3 border-border/40 bg-card shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-base font-medium">Upcoming Tasks</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col gap-4">
-               <TaskItem title="Follow up email to John" due="Today" priority="High" />
-               <TaskItem title="Prepare Q3 presentation" due="Tomorrow" priority="Medium" />
-               <TaskItem title="Sync with marketing" due="Next Week" priority="Low" />
-            </div>
-          </CardContent>
-        </Card>
+        {showTasks && (
+          <Card className="col-span-3 border-border/40 bg-card shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-base font-medium">Próximas Tareas</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-4">
+                 <TaskItem title="Follow up email to John" due="Hoy" priority="Alto" />
+                 <TaskItem title="Prepare Q3 presentation" due="Mañana" priority="Medio" />
+                 <TaskItem title="Sync with marketing" due="Próx Semana" priority="Bajo" />
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
