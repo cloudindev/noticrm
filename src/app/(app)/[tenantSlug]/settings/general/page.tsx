@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Camera, Copy, Download, LayoutGrid, Calendar, Building } from 'lucide-react';
 import { WorkspaceDeleteZone } from '@/features/settings/components/workspace-delete-zone';
+import { GeneralSettingsForm } from '@/features/settings/components/general-settings-form';
 
 import { PrismaClient } from "@prisma/client";
 import { notFound } from "next/navigation";
@@ -63,28 +64,8 @@ export default async function GeneralSettingsPage({
         </div>
       </div>
 
-      {/* Form Fields */}
-      <div className="flex flex-col gap-6 max-w-3xl">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-semibold text-muted-foreground">Nombre</label>
-            <Input defaultValue={workspaceName} className="h-9 shadow-sm px-3" />
-          </div>
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-semibold text-muted-foreground">Identificador (Slug)</label>
-            <div className="relative">
-              <Input 
-                value={tenantSlug} 
-                readOnly 
-                className="h-9 shadow-sm bg-muted/30 px-3 pr-8 text-muted-foreground" 
-              />
-              <button className="absolute right-2 top-2.5 text-muted-foreground hover:text-foreground">
-                <Copy size={14} />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Form Fields & Save Action */}
+      <GeneralSettingsForm tenantSlug={tenantSlug} initialName={workspaceName} />
 
       <div className="my-10 h-px bg-border/40 max-w-3xl" />
 

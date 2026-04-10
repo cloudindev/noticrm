@@ -103,6 +103,46 @@ export async function updateProfileDetails(tenantSlug: string, formData: FormDat
   }
 }
 
+export async function updateGeneralSettings(tenantSlug: string, data: { name: string }) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
+
+    const tenant = await prisma.tenant.findUnique({
+      where: { slug: tenantSlug },
+      include: {
+        members: { where: { userId: session.user.id } }
+      }
+    });
+
+    if (!tenant) return { error: "Espacio de trabajo no encontrado." };
+    
+    // Only OWNER or ADMIN can update general settings
+    const member = tenant.members[0];
+    if (!member || (member.role !== "OWNER" && member.role !== "ADMIN")) {
+      return { error: "No tienes permisos suficientes." };
+    }
+
+    if (data.name.trim().length < 2) {
+      return { error: "El nombre debe tener al menos 2 caracteres." };
+    }
+
+    // Update
+    await prisma.tenant.update({
+      where: { id: tenant.id },
+      data: { name: data.name.trim() }
+    });
+
+    revalidatePath(`/${tenantSlug}/settings/general`);
+    revalidatePath(`/${tenantSlug}/home`);
+    
+    return { success: true };
+  } catch (error: any) {
+    console.error("Error updating general settings:", error);
+    return { error: "Error inesperado al guardar los ajustes." };
+  }
+}
+
 export async function deleteWorkspaceAction(tenantSlug: string) {
   try {
     const session = await auth();
