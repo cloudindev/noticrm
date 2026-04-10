@@ -39,8 +39,8 @@ export default function AISettingsPage() {
             <img 
               src="/gemini.jpg" 
               alt="Google Gemini" 
-              style={{ width: '50%' }}
-              className="mb-4 object-contain"
+              style={{ width: '12%' }}
+              className="-mt-2 mb-4 object-contain"
             />
             <p className="text-sm text-muted-foreground font-medium max-w-2xl">
               Configura tu clave de API de Gemini para habilitar el análisis y la extracción automática de datos en los documentos y procesos.

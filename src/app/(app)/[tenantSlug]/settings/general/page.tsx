@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Camera, Copy, Download, LayoutGrid, Calendar, Building } from 'lucide-react';
 import { WorkspaceDeleteZone } from '@/features/settings/components/workspace-delete-zone';
 import { GeneralSettingsForm } from '@/features/settings/components/general-settings-form';
+import { WorkspaceLogoUpload } from '@/features/settings/components/workspace-logo-upload';
 
 import { PrismaClient } from "@prisma/client";
 import { notFound } from "next/navigation";
@@ -45,24 +46,11 @@ export default async function GeneralSettingsPage({
       <div className="my-10 h-px bg-border/40 max-w-3xl" />
 
       {/* Workspace Logo */}
-      <div className="mb-8 flex items-start gap-6">
-        <Avatar className="h-16 w-16 rounded-xl border border-border/40 bg-[#00b2ff] text-white shrink-0">
-          <AvatarImage src="" />
-          <AvatarFallback className="rounded-xl text-2xl font-medium bg-transparent">
-            {workspaceName.charAt(0).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-        <div className="flex flex-col gap-1.5 pt-0.5">
-          <h2 className="text-sm font-semibold">Logo del espacio</h2>
-          <p className="text-xs text-muted-foreground mb-1">Soportamos PNGs, JPEGs y GIFs menores de 10MB</p>
-          <div className="flex items-center gap-3">
-            <Button size="sm" className="bg-[#2f6bff] hover:bg-[#1a55e8] text-white shadow-sm h-8 px-4 font-medium rounded-md gap-2">
-              <Camera size={14} />
-              Subir logo
-            </Button>
-          </div>
-        </div>
-      </div>
+      <WorkspaceLogoUpload 
+        currentLogoUrl={tenant.logoUrl as string | null} 
+        workspaceName={workspaceName} 
+        tenantSlug={tenantSlug} 
+      />
 
       {/* Form Fields & Save Action */}
       <GeneralSettingsForm tenantSlug={tenantSlug} initialName={workspaceName} />

@@ -78,9 +78,17 @@ export default async function AppLayout({
       <aside className="hidden w-[240px] flex-col border-r border-border/40 bg-sidebar sm:flex">
         <div className="flex h-14 items-center border-b border-border/40 px-4">
           <Link href={`/${tenantSlug}/home`} className="flex items-center gap-2 font-semibold">
-            <div className="flex h-6 w-6 items-center justify-center rounded bg-primary text-[10px] text-primary-foreground font-mono">
-              {membership.tenant.name.charAt(0).toUpperCase()}
-            </div>
+            {membership.tenant.logoUrl ? (
+              <img 
+                src={membership.tenant.logoUrl} 
+                alt={membership.tenant.name} 
+                className="h-6 w-6 object-cover rounded bg-primary/10"
+              />
+            ) : (
+              <div className="flex h-6 w-6 items-center justify-center rounded bg-primary text-[10px] text-primary-foreground font-mono">
+                {membership.tenant.name.charAt(0).toUpperCase()}
+              </div>
+            )}
             <span className="truncate text-sm">{membership.tenant.name}</span>
           </Link>
         </div>

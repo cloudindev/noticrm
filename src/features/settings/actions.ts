@@ -58,6 +58,64 @@ export async function updateProfileAvatar(tenantSlug: string, formData: FormData
   }
 }
 
+export async function updateWorkspaceLogo(tenantSlug: string, formData: FormData) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
+
+    const tenant = await prisma.tenant.findUnique({
+      where: { slug: tenantSlug },
+      include: { members: { where: { userId: session.user.id } } }
+    });
+
+    if (!tenant) return { error: "Espacio no encontrado." };
+    
+    const member = tenant.members[0];
+    if (!member || (member.role !== "OWNER" && member.role !== "ADMIN")) {
+      return { error: "No tienes permisos suficientes." };
+    }
+
+    const file = formData.get("file") as File;
+    if (!file) throw new Error("No file provided");
+
+    if (file.size > 5 * 1024 * 1024) {
+      throw new Error("File size must be less than 5MB");
+    }
+
+    const buffer = Buffer.from(await file.arrayBuffer());
+    
+    const extension = file.name.split('.').pop() || 'png';
+    const timestamp = Date.now();
+    const key = `tenants/${tenant.id}/workspace-logo-${timestamp}.${extension}`;
+
+    const putCommand = new PutObjectCommand({
+      Bucket: process.env['S3_BUCKET_NAME'] || 'principal-bucket-e10q',
+      Key: key,
+      Body: buffer,
+      ContentType: file.type,
+    });
+
+    const s3 = getS3Client();
+    await s3.send(putCommand);
+
+    const publicUrl = getPublicS3Url(key);
+
+    await prisma.tenant.update({
+      where: { id: tenant.id },
+      data: { logoUrl: publicUrl },
+    });
+
+    revalidatePath(`/${tenantSlug}/settings/general`);
+    revalidatePath(`/${tenantSlug}/home`);
+    
+    return { success: true, url: publicUrl };
+  } catch (error: any) {
+    console.error("Error updating workspace logo:", error);
+    return { error: "Falló la subida de imagen." };
+  }
+}
+
+
 export async function updateProfileDetails(tenantSlug: string, formData: FormData) {
   try {
     const session = await auth();
