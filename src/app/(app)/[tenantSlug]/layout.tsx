@@ -82,10 +82,10 @@ export default async function AppLayout({
               <img 
                 src={membership.tenant.logoUrl} 
                 alt={membership.tenant.name} 
-                className="h-6 w-6 object-cover rounded bg-primary/10"
+                className="h-6 w-6 object-cover rounded-full bg-primary/10"
               />
             ) : (
-              <div className="flex h-6 w-6 items-center justify-center rounded bg-primary text-[10px] text-primary-foreground font-mono">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground font-mono">
                 {membership.tenant.name.charAt(0).toUpperCase()}
               </div>
             )}

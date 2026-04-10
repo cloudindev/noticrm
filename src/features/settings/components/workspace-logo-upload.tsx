@@ -62,16 +62,16 @@ export function WorkspaceLogoUpload({ currentLogoUrl, workspaceName, tenantSlug 
           className="relative group cursor-pointer"
           onClick={() => !isPending && fileInputRef.current?.click()}
         >
-          {/* We use rounded-xl instead of rounded-full to fit the previous exact design */}
-          <Avatar className="h-16 w-16 rounded-xl border border-border/50 shadow-sm group-hover:opacity-90 transition-opacity bg-[#00b2ff]">
+          {/* We use rounded-full to fit the standard avatar design */}
+          <Avatar className="h-16 w-16 rounded-full border border-border/50 shadow-sm group-hover:opacity-90 transition-opacity bg-[#00b2ff]">
             <AvatarImage src={previewUrl || ""} alt={workspaceName} className="object-cover" />
-            <AvatarFallback className="rounded-xl text-2xl font-medium bg-transparent text-white">
+            <AvatarFallback className="rounded-full text-2xl font-medium bg-transparent text-white">
               {workspaceName.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           
           {/* Overlay Hover */}
-          <div className={`absolute inset-0 bg-black/40 rounded-xl flex items-center justify-center transition-opacity ${isPending ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+          <div className={`absolute inset-0 bg-black/40 rounded-full flex items-center justify-center transition-opacity ${isPending ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
             {isPending ? (
               <Loader2 className="w-5 h-5 text-white animate-spin" />
             ) : (
