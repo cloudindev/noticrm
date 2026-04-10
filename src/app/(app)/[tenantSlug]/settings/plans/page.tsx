@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Box, Pencil, Info, Check, X, ArrowUpRight, Blocks } from 'lucide-react';
 import { PrismaClient } from "@prisma/client";
 import { notFound } from "next/navigation";
+import { UpgradeButton } from "@/features/billing/components/upgrade-button";
 
 const prisma = new PrismaClient();
 
@@ -95,11 +96,11 @@ export default async function PlansSettingsPage({
             <span className="text-2xl font-bold">19 €</span><span className="text-[13px] text-muted-foreground">/mo</span>
           </div>
           <div className="text-[11px] leading-tight text-muted-foreground mb-4 h-8">
-            1 persona,<br/>facturado anualmente
+            1 persona, hasta 25.000 regs.<br/>facturado mensualmente
           </div>
-          <Button variant="outline" size="sm" className="w-full text-xs font-semibold h-8 border-border/60 shadow-sm rounded-md hover:bg-muted/50">
-            Bajar plan
-          </Button>
+          <UpgradeButton tenantId={tenant.id} productId="prod_UJPwD4rYyYsCaW" variant={tenant.planTier === "SOLO" ? "secondary" : "outline"} disabled={tenant.planTier === "SOLO"} size="sm" className="w-full text-xs font-semibold h-8 border-border/60 shadow-sm rounded-md">
+            {tenant.planTier === "SOLO" ? "Plan actual" : "Seleccionar"}
+          </UpgradeButton>
         </div>
 
         {/* Plus Plan / Team */}
@@ -109,11 +110,11 @@ export default async function PlansSettingsPage({
             <span className="text-2xl font-bold">29 €</span><span className="text-[13px] text-muted-foreground">/mo</span>
           </div>
           <div className="text-[11px] leading-tight text-muted-foreground mb-4 h-8">
-            hasta 5 personas,<br/>facturado anualmente
+            hasta 5 personas, 250.000 regs.<br/>facturado mensualmente
           </div>
-          <Button variant="outline" size="sm" className="w-full text-xs font-semibold h-8 border-border/60 shadow-sm rounded-md hover:bg-muted/50">
-            Bajar plan
-          </Button>
+          <UpgradeButton tenantId={tenant.id} productId="prod_UJPxwLOTTAv6sO" variant={tenant.planTier === "TEAM" ? "secondary" : "outline"} disabled={tenant.planTier === "TEAM"} size="sm" className="w-full text-xs font-semibold h-8 border-border/60 shadow-sm rounded-md hover:bg-muted/50">
+            {tenant.planTier === "TEAM" ? "Plan actual" : "Seleccionar"}
+          </UpgradeButton>
         </div>
 
         {/* Pro Plan */}
@@ -124,25 +125,25 @@ export default async function PlansSettingsPage({
             <span className="text-2xl font-bold">49 €</span><span className="text-[13px] text-muted-foreground">/mo</span>
           </div>
           <div className="text-[11px] leading-tight text-muted-foreground mb-4 h-8">
-            hasta 12 personas,<br/>facturado anualmente
+            hasta 12 personas, 1.000.000 regs.<br/>facturado mensualmente
           </div>
-          <Button disabled variant="outline" size="sm" className="w-full text-xs font-semibold h-8 border-border/60 shadow-sm rounded-md bg-muted/20 text-muted-foreground">
-            Plan actual
-          </Button>
+          <UpgradeButton tenantId={tenant.id} productId="prod_UJPyHli8umFJxW" variant={tenant.planTier === "PRO" ? "secondary" : "outline"} disabled={tenant.planTier === "PRO"} size="sm" className="w-full text-xs font-semibold h-8 border-border/60 shadow-sm rounded-md hover:bg-muted/50">
+            {tenant.planTier === "PRO" ? "Plan actual" : "Seleccionar"}
+          </UpgradeButton>
         </div>
 
-        {/* Enterprise Plan */}
+        {/* Corporate Plan */}
         <div className="flex flex-col px-3 border-l border-border/20">
-          <h4 className="text-sm font-semibold mb-4">Enterprise</h4>
+          <h4 className="text-sm font-semibold mb-4">Corporate</h4>
           <div className="mb-2">
-            <span className="text-xl font-bold tracking-tight">A medida</span>
+            <span className="text-2xl font-bold">69 €</span><span className="text-[13px] text-muted-foreground">/mo</span>
           </div>
           <div className="text-[11px] leading-tight text-muted-foreground mb-4 h-8">
-            por usuario,<br/>facturado anualmente
+            Ilimitados usuarios y regs.<br/>facturado mensualmente
           </div>
-          <Button variant="outline" size="sm" className="w-full text-xs font-semibold h-8 border-border/60 shadow-sm rounded-md hover:bg-muted/50">
-            Hablar con ventas
-          </Button>
+          <UpgradeButton tenantId={tenant.id} productId="prod_UJPzL4zPBJOC1r" variant={tenant.planTier === "UNLIMITED" ? "secondary" : "outline"} disabled={tenant.planTier === "UNLIMITED"} size="sm" className="w-full text-xs font-semibold h-8 border-border/60 shadow-sm rounded-md hover:bg-muted/50">
+            {tenant.planTier === "UNLIMITED" ? "Plan actual" : "Seleccionar"}
+          </UpgradeButton>
         </div>
       </div>
 

@@ -3,6 +3,7 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 import { revalidatePath } from 'next/cache';
+import { checkRecordLimit } from '@/lib/limits';
 
 export async function createCompany(tenantSlug: string, formData: FormData) {
   try {
@@ -11,6 +12,12 @@ export async function createCompany(tenantSlug: string, formData: FormData) {
     });
 
     if (!tenant) return { error: "Tenant not found" };
+
+    try {
+      await checkRecordLimit(tenant.id);
+    } catch (err: any) {
+      return { error: err.message };
+    }
 
     const entityType = formData.get('entityType') as string || 'COMPANY';
     const useSameAddress = formData.get('useSameAddress') === 'true';

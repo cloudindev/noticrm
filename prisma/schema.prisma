@@ -86,8 +86,23 @@ model Tenant {
   emailActivity EmailActivity[]
   invites       Invite[]  @relation("TenantInvites")
 
+  // Billing & Subscriptions
+  stripeCustomerId       String?   @unique
+  stripeSubscriptionId   String?   @unique
+  stripePriceId          String?
+  stripeCurrentPeriodEnd DateTime?
+  planTier               PlanTier  @default(TRIAL)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum PlanTier {
+  TRIAL
+  SOLO
+  TEAM
+  PRO
+  UNLIMITED
 }
 
 model Organization {

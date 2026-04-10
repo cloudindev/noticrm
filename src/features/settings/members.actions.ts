@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { Resend } from "resend";
 import crypto from "crypto";
+import { checkMemberLimit } from "@/lib/limits";
 
 const prisma = new PrismaClient();
 const resend = new Resend(process.env.RESEND_API_KEY || "fallback");
@@ -60,6 +61,15 @@ export async function inviteMemberAction(
     const existingInvite = await prisma.invite.findUnique({
       where: { email_tenantId: { email, tenantId: tenant!.id } }
     });
+
+    if (!existingInvite) {
+      // Only check limit if we are creating a new invite
+      try {
+        await checkMemberLimit(tenant!.id);
+      } catch (err: any) {
+        return { error: err.message };
+      }
+    }
 
     const token = crypto.randomBytes(32).toString("hex");
 

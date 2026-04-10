@@ -36,6 +36,12 @@ export default function AISettingsPage() {
       <Card className="border-border/40 bg-card shadow-sm rounded-xl">
         <CardContent className="p-8 flex flex-col gap-8">
           <div>
+            <img 
+              src="/gemini.jpg" 
+              alt="Google Gemini" 
+              style={{ width: '50%' }}
+              className="mb-4 object-contain"
+            />
             <p className="text-sm text-muted-foreground font-medium max-w-2xl">
               Configura tu clave de API de Gemini para habilitar el análisis y la extracción automática de datos en los documentos y procesos.
             </p>

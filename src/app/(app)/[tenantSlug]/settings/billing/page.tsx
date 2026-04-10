@@ -13,10 +13,13 @@ import {
   Download,
   XCircle,
   Box,
-  CreditCard
+  CreditCard,
+  ArrowUpRight
 } from 'lucide-react';
 import { PrismaClient } from "@prisma/client";
 import { notFound } from "next/navigation";
+import { getUsageStats } from "@/lib/limits";
+import { PortalButton } from "@/features/billing/components/upgrade-button";
 
 const prisma = new PrismaClient();
 
@@ -32,6 +35,20 @@ export default async function BillingSettingsPage({
   });
 
   if (!tenant) return notFound();
+  
+  const stats = await getUsageStats(tenant.id);
+  
+  const planNames: Record<string, string> = {
+    "TRIAL": "Prueba",
+    "SOLO": "Solo",
+    "TEAM": "Team",
+    "PRO": "Pro",
+    "UNLIMITED": "Corporate",
+  };
+  
+  const periodEndText = stats.periodEnd ? new Date(stats.periodEnd).toLocaleDateString() : "No definida";
+  const membersPercentage = stats.members.max >= 999999 ? 0 : Math.min(100, Math.round((stats.members.current / stats.members.max) * 100));
+  const recordsPercentage = stats.records.max >= 999999 ? 0 : Math.min(100, Math.round((stats.records.current / stats.records.max) * 100));
 
   return (
     <div className="flex flex-col h-full w-full">
@@ -49,16 +66,15 @@ export default async function BillingSettingsPage({
         <p className="text-sm text-muted-foreground">Explora planes y gestiona tu suscripción, uso e información de facturación</p>
       </div>
 
-      {/* Trial Alert Banner */}
-      <div className="mb-8 rounded-lg bg-blue-50 dark:bg-blue-950/30 p-3 flex items-center justify-between border border-blue-100 dark:border-blue-900/50">
-        <div className="flex items-center gap-2.5 text-sm text-blue-700 dark:text-blue-300 font-medium">
-          <Info size={16} />
-          Tu prueba finaliza el 08 Abr 2026. Añade una tarjeta para mantener el plan Pro tras la prueba.
+  {/* Trial Alert Banner */}
+      {stats.tier === "TRIAL" && (
+        <div className="mb-8 rounded-lg bg-blue-50 dark:bg-blue-950/30 p-3 flex items-center justify-between border border-blue-100 dark:border-blue-900/50">
+          <div className="flex items-center gap-2.5 text-sm text-blue-700 dark:text-blue-300 font-medium">
+            <Info size={16} />
+            Tu prueba está activa. Añade una tarjeta actualizando tu plan para no perder acceso.
+          </div>
         </div>
-        <Button size="sm" className="bg-white text-foreground hover:bg-muted border border-border/50 shadow-sm h-8 px-4 rounded-md">
-          Añadir tarjeta
-        </Button>
-      </div>
+      )}
 
       {/* Plan Details Card */}
       <div className="mb-12 rounded-xl border border-border/60 shadow-sm bg-background p-6">
@@ -69,21 +85,27 @@ export default async function BillingSettingsPage({
           </div>
           <div className="flex flex-col gap-1 items-start">
             <div className="flex items-center gap-2">
-              <h2 className="text-lg font-semibold">Pro</h2>
-              <Badge className="bg-blue-50 text-blue-600 hover:bg-blue-50 border-none font-semibold px-2 shadow-none dark:bg-blue-900/50 dark:text-blue-300">
-                Prueba
-              </Badge>
+              <h2 className="text-lg font-semibold">{planNames[(stats.tier as string)]}</h2>
+              {stats.tier === "TRIAL" && (
+                <Badge className="bg-blue-50 text-blue-600 hover:bg-blue-50 border-none font-semibold px-2 shadow-none dark:bg-blue-900/50 dark:text-blue-300">
+                  Prueba
+                </Badge>
+              )}
             </div>
-            <p className="text-[13px] text-muted-foreground">0,00 € por usuario/mes · Quedan 11 días de prueba</p>
+            <p className="text-[13px] text-muted-foreground">{stats.tier !== "TRIAL" ? `Ciclo actual finaliza: ${periodEndText}` : "Sin suscripción activa"}</p>
             <div className="flex items-center gap-2 mt-2.5">
-              <Button variant="outline" size="sm" className="h-8 shadow-sm border-border/60 text-xs font-semibold gap-2 rounded-md">
-                <Compass size={14} />
-                Explorar planes
-              </Button>
-              <Button variant="outline" size="sm" className="h-8 shadow-sm border-border/60 text-xs font-semibold gap-2 rounded-md">
-                <Pencil size={14} />
-                Gestionar plan
-              </Button>
+              <a href={`/${tenant.slug}/settings/plans`}>
+                <Button variant="outline" size="sm" className="h-8 shadow-sm border-border/60 text-xs font-semibold gap-2 rounded-md">
+                  <Compass size={14} />
+                  Explorar planes
+                </Button>
+              </a>
+              {stats.tier !== "TRIAL" && (
+                <PortalButton tenantId={tenant.id} variant="outline" size="sm" className="h-8 shadow-sm border-border/60 text-xs font-semibold gap-2 rounded-md">
+                  <Pencil size={14} />
+                  Portal de Cliente
+                </PortalButton>
+              )}
             </div>
           </div>
         </div>
@@ -96,9 +118,10 @@ export default async function BillingSettingsPage({
               <Users size={15} className="text-muted-foreground" /> Asientos
             </div>
             <div className="flex flex-col gap-1.5">
-              <div className="text-[13px] font-medium"><span className="font-semibold text-foreground">1</span> <span className="text-muted-foreground">/ 1</span></div>
-              {/* Progress Bar Active */}
-              <div className="h-[3px] w-full rounded-full bg-[#f26522]" />
+              <div className="text-[13px] font-medium"><span className="font-semibold text-foreground">{stats.members.current}</span> <span className="text-muted-foreground">/ {stats.members.max >= 999999 ? "∞" : stats.members.max}</span></div>
+              <div className="h-[3px] w-full bg-muted rounded-full overflow-hidden">
+                <div className={`h-full ${membersPercentage > 90 ? 'bg-red-500' : 'bg-[#f26522]'}`} style={{ width: `${membersPercentage}%` }} />
+              </div>
             </div>
             <div>
               <Button variant="outline" size="sm" className="h-[28px] text-xs font-medium px-2.5 bg-background shadow-none border-border/60 mt-1">
@@ -113,10 +136,9 @@ export default async function BillingSettingsPage({
               <Database size={15} className="text-muted-foreground" /> Registros
             </div>
             <div className="flex flex-col gap-1.5">
-              <div className="text-[13px] font-medium"><span className="font-semibold text-foreground">11</span> <span className="text-muted-foreground">/ 1.000.000</span></div>
-              {/* Progress Bar Almost Empty */}
+              <div className="text-[13px] font-medium"><span className="font-semibold text-foreground">{stats.records.current}</span> <span className="text-muted-foreground">/ {stats.records.max >= 999999 ? "∞" : stats.records.max.toLocaleString()}</span></div>
               <div className="h-[3px] w-full rounded-full bg-muted overflow-hidden">
-                <div className="h-full bg-border w-[5%]" />
+                <div className={`h-full ${recordsPercentage > 90 ? 'bg-red-500' : 'bg-blue-500'}`} style={{ width: `${recordsPercentage}%` }} />
               </div>
             </div>
             <div>
@@ -188,11 +210,11 @@ export default async function BillingSettingsPage({
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="text-[14px] font-semibold">Pago</h3>
-                <p className="text-[13px] text-muted-foreground">Gestiona tus métodos de pago</p>
+                <p className="text-[13px] text-muted-foreground">Gestiona tus métodos de pago en el Portal de Stripe</p>
               </div>
-              <Button variant="outline" size="icon-sm" className="h-7 w-7 border-border/60 rounded-md">
-                <Plus size={15} />
-              </Button>
+              <PortalButton tenantId={tenant.id} variant="outline" size="icon-sm" className="h-7 w-7 border-border/60 rounded-md">
+                <ArrowUpRight size={13} />
+              </PortalButton>
             </div>
             {/* Empty space matching design */}
           </div>
@@ -229,10 +251,10 @@ export default async function BillingSettingsPage({
 
       {/* Footer Actions */}
       <div className="mt-10 mb-8">
-        <Button variant="outline" className="h-9 shadow-sm border-border/60 text-[13px] font-medium px-4 gap-2 rounded-md hover:bg-muted/50 text-foreground">
+        <PortalButton tenantId={tenant.id} variant="outline" className="h-9 shadow-sm border-border/60 text-[13px] font-medium px-4 gap-2 rounded-md hover:bg-muted/50 text-foreground">
           <XCircle size={15} className="text-muted-foreground" />
-          Cancelar suscripción
-        </Button>
+          Cancelar suscripción (Portal Stripe)
+        </PortalButton>
       </div>
         </div>
       </div>
