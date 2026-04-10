@@ -117,6 +117,21 @@ model Membership {
   tenantId String
   role     Role   @default(MEMBER)
 
+  // Section Access
+  canAccessCompanies Boolean @default(true)
+  canAccessPeople    Boolean @default(true)
+  canAccessLeads     Boolean @default(true)
+  canAccessTasks     Boolean @default(true)
+
+  // Visibility Scope: "GLOBAL" or "OWNED"
+  visibilityScope String @default("GLOBAL")
+
+  // Operational Rights
+  canCreate Boolean @default(true)
+  canEdit   Boolean @default(true)
+  canDelete Boolean @default(false)
+  canExport Boolean @default(false)
+
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
@@ -130,6 +145,22 @@ model Invite {
   id        String @id @default(cuid())
   email     String
   role      Role   @default(MEMBER)
+  
+  // Section Access
+  canAccessCompanies Boolean @default(true)
+  canAccessPeople    Boolean @default(true)
+  canAccessLeads     Boolean @default(true)
+  canAccessTasks     Boolean @default(true)
+
+  // Visibility Scope: "GLOBAL" or "OWNED"
+  visibilityScope String @default("GLOBAL")
+
+  // Operational Rights
+  canCreate Boolean @default(true)
+  canEdit   Boolean @default(true)
+  canDelete Boolean @default(false)
+  canExport Boolean @default(false)
+
   tenantId  String
   inviterId String
   status    String @default("PENDING") // PENDING, ACCEPTED, EXPIRED
