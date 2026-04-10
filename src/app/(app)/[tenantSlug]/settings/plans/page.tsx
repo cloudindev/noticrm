@@ -88,43 +88,43 @@ export default async function PlansSettingsPage({
           </div>
         </div>
 
-        {/* Free Plan */}
+        {/* Free Plan / Solo */}
         <div className="flex flex-col px-3 border-l border-transparent">
-          <h4 className="text-sm font-semibold mb-4">Gratis</h4>
+          <h4 className="text-sm font-semibold mb-4">Solo</h4>
           <div className="mb-2">
-            <span className="text-2xl font-bold">0 €</span><span className="text-[13px] text-muted-foreground">/mo</span>
+            <span className="text-2xl font-bold">19 €</span><span className="text-[13px] text-muted-foreground">/mo</span>
           </div>
           <div className="text-[11px] leading-tight text-muted-foreground mb-4 h-8">
-            por usuario,<br/>facturado mensualmente
+            1 persona,<br/>facturado anualmente
           </div>
           <Button variant="outline" size="sm" className="w-full text-xs font-semibold h-8 border-border/60 shadow-sm rounded-md hover:bg-muted/50">
             Bajar plan
           </Button>
         </div>
 
-        {/* Plus Plan */}
+        {/* Plus Plan / Team */}
         <div className="flex flex-col px-3 border-l border-border/20">
-          <h4 className="text-sm font-semibold mb-4">Plus</h4>
+          <h4 className="text-sm font-semibold mb-4">Team</h4>
           <div className="mb-2">
             <span className="text-2xl font-bold">29 €</span><span className="text-[13px] text-muted-foreground">/mo</span>
           </div>
           <div className="text-[11px] leading-tight text-muted-foreground mb-4 h-8">
-            por usuario,<br/>facturado anualmente
+            hasta 5 personas,<br/>facturado anualmente
           </div>
           <Button variant="outline" size="sm" className="w-full text-xs font-semibold h-8 border-border/60 shadow-sm rounded-md hover:bg-muted/50">
             Bajar plan
           </Button>
         </div>
 
-        {/* Pro Plan (Active) */}
+        {/* Pro Plan */}
         <div className="flex flex-col px-3 border-x border-t border-border/50 bg-muted/5 rounded-t-xl relative pt-4 -mt-4 pb-0">
           <h4 className="text-sm font-semibold mb-0">Pro</h4>
           <div className="text-[11px] text-blue-500 font-medium mb-1 relative top-[-2px]">Popular</div>
           <div className="mb-2">
-            <span className="text-2xl font-bold">69 €</span><span className="text-[13px] text-muted-foreground">/mo</span>
+            <span className="text-2xl font-bold">49 €</span><span className="text-[13px] text-muted-foreground">/mo</span>
           </div>
           <div className="text-[11px] leading-tight text-muted-foreground mb-4 h-8">
-            por usuario,<br/>facturado anualmente
+            hasta 12 personas,<br/>facturado anualmente
           </div>
           <Button disabled variant="outline" size="sm" className="w-full text-xs font-semibold h-8 border-border/60 shadow-sm rounded-md bg-muted/20 text-muted-foreground">
             Plan actual
