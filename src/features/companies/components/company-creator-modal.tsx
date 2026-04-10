@@ -197,10 +197,6 @@ export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {isCompany ? (
                   <>
-                    <div className="space-y-1.5">
-                      <Label htmlFor="legalName">Razón Social</Label>
-                      <Input id="legalName" name="legalName" placeholder="Acme Corporation S.L." />
-                    </div>
                     <div className="space-y-1.5 relative" ref={wrapperRef}>
                       <Label htmlFor="name">Nombre Comercial <span className="text-red-500">*</span></Label>
                       <Input 
@@ -237,6 +233,10 @@ export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess 
                           ))}
                         </div>
                       )}
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="legalName">Razón Social</Label>
+                      <Input id="legalName" name="legalName" placeholder="Acme Corporation S.L." />
                     </div>
                     <div className="space-y-1.5">
                       <Label htmlFor="taxId">CIF / NIF</Label>
@@ -280,7 +280,7 @@ export function CompanyCreatorModal({ open, onOpenChange, tenantSlug, onSuccess 
                 </div>
                 {isCompany && (
                   <div className="space-y-1.5">
-                    <Label htmlFor="website">Web (opcional)</Label>
+                    <Label htmlFor="website">Web</Label>
                     <div className="relative">
                       <Globe className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                       <Input 
