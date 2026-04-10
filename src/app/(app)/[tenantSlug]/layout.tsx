@@ -41,7 +41,8 @@ export default async function AppLayout({
     where: {
       userId: session.user.id,
       tenant: { slug: tenantSlug }
-    }
+    },
+    include: { tenant: true }
   });
 
   if (!membership) {
@@ -78,39 +79,52 @@ export default async function AppLayout({
         <div className="flex h-14 items-center border-b border-border/40 px-4">
           <Link href={`/${tenantSlug}/home`} className="flex items-center gap-2 font-semibold">
             <div className="flex h-6 w-6 items-center justify-center rounded bg-primary text-[10px] text-primary-foreground font-mono">
-              N/
+              {membership.tenant.name.charAt(0).toUpperCase()}
             </div>
-            <span className="truncate text-sm">{tenantSlug}</span>
+            <span className="truncate text-sm">{membership.tenant.name}</span>
           </Link>
         </div>
         
         <div className="flex-1 overflow-auto py-2">
           <nav className="flex flex-col gap-[2px] px-2 mt-2">
             <SidebarNavItem icon={<Home size={16} />} label="Inicio" href={`/${tenantSlug}/home`} />
-            <SidebarNavItem 
-              icon={<CheckSquare size={16} />} 
-              label="Tareas" 
-              href={`/${tenantSlug}/tasks`} 
-              badge={uncompletedTasksCount > 0 ? uncompletedTasksCount : undefined} 
-            />
+            
+            {/* Tareas */}
+            {(membership.role === 'OWNER' || membership.role === 'ADMIN' || membership.canAccessTasks) && (
+              <SidebarNavItem 
+                icon={<CheckSquare size={16} />} 
+                label="Tareas" 
+                href={`/${tenantSlug}/tasks`} 
+                badge={uncompletedTasksCount > 0 ? uncompletedTasksCount : undefined} 
+              />
+            )}
+            
             <SidebarNavItem icon={<Mail size={16} />} label="Correos" href={`/${tenantSlug}/emails`} />
             
             <CollapsibleSection title="Registros">
-              <SidebarNavItem 
-                icon={<div className="flex h-[18px] w-[18px] items-center justify-center rounded-[5px] bg-[#2f6bff] text-white shadow-sm"><Building2 size={12} strokeWidth={2.5} /></div>} 
-                label="Empresas" 
-                href={`/${tenantSlug}/companies`} 
-              />
-              <SidebarNavItem 
-                icon={<div className="flex h-[18px] w-[18px] items-center justify-center rounded-[5px] bg-[#2f6bff] text-white shadow-sm"><Users size={12} strokeWidth={2.5} /></div>} 
-                label="Personas" 
-                href={`/${tenantSlug}/people`} 
-              />
-              <SidebarNavItem 
-                icon={<div className="flex h-[18px] w-[18px] items-center justify-center rounded-[5px] bg-[#f26522] text-white shadow-sm"><Target size={12} strokeWidth={2.5} /></div>} 
-                label="Oportunidades" 
-                href={`/${tenantSlug}/leads`} 
-              />
+              {(membership.role === 'OWNER' || membership.role === 'ADMIN' || membership.canAccessCompanies) && (
+                <SidebarNavItem 
+                  icon={<div className="flex h-[18px] w-[18px] items-center justify-center rounded-[5px] bg-[#2f6bff] text-white shadow-sm"><Building2 size={12} strokeWidth={2.5} /></div>} 
+                  label="Empresas" 
+                  href={`/${tenantSlug}/companies`} 
+                />
+              )}
+              
+              {(membership.role === 'OWNER' || membership.role === 'ADMIN' || membership.canAccessPeople) && (
+                <SidebarNavItem 
+                  icon={<div className="flex h-[18px] w-[18px] items-center justify-center rounded-[5px] bg-[#2f6bff] text-white shadow-sm"><Users size={12} strokeWidth={2.5} /></div>} 
+                  label="Personas" 
+                  href={`/${tenantSlug}/people`} 
+                />
+              )}
+              
+              {(membership.role === 'OWNER' || membership.role === 'ADMIN' || membership.canAccessLeads) && (
+                <SidebarNavItem 
+                  icon={<div className="flex h-[18px] w-[18px] items-center justify-center rounded-[5px] bg-[#f26522] text-white shadow-sm"><Target size={12} strokeWidth={2.5} /></div>} 
+                  label="Oportunidades" 
+                  href={`/${tenantSlug}/leads`} 
+                />
+              )}
             </CollapsibleSection>
             
             <CollapsibleSection title="Analíticas">
