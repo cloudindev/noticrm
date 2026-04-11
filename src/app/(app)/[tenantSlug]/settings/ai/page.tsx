@@ -35,7 +35,7 @@ export default async function AISettingsPage({ params }: { params: Promise<{ ten
   
   const tenant = await prisma.tenant.findUnique({
     where: { slug: tenantSlug },
-    select: { geminiApiKey: true, aiEnabled: true }
+    select: { geminiApiKey: true, aiEnabled: true } as any
   });
 
   if (!tenant) {
@@ -52,8 +52,8 @@ export default async function AISettingsPage({ params }: { params: Promise<{ ten
       <Card className="border-border/40 bg-card shadow-sm rounded-xl">
         <AISettingsForm 
           tenantSlug={tenantSlug} 
-          initialApiKey={tenant.geminiApiKey} 
-          initialAiEnabled={tenant.aiEnabled} 
+          initialApiKey={(tenant as any).geminiApiKey} 
+          initialAiEnabled={(tenant as any).aiEnabled} 
         />
       </Card>
     </div>

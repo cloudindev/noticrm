@@ -12,7 +12,7 @@ export async function saveAiSettings(tenantSlug: string, apiKey: string, enabled
       data: {
         geminiApiKey: apiKey,
         aiEnabled: enabled
-      }
+      } as any
     });
     revalidatePath(`/${tenantSlug}/settings/ai`);
     revalidatePath(`/${tenantSlug}/home`);
