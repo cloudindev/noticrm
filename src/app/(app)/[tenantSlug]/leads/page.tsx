@@ -1,69 +1,81 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Plus, Search, Filter, Target } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { PrismaClient } from '@prisma/client';
+import { LeadsClient } from '@/features/leads/components/leads-client';
 
-export default function LeadsPage() {
-  const leads = [
-    { id: 1, name: "Enterprise deal - Acme", company: "Acme Corp", value: "$45,000", status: "New", owner: "Sarah J." },
-    { id: 2, name: "SaaS Expansion", company: "Globex Inc", value: "$12,500", status: "In Progress", owner: "Mike R." },
-    { id: 3, name: "Renewal Q3", company: "Initech", value: "$8,000", status: "Won", owner: "Lisa M." },
-  ];
+const prisma = new PrismaClient();
+
+export default async function LeadsPage({ params }: { params: Promise<{ tenantSlug: string }>}) {
+  const { tenantSlug } = await params;
+  
+  const tenant = await prisma.tenant.findUnique({
+    where: { slug: tenantSlug },
+    select: { id: true }
+  });
+
+  if (!tenant) return <div>Tenant not found</div>;
+
+  // Fetch Leads
+  const leadsRaw = await prisma.lead.findMany({
+    where: { tenantId: tenant.id },
+    orderBy: { createdAt: 'desc' },
+    include: {
+      company: {
+        select: { id: true, name: true, logoUrl: true }
+      },
+      person: {
+        select: { id: true, name: true, lastName: true }
+      }
+    }
+  });
+
+  // Fetch tasks per lead to calculate "Notes/Tasks due" if needed
+  // For now we map it directly
+  const serializedLeads = leadsRaw.map(l => ({
+    id: l.id,
+    name: l.name,
+    status: l.status,
+    value: l.value,
+    notes: l.notes,
+    dueDate: l.dueDate ? l.dueDate.toISOString() : null,
+    companyId: l.company?.id || null,
+    companyName: l.company?.name || null,
+    companyLogoUrl: l.company?.logoUrl || null,
+    personName: l.person ? `${l.person.name} ${l.person.lastName || ''}`.trim() : null,
+    createdAt: l.createdAt.toISOString()
+  }));
+
+  // Fetch lists for the creator modal
+  const companies = await prisma.company.findMany({
+    where: { tenantId: tenant.id },
+    select: { id: true, name: true, logoUrl: true },
+    orderBy: { name: 'asc' }
+  });
+
+  const people = await prisma.person.findMany({
+    where: { tenantId: tenant.id },
+    select: { id: true, name: true, lastName: true, companyId: true },
+    orderBy: { name: 'asc' }
+  });
+
+  const serializedCompanies = companies.map(c => ({
+    id: c.id,
+    name: c.name,
+    logoUrl: c.logoUrl,
+  }));
+  
+  const serializedPeople = people.map(p => ({
+    id: p.id,
+    name: p.name,
+    lastName: p.lastName,
+    companyId: p.companyId
+  }));
 
   return (
-    <div className="flex h-full flex-col">
-      {/* Header */}
-      <div className="flex items-center justify-between border-b border-border/40 px-6 py-3 shrink-0">
-        <div className="flex items-center gap-2.5">
-          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#f26522] text-white shadow-sm">
-            <Target size={14} strokeWidth={2.5} />
-          </div>
-          <h1 className="text-sm font-semibold tracking-tight">Oportunidades</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button size="sm" className="bg-[#f26522] hover:bg-[#d55219] h-8 text-white shadow-sm">
-            <Plus size={16} className="mr-1.5" />
-            Nueva Oportunidad
-          </Button>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-3 px-6 py-3 border-b border-border/20">
-        <div className="relative max-w-sm flex-1">
-          <Search className="absolute left-2.5 top-2 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Buscar negociaciones..." className="h-8 pl-8 text-sm shadow-sm bg-background" />
-        </div>
-        <Button variant="outline" size="sm" className="gap-2 h-8 bg-background text-xs font-semibold shadow-sm">
-          <Filter size={14} />
-          Filtros
-        </Button>
-      </div>
-
-      <div className="bg-background flex-1 overflow-auto p-6">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {leads.map((lead) => (
-            <div key={lead.id} className="flex flex-col gap-3 rounded-xl border border-border/40 bg-card p-5 shadow-sm transition hover:shadow-md cursor-pointer">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-muted-foreground">{lead.company}</span>
-                <Badge variant={lead.status === 'Won' ? 'default' : lead.status === 'In Progress' ? 'secondary' : 'outline'}>
-                  {lead.status}
-                </Badge>
-              </div>
-              <h3 className="text-lg font-semibold tracking-tight leading-tight">{lead.name}</h3>
-              <div className="mt-2 flex items-center justify-between border-t border-border/40 pt-4">
-                <span className="font-mono text-sm font-medium text-foreground">{lead.value}</span>
-                <div className="flex items-center gap-2">
-                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#f26522]/10 text-[9px] font-medium text-[#f26522]">
-                    {lead.owner.charAt(0)}
-                  </div>
-                  <span className="text-xs text-muted-foreground">{lead.owner}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+    <LeadsClient 
+      initialLeads={serializedLeads} 
+      companies={serializedCompanies} 
+      people={serializedPeople}
+      tenantSlug={tenantSlug} 
+    />
   );
 }

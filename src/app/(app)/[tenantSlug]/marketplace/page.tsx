@@ -25,64 +25,64 @@ import {
 } from 'lucide-react';
 
 const CATEGORIES = [
-  "All",
-  "Integrations",
-  "Sectors",
-  "Productivity",
-  "Leads"
+  "Todos",
+  "Integraciones",
+  "Sectores",
+  "Productividad",
+  "Prospectos"
 ];
 
 const MODULES = [
   // Integrations
   {
     title: "WhatsApp API",
-    description: "Connect your official WhatsApp Business number to send direct messages.",
-    category: "Integrations",
+    description: "Conecta tu número oficial de WhatsApp Business para enviar mensajes directos.",
+    category: "Integraciones",
     icon: <MessageCircle size={24} className="text-green-500" />,
     installed: false,
   },
   {
     title: "Google Workspace",
-    description: "Sync your Workspace emails, calendar, and contacts automatically.",
-    category: "Integrations",
+    description: "Sincroniza tus correos electrónicos, calendario y contactos de Workspace automáticamente.",
+    category: "Integraciones",
     icon: <Zap size={24} className="text-blue-500" />,
     installed: true,
   },
   {
     title: "Microsoft 365",
-    description: "Deep integration with Outlook, Teams, and SharePoint document storage.",
-    category: "Integrations",
+    description: "Integración profunda con Outlook, Teams y almacenamiento de documentos en SharePoint.",
+    category: "Integraciones",
     icon: <Mail size={24} className="text-sky-500" />,
     installed: false,
   },
   {
-    title: "Slack Integration",
-    description: "Receive real-time lead and task notifications directly in Slack channels.",
-    category: "Integrations",
+    title: "Integración Slack",
+    description: "Recibe notificaciones en tiempo real sobre prospectos y tareas directamente en canales de Slack.",
+    category: "Integraciones",
     icon: <Blocks size={24} className="text-purple-500" />,
     installed: false,
   },
   
   // Sectors
   {
-    title: "Lawyers & Attorneys",
-    description: "Tailored fields for case management, judiciary dates, and legal billing.",
-    category: "Sectors",
+    title: "Abogados y Despachos",
+    description: "Campos personalizados para gestión de casos, fechas judiciales y facturación legal.",
+    category: "Sectores",
     icon: <Scale size={24} className="text-amber-500" />,
     installed: false,
     badge: "Premium"
   },
   {
-    title: "Field Installers",
-    description: "GPS tracking, photo uploads, and on-site signature collection for workers.",
-    category: "Sectors",
+    title: "Instaladores de Campo",
+    description: "Seguimiento GPS, subida de fotos y recolección de firmas in situ para trabajadores.",
+    category: "Sectores",
     icon: <Hammer size={24} className="text-emerald-500" />,
     installed: false,
   },
   {
-    title: "Agency CRM Toolkit",
-    description: "Multi-client pipeline views, recurring retainer tracking, and time logging.",
-    category: "Sectors",
+    title: "Kit CRM para Agencias",
+    description: "Múltiples vistas de pipeline, seguimiento de igualas recurrentes y registro de tiempo.",
+    category: "Sectores",
     icon: <Briefcase size={24} className="text-indigo-500" />,
     installed: false,
     badge: "Premium"
@@ -90,23 +90,23 @@ const MODULES = [
 
   // Productivity
   {
-    title: "Invoicing & Billing",
-    description: "Create proformas, invoices, and track payments natively inside Noticrm.",
-    category: "Productivity",
+    title: "Facturación y Cobros",
+    description: "Crea facturas proforma, facturas finales y realiza el seguimiento de pagos de forma nativa en Noticrm.",
+    category: "Productividad",
     icon: <Receipt size={24} className="text-indigo-400" />,
     installed: false,
   },
   {
-    title: "Document Manager",
-    description: "Advanced folder structured cloud storage attached to your leads and companies.",
-    category: "Productivity",
+    title: "Gestor Documental",
+    description: "Almacenamiento en la nube con estructura de carpetas avanzada y vincualdo a tus prospectos y empresas.",
+    category: "Productividad",
     icon: <FileText size={24} className="text-gray-500" />,
     installed: false,
   },
   {
-    title: "Electronic Signature",
-    description: "Request legally binding signatures via email or SMS directly from records.",
-    category: "Productivity",
+    title: "Firma Electrónica",
+    description: "Solicita firmas legalmente vinculantes a través de correo electrónico o SMS directamente desde los registros.",
+    category: "Productividad",
     icon: <PenTool size={24} className="text-cyan-600" />,
     installed: false,
     badge: "Premium"
@@ -114,16 +114,16 @@ const MODULES = [
 
   // Leads
   {
-    title: "Meta Leads Manager",
-    description: "Sync leads from Facebook & Instagram directly into your CRM campaigns.",
-    category: "Leads",
+    title: "Gestor de Prospectos Meta",
+    description: "Sincroniza prospectos de Facebook e Instagram directamente en las campañas de tu CRM.",
+    category: "Prospectos",
     icon: <Megaphone size={24} className="text-blue-600" />,
     installed: false,
   },
   {
-    title: "Lead Form Builder",
-    description: "Create custom contact forms and embed them easily on your website.",
-    category: "Leads",
+    title: "Constructor de Formularios",
+    description: "Crea formularios de contacto personalizados e insértalos fácilmente en tu sitio web.",
+    category: "Prospectos",
     icon: <ClipboardList size={24} className="text-orange-500" />,
     installed: false,
   }
@@ -132,12 +132,12 @@ const MODULES = [
 export default function MarketplacePage() {
   const { tenantSlug } = useParams();
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeCategory, setActiveCategory] = useState("All");
+  const [activeCategory, setActiveCategory] = useState("Todos");
 
   const filteredModules = MODULES.filter(mod => {
     const matchesSearch = mod.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           mod.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = activeCategory === "All" || mod.category === activeCategory;
+    const matchesCategory = activeCategory === "Todos" || mod.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -148,15 +148,15 @@ export default function MarketplacePage() {
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Marketplace</h1>
           <p className="mt-1 text-muted-foreground">
-            Extend your CRM capabilities with sector-specific modules and powerful integrations.
+            Amplía las capacidades de tu CRM con módulos específicos para tu sector e integraciones potentes.
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Link href={`/${tenantSlug}/marketplace/request`}>
-            <Button variant="outline">Request Module</Button>
+            <Button variant="outline">Solicitar Módulo</Button>
           </Link>
           <Link href={`/${tenantSlug}/marketplace/submit`}>
-            <Button>Submit Integration</Button>
+            <Button>Crear Integración</Button>
           </Link>
         </div>
       </div>
@@ -166,7 +166,7 @@ export default function MarketplacePage() {
         <div className="flex w-full max-w-sm items-center relative">
           <Search className="absolute left-2.5 h-4 w-4 text-muted-foreground" />
           <Input 
-            placeholder="Search modules..." 
+            placeholder="Buscar módulos..." 
             className="pl-9 w-full bg-background border-border/60 shadow-sm"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -218,7 +218,7 @@ export default function MarketplacePage() {
                   size="sm" 
                   className={mod.installed ? "text-green-600 border-green-200 bg-green-50 hover:bg-green-100 pointer-events-none" : "shadow-sm"}
                 >
-                  {mod.installed ? "Installed ✓" : "Install"}
+                  {mod.installed ? "Instalado ✓" : "Instalar"}
                   {!mod.installed && <Plus size={14} className="ml-1" />}
                 </Button>
               </CardFooter>
@@ -227,12 +227,12 @@ export default function MarketplacePage() {
         ) : (
           <div className="col-span-full flex flex-col items-center justify-center p-12 text-center rounded-xl border border-dashed border-border/60 bg-muted/20">
             <Search className="h-10 w-10 text-muted-foreground/50 mb-4" />
-            <h3 className="text-lg font-medium">No modules found</h3>
+            <h3 className="text-lg font-medium">No se encontraron módulos</h3>
             <p className="text-sm text-muted-foreground mt-1 max-w-md">
-              We couldn't find any modules matching "{searchTerm}" in the {activeCategory} category.
+              No hemos encontrado ningún módulo que coincida con "{searchTerm}" en la categoría {activeCategory}.
             </p>
-            <Button variant="outline" className="mt-6" onClick={() => {setSearchTerm(""); setActiveCategory("All");}}>
-              Clear filters
+            <Button variant="outline" className="mt-6" onClick={() => {setSearchTerm(""); setActiveCategory("Todos");}}>
+              Limpiar filtros
             </Button>
           </div>
         )}
