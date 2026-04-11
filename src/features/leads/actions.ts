@@ -5,23 +5,6 @@ import { revalidatePath } from "next/cache";
 
 const prisma = new PrismaClient();
 
-export const LEAD_STAGES = [
-  { id: "PROSPECTING", label: "Prospección" },
-  { id: "QUALIFIED", label: "Cualificada" },
-  { id: "PROPOSAL", label: "Propuesta enviada" },
-  { id: "NEGOTIATION", label: "Negociación" },
-  { id: "CLOSED", label: "Cerrada" } // Closed can be WON or LOST, we map it as one visual column but it has modifiers or we can separate them. The user said: "cerrada (ok o ko)".
-];
-// We will use WON / LOST internal states, but in UI they can be in a 'CLOSED' stage or we just use:
-// PROSPECTING, QUALIFIED, PROPOSAL, NEGOTIATION, WON, LOST. Let's make the pipeline standard.
-export const PIPELINE_STAGES = [
-  "PROSPECTING",
-  "QUALIFIED",
-  "PROPOSAL",
-  "NEGOTIATION",
-  "CLOSED",
-];
-
 export async function createLead(tenantSlug: string, formData: FormData) {
   try {
     const tenant = await prisma.tenant.findUnique({

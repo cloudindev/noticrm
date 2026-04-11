@@ -25,7 +25,23 @@ function GeminiLogo({ className }: { className?: string }) {
   );
 }
 
-export default function AISettingsPage() {
+import { PrismaClient } from "@prisma/client";
+import { AISettingsForm } from "./ai-settings-form";
+
+const prisma = new PrismaClient();
+
+export default async function AISettingsPage({ params }: { params: Promise<{ tenantSlug: string }> }) {
+  const { tenantSlug } = await params;
+  
+  const tenant = await prisma.tenant.findUnique({
+    where: { slug: tenantSlug },
+    select: { geminiApiKey: true, aiEnabled: true }
+  });
+
+  if (!tenant) {
+    return <div>No se pudo cargar la configuración del Tenant.</div>;
+  }
+
   return (
     <div className="flex h-full flex-col gap-8 max-w-4xl mx-auto py-8">
       <div className="flex items-center gap-3">
@@ -34,48 +50,11 @@ export default function AISettingsPage() {
       </div>
 
       <Card className="border-border/40 bg-card shadow-sm rounded-xl">
-        <CardContent className="p-8 flex flex-col gap-8">
-          <div>
-            <img 
-              src="/gemini.jpg" 
-              alt="Google Gemini" 
-              style={{ width: '12%' }}
-              className="-mt-2 mb-4 object-contain"
-            />
-            <p className="text-sm text-muted-foreground font-medium max-w-2xl">
-              Configura tu clave de API de Gemini para habilitar el análisis y la extracción automática de datos en los documentos y procesos.
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
-              <Key size={16} className="text-muted-foreground" />
-              API Key (Google Gemini)
-            </label>
-            <Input 
-              type="password" 
-              defaultValue="••••••••••••••••••••••••••••••••" 
-              className="font-mono bg-background shadow-none h-11 w-full rounded-lg"
-            />
-          </div>
-
-          <div className="flex items-start justify-between rounded-xl border border-border/40 bg-muted/20 p-4">
-            <div className="flex items-center gap-4">
-              <Switch defaultChecked className="data-[state=checked]:bg-foreground" />
-              <div className="flex flex-col gap-1">
-                <span className="text-sm font-semibold text-foreground">Activar procesamiento de IA</span>
-                <span className="text-xs text-muted-foreground">Al subir un documento o crear un expediente, la IA procesará la información automáticamente.</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-4 flex justify-end">
-            <Button className="bg-[#0a0a0a] hover:bg-[#1a1a1a] text-white rounded-xl h-11 px-6 shadow-sm gap-2">
-              <Save size={18} />
-              Guardar Ajustes
-            </Button>
-          </div>
-        </CardContent>
+        <AISettingsForm 
+          tenantSlug={tenantSlug} 
+          initialApiKey={tenant.geminiApiKey} 
+          initialAiEnabled={tenant.aiEnabled} 
+        />
       </Card>
     </div>
   );

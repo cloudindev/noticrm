@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import { PIPELINE_STAGES } from "../actions";
+import { PIPELINE_STAGES } from "../constants";
 import { SerializedLead } from "./leads-client";
 import { Building, Calendar, DollarSign, MessageSquare } from "lucide-react";
 import { format } from "date-fns";

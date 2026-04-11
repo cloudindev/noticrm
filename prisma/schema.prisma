@@ -79,6 +79,10 @@ model Tenant {
   organization Organization?
   members      Membership[]
 
+  // AI Configuration
+  geminiApiKey String?
+  aiEnabled    Boolean       @default(true)
+
   // Tenant Isolated Data
   companies     Company[]
   people        Person[]

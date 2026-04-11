@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PIPELINE_STAGES, updateLeadStage } from "../actions";
+import { updateLeadStage } from "../actions";
+import { PIPELINE_STAGES } from "../constants";
 import { ArrowLeft, Building, Target, Check, Calendar, DollarSign, LayoutDashboard, Flag, Mail, Phone, Clock, Plus, MessageSquare, User } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
